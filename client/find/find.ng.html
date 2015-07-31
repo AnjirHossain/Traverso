@@ -1,0 +1,58 @@
+<div class="find-wrap"> 
+	<div class="col-md-4 listings-wrap" >
+		<div class="search-box-wrap col-md-4">
+			<div class="sig-wrap">			
+				<span class="search-input-group">
+					<input type="search" placeholder="Search by Street, City, State or Zip" data-ng-model="searchBoxBase">
+				</span>
+			</div>		
+		</div>
+		<!-- listings | filter: searchBoxBaseFilter -->
+		<div class="listings-items-wrap" data-ng-repeat="listing in (filteredListings = (listings | filter: searchBoxBaseFilter))">
+			<div class="listings-item" 
+				style="background-image:url('{{image.url()}}');" 
+				ng-repeat="image in listingImages" 
+				ng-show="image._id === listing.listImgId"> <!--ng-show when length is beyond a certain point-->
+				<article class="pitch-textual">
+					<span class="listing-mouse-over">
+						<h2>{{listing.price | currency:"$":0}}</h2>
+						<h4>Mileage: {{ listing.milage }}</h4>
+						<h4>{{ listing.make.name }}, {{ listing.model.name }}</h4>
+						<!--the level of detail that is presented in the address depends on what the user searched-->
+						<p>{{listing.street}} {{listing.city}} {{listing.state}}</p> 
+						<p>{{listing.zip}}</p>
+						<div class="cta-on-listing">
+							<button class="btn btn-success">Bookmark 
+								<i style="color:#fff;font-size:1em;margin-top:0;margin-bottom:0;marging-left:2px;marging-right:0;" 
+								class="fa fa-bookmark"></i>
+							</button>
+						</div>
+					</span>
+				</article>
+			</div>							
+		</div>
+	</div>
+
+	<div class="col-md-8 map-wrap angular-google-map-container">
+			<!-- <div class="pitch" style="z-index: 999;"><h1>{{searchBoxBase}}</h1></div> -->
+			<ui-gmap-google-map 
+				class="map" 
+				center="map.center"
+				options="map.options"
+			    events="map.events" 
+			    zoom="map.zoom"
+			    styles="map.styles">
+
+				<ui-gmap-marker options="map.marker.options"
+				ng-repeat="filteredListing in filteredListings"
+				coords="filteredListing.position"
+				idKey="0"
+				icon="map.icon">
+
+        		</ui-gmap-marker>
+
+			</ui-gmap-google-map>
+	</div>
+</div>
+
+<!--throw in the right ng-repeats with handlebars and filter that shit too-->

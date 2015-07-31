@@ -1,0 +1,102 @@
+<!--login-->
+<template name="authTemplateScaffold">
+    {{#if currentUser}}
+        
+        {{> dashPreviewInNav}}
+
+    {{else}}
+
+        {{> createAuth}}
+        <hr>
+        {{> useExistingAuth}}
+    
+    {{/if}}
+</template>
+
+<template name="dashPreviewInNav">
+    Logged in 
+        {{#if currentUser.profile.name}} 
+            {{currentUser.profile.name}}
+        {{else}}
+            {{currentUser.username}}
+        {{/if}}
+    <br><br>
+    <button id="signOut" class="btn btn-regular" data-toggle="modal" data-target="#authModal">Sign Out</button>
+</template>
+
+<template name="createAuth">
+    <form id="createAuthFormTag" name="createAuthFormTagAjsScaff" class="input-group">
+        <input type="text" name="createuserusername" placeholder="User Name" ng-model="temp.a_j_scaff1" ng-minlength="4" ng-required="true">
+        
+        <div class="input-group input-group-inline">        
+            <input 
+                type="text" 
+                name="createuseremail" 
+                placeholder="youremail@example.com" 
+                ng-model="temp.a_j_scaff2" 
+                ng-minlength="4" 
+                ng-required="true">
+
+            <input 
+                type="text" 
+                name="createusername" 
+                placeholder="Name"
+                ng-model="temp.a_j_scaff3" 
+                ng-minlength="4" 
+                ng-required="true">
+
+            <input 
+                type="text" 
+                name="createusercell" 
+                placeholder="Phone"
+                ng-model="temp.a_j_scaff4" 
+                ng-minlength="4" 
+                ng-required="true">
+        </div>
+
+        <input 
+            type="password" 
+            name="createuserpassword" 
+            placeholder="Password"
+            ng-model="temp.a_j_scaff5" 
+            ng-minlength="4" 
+            ng-required="true">
+
+        <input 
+            type="password" 
+            name="createuserpasswordconfirm" 
+            placeholder="Confirm Password"
+            ng-model="temp.a_j_scaff6" 
+            ng-minlength="4" 
+            ng-required="true">
+
+        <!-- praise the ajs gods for $invalid -->
+        <input type="submit" class="btn btn-success" value="Sign Up" 
+            ng-disabled="createAuthFormTagAjsScaff.$invalid">
+        <p id="createAuthError" style="margin:10px 0;"></p>
+    </form>
+</template>
+
+<template name="useExistingAuth">
+    <!--implemento el doublê loginio-->
+    <form id="useAuthFormTag" name="useAuthFormTagAjsScaff" class="input-group">
+        <input 
+            type="text" 
+            name="loginusername" 
+            placeholder="User Name"
+            ng-model="temptwo.a_j_scaff7" 
+            ng-minlength="4" 
+            ng-required="true">
+
+        <input 
+            type="password" 
+            name="loginpassword" 
+            placeholder="password"
+            ng-model="temptwo.a_j_scaff8" 
+            ng-minlength="4" 
+            ng-required="true">
+        <input type="submit" class="btn btn-warning" value="Log In" 
+            ng-disabled="useAuthFormTagAjsScaff.$invalid">
+        <p id="useAuthError" style="margin:10px 0;"></p>
+    </form>
+</template>

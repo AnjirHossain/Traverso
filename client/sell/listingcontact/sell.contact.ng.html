@@ -1,0 +1,30 @@
+<article class="pitch">
+	<h3 style="margin-top: -20px;margin-bottom:5px;">Contact info</h3><br>
+	<!-- this step shouldn't be necessito el stumblé upon login form -->
+	<div>
+		<h4>lets include a photo of your listing</h4>
+		<span class="btn btn-success btn-file">
+			Upload photos <input type="file" name="listingImg" ng-minlength="1" required>
+		</span>
+	</div>
+	<h4>update contact info</h4>
+	<div class="input-group">
+		<input type="text" name="createuseremail" placeholder="youremail@example.com" ng-model="emailRemind">
+	</div>
+	<div class="input-group input-group-inline">		       
+        <input type="text" name="createusername" placeholder="Name" ng-model="name">
+        <input type="text" name="createusercell" placeholder="Phone" ng-model="phone">
+    </div>
+	<h4>click 'List' to use current contact info</h4>
+	<div class="col-md-12 form-progress-indication-relative-filler">
+		<div class="form-progress-indication-wrap">
+			<span class="indicator" ng-class="{active:stateInit}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateMid}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateFinal}"><i class="fa fa-circle"></i></span>
+		</div>
+	</div>
+	<div class="form-cta-group">
+		<button class="btn btn-warning" ui-sref="sell.specs">back</button>
+		<input type="submit" id="submitListingFormBase" class="btn btn-success pull-right" value="List" ng-disabled="listingFormBaseSCAFF.$invalid">
+	</div>
+</article>

@@ -1,0 +1,29 @@
+<article class="pitch">
+	<h3 style="margin-top: -20px; margin-bottom:30px;">Listing details</h3>
+	<div class="input-group">
+		<input type="number" placeholder="Price" ng-model="listingFormBaseData.price" ng-minlength="1" required>
+	</div>
+	<!--Location fields-->
+	<div class="input-group input-group-inline">
+		<h4 style="margin-bottom:15px;">Where can people find your vehicle?</h4>
+		<input type="text" placeholder="Street" ng-model="listingFormBaseData.street" ng-minlength="1" required>
+		<input type="text" placeholder="City" ng-model="listingFormBaseData.city" ng-minlength="1" required>
+		<input type="text" placeholder="State" ng-model="listingFormBaseData.state" ng-minlength="1" required>
+		<input type="text" placeholder="Zip" ng-model="listingFormBaseData.zip" ng-minlength="1" required>
+	</div>
+	<!-- updates cache with new -->
+	<br>
+	<div class="col-md-12 form-progress-indication-relative-filler input-group">
+		<div class="form-progress-indication-wrap">
+			<span class="indicator" ng-class="{active:stateInit}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateMid}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateFinal}"><i class="fa fa-circle"></i></span>
+		</div>
+	</div>
+	<div class="form-cta-group">
+		<button class="btn btn-success center" ui-sref="sell.specs" ng-disabled="listingFormBaseSCAFF.$invalid"
+		title="Fill all fields to continue">continue</button>
+	</div>
+</article>
+
+<!-- <input type="text" placeholder="Title ex: "> subject to being tossed --> 

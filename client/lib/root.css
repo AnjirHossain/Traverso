@@ -1,0 +1,236 @@
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.container {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+h1 {
+	font-weight: 500;
+}
+
+h2 {
+	font-weight: 400;
+}
+
+h3 {
+	font-weight: 300;
+}
+
+p {
+	font-weight: 200;
+}
+
+ul,
+li {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+a:focus,
+button:focus {
+	outline: none !important;
+}
+
+a,
+button {
+	cursor: pointer;
+}
+
+.z-index-1 {
+	z-index: 100;
+}
+.z-index-2 {
+	z-index: 200;
+}
+.z-index-3 {
+	z-index: 300;
+}
+.z-index-4 {
+	z-index: 400;
+}
+.z-index-5 {
+	z-index: 500;
+}
+.z-index-6 {
+	z-index: 600;
+}
+.z-index-7 {
+	z-index: 700;
+}
+.z-index-8 {
+	z-index: 800;
+}
+.z-index-9 {
+	z-index: 900;
+}
+.z-index-10 {
+	z-index: 1000;
+}
+
+.numb {
+	overflow: hidden; 
+}
+
+hr {
+	color: #ddd;
+	display: block;
+	margin: 15px 15px;
+}
+
+.pitch {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+}
+
+/*modal*/
+body.modal-open #wrap {
+    -webkit-filter: blur(7px);
+    -moz-filter: blur(15px);
+    -o-filter: blur(15px);
+    -ms-filter: blur(15px);
+    filter: blur(15px);
+}
+  
+.modal-backdrop {
+	background: rgba(245,245,245,1);
+}
+
+/*modal close button*/
+.close {
+    font-size: 50px;
+    font-weight: 200;
+    margin: 15px;
+    display: block;
+    color: #444;
+    opacity: 0.7;
+ 	-webkit-transition: all .3s ease;
+ 	-moz-transition: all .3s ease;
+ 	-o-transition: all .3s ease;
+ 	transition: all .3s ease;
+}
+
+.close:focus,
+.close:hover {
+	opacity: 1;
+	color: #444;
+}
+
+#authModal .auth-modal-wrap,
+#deletionModal .deletion-modal-wrap,
+#deletionSuccessModal .deletion-modal-wrap {
+	position: relative !important;
+	height: 100%;
+	width: 100%;
+}
+
+#authModal .auth-modal-wrap .wrap-for-loginButtons,
+#deletionModal .deletion-modal-wrap .wrap-for-deletion,
+#deletionSuccessModal .deletion-modal-wrap .wrap-for-deletion {
+	/*position: absolute !important;*/
+	position: absolute !important;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%,-50%);
+	-moz-transform: translate(-50%,-50%);
+	-o-transform: translate(-50%,-50%);
+	transform: translate(-50%,-50%);
+	width: 45vw;
+	height: auto;
+	padding: 10px;
+	box-shadow: 0 0 10px #8D9799;
+	background-color: #fff;
+	border-radius: 10px;
+}
+
+.badge {
+	display: inline-block;
+	padding: 2px 9px 3px;
+	font-size: 12px;
+	line-height: 1;
+	color: #333;
+	background-color: rgba(0, 0, 0, .15);
+	border-radius: 100px;
+}
+.badge.badge-inverted {
+	padding: 0 5px 0 0;
+	background-color: transparent;
+}
+
+.badge-primary {
+	color: #fff;
+	background-color: #428bca;
+}
+.badge-primary.badge-inverted {
+	color: #428bca;
+}
+
+.badge-positive {
+	color: #fff;
+	background-color: #5cb85c;
+}
+.badge-positive.badge-inverted {
+	color: #5cb85c;
+}
+
+.badge-negative {
+	color: #fff;
+	background-color: #d9534f;
+}
+.badge-negative.badge-inverted {
+	color: #d9534f;
+}
+
+.table-view {
+	padding-left: 0;
+	margin-top: 0;
+	margin-bottom: 10px;
+	list-style: none;
+	background-color: #fff;
+}
+
+.table-view-cell {
+	position: relative;
+	padding: 11px 65px 11px 15px;
+	overflow: hidden;
+}
+
+.table-view-cell:last-child {
+	border-bottom: 0;
+}
+.table-view-cell > a:not(.btn) {
+	position: relative;
+	display: block;
+	padding: inherit;
+	margin: -11px -65px -11px -15px;
+	overflow: hidden;
+	color: inherit;
+}
+.table-view-cell > a:not(.btn):active {
+	background-color: #eee;
+}
+.table-view-cell p {
+	margin-bottom: 0;
+}
+
+.table-view-divider {
+	padding-top: 1px;
+	padding-left: 15px;
+	margin-top: -1px;
+	margin-left: 0;
+	font-weight: 500;
+	color: #999;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}

@@ -1,0 +1,69 @@
+<template name="navBarInRoot">
+    <nav class="navbar navbar-fixed-top z-index-4" role="navigation" ng-class="{active:!(currRoute('/landing'))}">  
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a id="theeeBrand" class="navbar-brand z-index-5" ui-sref="landing">Traverso</a>
+        </div>
+        
+        <div class="collapse navbar-collapse nav-ul-wrap">
+
+            <button 
+                id="modalEndPoint1"
+                ng-show="$root.currentUser.profile.name"
+                ng-click="doSometingHolyShit()"
+                type="button" 
+                class="styles-for-auth btn btn-profile">
+                    {{currentUser.profile.name}} <span class="caret"></span>
+            </button>
+
+            <button 
+                id="modalEndPoint2"
+                ng-show="!$root.currentUser"
+                class="styles-for-auth btn btn-warning" data-toggle="modal" data-target="#authModal">
+                Log In | Sign Up
+            </button>
+            <!-- <ul class="nav navbar-nav">
+                
+                <li>
+                    <a class="nav-link" ui-sref="find" ng-show="currRoute('/:listinginfo')">find</a>
+                </li>
+                <li>
+                    <a class="nav-link" ui-sref="sell" ng-show="currRoute('/find')">Sell</a>
+                </li> 
+            </ul> -->
+        </div>
+    </nav>
+    <div class="popover_user_prop" ng-show="showPopOverUserProp" ng-class="{nothome:!(currRoute('/landing'))}">
+        <div class="popover_inner_arow">
+            
+        </div>
+        <div class="popover_inner">
+            <ul class="table-view">
+                <li class="table-view-cell">
+                    <a ui-sref="profile" class="popover_link" ng-click="doSometingHolyShit()">Profile</a>
+                </li>
+                <li class="table-view-cell">
+                    <a ui-sref="profile.settings" class="popover_link" ng-click="doSometingHolyShit()">Settings</a>
+                </li>
+                <hr>
+                <li class="table-view-cell" style="color:#B5B6B6;">
+                    <a class="popover_link" data-toggle="modal" data-target="#authModal" ng-click="doSometingHolyShit()">Sign Out</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="auth-modal-wrap">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+            
+            <div class="wrap-for-loginButtons">
+                <meteor-include src="authTemplateScaffold"></meteor-include>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,131 @@
+.navbar {
+	color: #66757f;
+	height: 12vh;
+	-webkit-transition: all ease .3s;
+	-moz-transition: all ease .3s;
+	-o-transition: all ease .3s;
+	transition: all ease .3s;
+}
+
+#theeeBrand {
+	padding: 12px 18px;
+	border: 3px solid #66757f;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-ul-wrap ul li a {
+	color: inherit;	
+}
+
+.navbar.active {
+	height: 8vh;
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+}
+
+.navbar .nav,
+.navbar .nav .dropdown, {
+	position: relative;
+}
+
+button.styles-for-auth {
+	position: absolute;
+	margin: 0 60px;
+	top: 50%;
+	right: 0%;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.navbar-brand {
+	margin: 0 35px;
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.nav-ul-wrap {
+	margin: 0 15px;
+	float: right;
+}
+
+button.btn-profile,
+button.btn-profile:hover {
+    background-color: #fff;
+    border-color: #9B9B9B;
+	color: #9B9B9B;
+	-webkit-transition: all .3s ease;
+	-moz-transition: all .3s ease;
+	-o-transition: all .3s ease;
+	transition: all .3s ease;
+}
+
+button.btn-profile:hover {
+	border-color: #444;
+	color: #444;
+}
+
+.popover_user_prop {
+	position: fixed;
+	width: 230px;
+	min-height: 100px;
+	top: 0;
+	margin-top: 12vh;
+	margin-right: 2vw;
+	right: 0;
+	z-index: 999;
+	background-color: #fff;
+	box-shadow: 0 0 10px #8D9799;
+	border-radius: 5px;
+}
+
+.popover_user_prop.nothome {
+	margin-top: 8vh;
+}
+
+.popover_inner {
+	position: relative;
+	background-color: #fff;
+	margin-top: 10px;
+	max-width: 230px;
+}
+
+.popover_user_prop.nothome .popover_inner_arow {
+	margin-left: 130px;
+}
+
+.popover_inner_arow {
+	position: relative;
+	border-top: .5px solid #ddd;
+	border-left: .5px solid #ddd;
+	background-color: #fff;
+	margin-top: -8px;
+	margin-left: 129px;
+	max-width: 15px;
+	height: 15px;
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+.popover_link,
+.popover_link:focus {
+	cursor: pointer;
+	text-decoration: none;
+	outline: none;
+	-webkit-transition: all .3s ease;
+	-moz-transition: all .3s ease;
+	-o-transition: all .3s ease;
+	transition: all .3s ease;
+}
+
+.popover_link:hover {
+	opacity: 0.5;
+	text-decoration: none;
+}
