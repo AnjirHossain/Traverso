@@ -13,11 +13,10 @@
 					  turns into save changes button onclick  
 				-->
 				<div class="user_settings_img-wrap">
-					<img 
-						src="/imgs/img_route_profile/current_user_null.png" 
+					<img src="/imgs/img_route_profile/current_user_null.png" 
 						alt="user profile pic" 
 						class="user_profile-pic img-responsive img-circle">
-					<button class="floater_user_profile_change btn btn-circle-only"><span><i class="fa fa-pencil"></i></span></button>
+					<!-- <button class="floater_user_profile_change btn btn-circle-only"><span><i class="fa fa-pencil"></i></span></button> -->
 				</div>
 				<div class="user_info-wrap">
 					<h3 class="name_present">{{ currentUser.profile.name }}</h3>
@@ -27,7 +26,7 @@
 					<p>Email: <span class="muted_emph">{{ currentUser.emails[0].address }}</span></p>
 					<hr>
 					<p>Phone: <span class="muted_emph">{{ currentUser.profile.phone | cell }}</span></p> <br>
-					<button class="btn btn-cta-user_edit" >Edit</button><br>
+					<!-- <button class="btn btn-cta-user_edit" >Edit</button><br> -->
 				</div>
 			</div>
 		</div>
@@ -43,17 +42,17 @@
 					- make changes button that opens all priorly enterd fields in a modal; no clutter & 
 					  isolated attention \ turns into save changes button onclick
 				-->
-				<div class="user_listing_item-wrap" ng-repeat="userListing in listings" ng-show="userListing.owner === userIdScaffold()">
+				<div class="user_listing_item-wrap" ng-repeat="userListing in profileListings" ng-show="userListing.owner === userIdScaffold()">
 					
 					<!-- we'll decide the 'your' part later with better content editing -->
 					<!-- user color indication cool to warm dependant on fair | unfair listing price -->
 					<div class="user_listing_item">
-						<div style="background-image: url( {{userListingImg.url()}} );" 
+						<div style="background-image: url( '/cfs/files/images/{{userListing.listImgId}}/{{userListing.imageName}}' );" 
 							 alt="listing thumbnail"
-							 class="user_listing_sects user_listing_img_thumbnail col-md-2"
-							 ng-repeat="userListingImg in listingImages"
-							 ng-show="userListingImg._id === userListing.listImgId">
-							<span class="listing_badges badge badge-positive" title="Views">4</span>
+							 class="user_listing_sects user_listing_img_thumbnail col-md-2">
+
+
+							<span class="listing_badges badge badge-positive" title="Views">{{userListing.views}}</span>
 						</div>
 
 						<div class="user_listing_sects user_listing_info col-md-8">

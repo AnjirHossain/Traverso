@@ -7,35 +7,28 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <!-- <a id="theeeBrand" class="navbar-brand z-index-5" ui-sref="landing">Traverso</a> -->
             <a id="theeeBrand" class="navbar-brand z-index-5" ui-sref="landing">Traverso</a>
         </div>
         
         <div class="collapse navbar-collapse nav-ul-wrap">
 
-            <button 
-                id="modalEndPoint1"
+            <button id="modalEndPoint1"
                 ng-show="$root.currentUser.profile.name"
                 ng-click="doSometingHolyShit()"
                 type="button" 
                 class="styles-for-auth btn btn-profile">
-                    {{currentUser.profile.name}} <span class="caret"></span>
+                    {{currentUser.profile.name}} <i class="fa fa-angle-down"></i>
             </button>
 
+            <a class="accessibility-links col-md-2" ui-sref="find" ng-show="currRoute('/:listinginfo')">find</a>
+            <a class="accessibility-links col-md-2" ui-sref="sell.listinginfo" ng-show="currRoute('/find')">Sell</a>
             <button 
                 id="modalEndPoint2"
                 ng-show="!$root.currentUser"
                 class="styles-for-auth btn btn-warning" data-toggle="modal" data-target="#authModal">
                 Log In | Sign Up
             </button>
-            <!-- <ul class="nav navbar-nav">
-                
-                <li>
-                    <a class="nav-link" ui-sref="find" ng-show="currRoute('/:listinginfo')">find</a>
-                </li>
-                <li>
-                    <a class="nav-link" ui-sref="sell" ng-show="currRoute('/find')">Sell</a>
-                </li> 
-            </ul> -->
         </div>
     </nav>
     <div class="popover_user_prop" ng-show="showPopOverUserProp" ng-class="{nothome:!(currRoute('/landing'))}">

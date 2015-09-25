@@ -1,6 +1,6 @@
 angular.module('Root.sell',[]);
 
-var listingItemInjectionObj = {}
+var listingItemInjectionObj = {};
 
 
 angular.module('Root.sell').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',
@@ -76,27 +76,62 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 			    	console.log(err);
 			    	return;
 			    }
+
+			    // console.log(filesTempWrapper[i].url);
 			    /*insert mirrors cache*/
 
 			    $scope.listingFormBaseData.listImgId = fileObj._id;
-			    /*scope does not overlap unless you place following line here*/
 			    $scope.listingFormBaseData.owner = Meteor.userId();
-			   
-			   	// $scope hand off
-			    listingItemInjectionObj = $scope.listingFormBaseData;
-			    var address = listingItemInjectionObj.street + ' ' + listingItemInjectionObj.city + ' ' + listingItemInjectionObj.state + ' ' + listingItemInjectionObj.zip;
-			   
-			    
 
+				var componentForm = {
+					street_number: 'short_name',
+					route: 'long_name',
+					locality: 'long_name',
+					administrative_area_level_1: 'short_name',
+					postal_code: 'short_name'
+				};
+				var addressComponentsInjWrp = {
+					street_number: '',
+					route: '',
+					locality: '',
+					administrative_area_level_1: '',
+					postal_code: ''
+				};
+
+			    var address = $scope.listingFormBaseData.address.formatted_address;
+			    var addressComponentsWrp = $scope.listingFormBaseData.address;
+
+				for ( var i = 0; i < addressComponentsWrp.address_components.length; i++ ) {
+					var addressType = addressComponentsWrp.address_components[i].types[0];
+					if (componentForm[addressType]) {
+						addressComponentsInjWrp[addressType] = addressComponentsWrp.address_components[i][componentForm[addressType]];
+						console.log("inside addressComponentsInjWrp[addressType] for this i: " + addressComponentsInjWrp[addressType]);
+					}
+				}
+
+				listingItemInjectionObj = $scope.listingFormBaseData;
+				listingItemInjectionObj.addressComponentsInjWrp = addressComponentsInjWrp;
+				listingItemInjectionObj.views = 0;
+			    
 				geocoder.geocode( { 'address': address}, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
-						// results[0].geometry.location
+
+						console.log("my hair fallin' off: " + listingItemInjectionObj.addressComponentsInjWrp["street_number"]);
+
 						listingItemInjectionObj.position = {
 							latitude: results[0].geometry.location.G,
 							longitude: results[0].geometry.location.K,
 						};
 
+						listingItemInjectionObj.loc = [ results[0].geometry.location.K, results[0].geometry.location.G ];
+
+						var urlLead = Images.findOne({_id: fileObj._id});
+
+						listingItemInjectionObj.imageName = encodeURI(urlLead.name());
+
+
 						$scope.pushListings(listingItemInjectionObj);
+
 					} else {
 						alert('Something went wrong while storing the location: ' + status);
 					}
@@ -106,18 +141,14 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 			}
 		}
 
-		// $scope.make = '';
-		// $scope.description = ''; 
-		// $scope.authCache = '';
 		event.target.listingImg.value = "";
 		$state.go('sell.listsuccess');
 		return false;
 	};
 
 	$scope.pushListings = function(toPush){
-      Listings.insert(toPush);
+    	Listings.insert(toPush);
     };
-
 }]);
 
 angular.module('Root.sell').controller('sellListingCt',['$scope','$meteor','$stateParams','$location', function($scope,$meteor,$stateParams,$location){
@@ -133,275 +164,6 @@ angular.module('Root.sell').controller('sellSpecsCt',['$scope','$meteor','$state
 	$scope.stateMid = true;
 	$scope.stateFinal = false;
 	/* car spec drop downs MUST be expaned */
-	$scope.items = [
-	  {
-	    makes: [{
-		  	name: 'Acura', 
-		    models: [ 
-		        {name:'2.5TL', years:['111','112']},
-		        {name:'3.2TL', years:['111','112']},
-		        {name:'Tl', years:['111','112']}, 
-		        {name:'TSX', years:['121', '122']},
-		        {name:'Vigor', years:['111','112']}, 
-		        {name:'ZDX', years:['121', '122']},
-		        {name:'RSX', years:['121', '122']},
-		     	{name:'SLX', years:['111','112']}, 
-		        {name:'ILX', years:['121', '122']},
-		        {name:'Integra', years:['111','112']},
-		        {name:'Legend', years:['111','112']}, 
-		        {name:'MDX', years:['121', '122']},
-		        {name:'NSX', years:['111','112']}, 
-		        {name:'RDX', years:['121', '122']},
-		        {name:'RSX', years:['121', '122']},
-		     	{name:'SLX', years:['111','112']}, 
-		        {name:'ILX', years:['121', '122']},
-		        {name:'i8', years:['121', '122']}   
-		    ]
-		  },
-		  {
-		  	name: 'AMC', 
-		    models: [ 
-		        {name:'Alliance', years:['111','112']},
-		        {name:'Concord', years:['111','112']},
-		        {name:'Eagle', years:['111','112']}, 
-		        {name:'Encore', years:['121', '122']},
-		        {name:'Spirit', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Aston Martin', 
-		    models: [ 
-		        {name:'DB7', years:['111','112']},
-		        {name:'DB9', years:['111','112']},
-		        {name:'DBS', years:['111','112']}, 
-		        {name:'Lagonda', years:['121', '122']},
-		        {name:'Rapide', years:['111','112']}, 
-		        {name:'V12 Vantage', years:['121', '122']},
-		        {name:'V8 Vantage', years:['121', '122']},
-		     	{name:'Vanquish', years:['111','112']}, 
-		        {name:'Virage', years:['121', '122']},
-		        {name:'Integra', years:['111','112']},
-		        {name:'Legend', years:['111','112']}, 
-		        {name:'MDX', years:['121', '122']},
-		        {name:'NSX', years:['111','112']}, 
-		        {name:'RDX', years:['121', '122']},
-		        {name:'RSX', years:['121', '122']},
-		     	{name:'SLX', years:['111','112']}, 
-		        {name:'ILX', years:['121', '122']},
-		        {name:'i8', years:['121', '122']}   
-		    ]
-		  },
-		  {
-		  	name: 'Audi', 
-		    models: [ 
-		        {name:'100', years:['111','112']},
-		        {name:'200', years:['111','112']},
-		        {name:'4000', years:['111','112']}, 
-		        {name:'5000', years:['121', '122']},
-		        {name:'80', years:['111','112']}, 
-		        {name:'90', years:['121', '122']},
-		        {name:'A3', years:['121', '122']},
-		     	{name:'A4', years:['111','112']}, 
-		        {name:'A5', years:['121', '122']},
-		        {name:'A6', years:['111','112']},
-		        {name:'A7', years:['111','112']}, 
-		        {name:'A8', years:['121', '122']},
-		        {name:'Cabriolet', years:['111','112']}, 
-		        {name:'Q3', years:['121', '122']},
-		        {name:'Q5', years:['121', '122']},
-		     	{name:'Q7', years:['111','112']}, 
-		        {name:'Quattro', years:['121', '122']},
-		        {name:'R8', years:['121', '122']},   
-		        {name:'RS 4', years:['121', '122']},
-		        {name:'RS 5', years:['121', '122']},
-		     	{name:'RS 6', years:['111','112']}, 
-		        {name:'S4', years:['121', '122']},
-		        {name:'S5', years:['111','112']},
-		        {name:'S6', years:['111','112']}, 
-		        {name:'S7', years:['121', '122']},
-		        {name:'S8', years:['111','112']}, 
-		        {name:'TT', years:['121', '122']},
-		        {name:'TT RS', years:['121', '122']},
-		     	{name:'TTS', years:['111','112']}, 
-		        {name:'V8 Quattro', years:['121', '122']} 
-		    ]
-		  },
-		  {
-		  	name: 'Avanti', 
-		    models: [ 
-		        {name:'Coupe', years:['111','112']},
-		        {name:'Sedan', years:['111','112']} 
-		    ]
-		  },
-		  {
-		  	name: 'BMW', 
-		    // models: ['1 Series','2 Series','3 Series','M2','M3','3 Series','6 Series','i8'] 
-		    models: [ 
-		        {name:'1 Series', years:['111','112']}, 
-		        {name:'2 Series', years:['121', '122']},
-		        {name:'3 Series', years:['111','112']}, 
-		        {name:'M2', years:['121', '122']},
-		        {name:'M3', years:['121', '122']},
-		     	{name:'6 Series', years:['111','112']}, 
-		        {name:'i3', years:['121', '122']},
-		        {name:'i8', years:['121', '122']}   
-		    ]
-		  },
-		  {
-		  	name: 'Chevrolet', 
-		    models: [ 
-		        {name:'ES', years:['111','112']},
-		        {name:'IS 250', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Dodge', 
-		    models: [ 
-		        {name:'charger', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Ford', 
-		    models: [ 
-		        {name:'Focus', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'GMC', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Honda', 
-		    models: [ 
-		        {name:'Accord', years:['111','112']},
-		        {name:'Civic', years:['111','112']},
-		        {name:'CRV', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Hummer', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Jaguar', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Jeep', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'KIA', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Land Rover', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Lexus', 
-		    models: [ 
-		        {name:'ES', years:['111','112']},
-		        {name:'IS 250', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Mercedes-Benz', 
-		    // models: ['A-Class','B-Class','C-Class','CL-Class','CLK-Class','CLS-Class','E-Class','G-Class','GL-Class','M-Class','R-Class','S-Class','SLK-Class']
-		    models: [ 
-		        {name:'A-Class', years:['111','112']}, 
-		        {name:'B-Class', years:['121', '122']},
-		        {name:'C-Class', years:['111','112']}, 
-		        {name:'CL-Class', years:['121', '122']},
-		        {name:'CLK-Class', years:['121', '122']},
-		     	{name:'6 Series', years:['111','112']}, 
-		        {name:'E-Class', years:['121', '122']},
-		        {name:'G-Class', years:['121', '122']}   
-		    ]
-		  },
-		  {
-		  	name: 'Mini Cooper', 
-		    // models: ['A-Class','B-Class','C-Class','CL-Class','CLK-Class','CLS-Class','E-Class','G-Class','GL-Class','M-Class','R-Class','S-Class','SLK-Class']
-		    models: [ 
-		        {name:'Model', years:['111','112']}, 
-		    ]
-		  },
-		  {
-		  	name: 'Nissan', 
-		    models: [ 
-		        {name:'Juke', years:['111','112']}, 
-		        {name:'Altima', years:['121', '122']},
-		        {name:'Maxima', years:['111','112']}, 
-		        {name:'Rogue', years:['121', '122']},
-		        {name:'Murano', years:['121', '122']},
-		     	{name:'LEAF', years:['111','112']} 
-		    ]
-		  },
-		  {
-		  	name: 'Porsche', 
-		    models: [ 
-		        {name:'Caymen', years:['111','112']},
-		        {name:'Boxter', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Volkswagen', 
-		    models: [ 
-		        {name:'Golf Mk1', years:['111','112']}, 
-		        {name:'Golf Mk2', years:['121', '122']},
-		        {name:'Jetta A1', years:['111','112']}, 
-		        {name:'Jetta A2', years:['121', '122']},
-		        {name:'Passat B1', years:['121', '122']},
-		     	{name:'Passat B2', years:['111','112']} 
-		    ]
-		  },
-		  {
-		  	name: 'Volvo', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Subaru', 
-		    models: [ 
-		        {name:'Outback', years:['111','112']}, 
-		        {name:'Forester', years:['121', '122']},
-		        {name:'Impreza', years:['111','112']}, 
-		        {name:'Legacy', years:['121', '122']},
-		        {name:'Crosstrek', years:['121', '122']},
-		     	{name:'WRX', years:['111','112']} 
-		    ]
-		  },
-		  {
-		  	name: 'Tesla', 
-		    models: [ 
-		        {name:'Model', years:['111','112']}
-		    ]
-		  },
-		  {
-		  	name: 'Toyota', 
-		    models: [ 
-		        {name:'Corolla', years:['111','112']}, 
-		        {name:'RAV 4', years:['121', '122']},
-		        {name:'Prius', years:['111','112']}, 
-		        {name:'Camry', years:['121', '122']},
-		        {name:'Highlander', years:['121', '122']},
-		     	{name:'Land Cruiser', years:['111','112']} 
-		    ]
-		  }]
-	  }];
 
 }]);
 
@@ -424,11 +186,5 @@ angular.module('Root.sell').controller('sellSuccessCt',['$scope','$meteor','$sta
 	$scope.stateInit = false;
 	$scope.stateMid = false;
 	$scope.stateFinal = true;
-	
-	// $scope.updateCacheThree = function(event) {
-	// 	$scope.listingFormBaseData = {};
- //    	return false;
- //    };
-
 
 }]);

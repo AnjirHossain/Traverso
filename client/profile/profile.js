@@ -31,6 +31,11 @@ angular.module('Root.profile').controller('profileRootCtrl', ['$scope','$meteor'
 }]);
 
 angular.module('Root.profile').controller('profileRootListingsCtrl', ['$scope','$meteor','$stateParams', function($scope,$meteor,$stateParams){
+  
+  $scope.$meteorSubscribe('listings', {}).then(function(handler) {
+      $scope.profileListings = $meteor.collection(Listings);
+  });
+
   $scope.message = "This user's listings !";
   
   $scope.userIdScaffold = function() {

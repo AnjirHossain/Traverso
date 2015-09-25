@@ -1,3 +1,19 @@
+video {
+position: absolute;
+top: 50%;
+left: 50%;
+min-width: 100%;
+min-height: 100%;
+width: auto;
+height: auto;
+z-index: -100;
+-webkit-transform: translateX(-50%) translateY(-50%);
+transform: translateX(-50%) translateY(-50%);
+/*background: url(polina.jpg) no-repeat;*/
+background-color: #ddd;
+background-size: cover;
+}
+
 .container-landing,
 .container-landing > * {
     width: 100vw;
@@ -175,6 +191,14 @@ header > article > h1 {
     background: -o-linear-gradient(#00A2FF, #0081FF);
     background: linear-gradient(#00A2FF, #0081FF);
     border-color: #0081FF;   
+}
+
+.emph-color-green {
+    color: #23E363;
+}
+
+.emph-color-blue {
+    color: #4688D7;   
 }
 
 footer div.footer-sep:nth-child(2) {

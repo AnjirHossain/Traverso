@@ -1,43 +1,297 @@
-<div class="find-wrap"> 
-	<div class="col-md-4 listings-wrap" >
-		<div class="search-box-wrap col-md-4">
-			<div class="sig-wrap">			
-				<span class="search-input-group">
-					<input type="search" placeholder="Search by Street, City, State or Zip" data-ng-model="searchBoxBase">
-				</span>
-			</div>		
-		</div>
-		<!-- listings | filter: searchBoxBaseFilter -->
-		<div class="listings-items-wrap" data-ng-repeat="listing in (filteredListings = (listings | filter: searchBoxBaseFilter))">
-			<div class="listings-item" 
-				style="background-image:url('{{image.url()}}');" 
-				ng-repeat="image in listingImages" 
-				ng-show="image._id === listing.listImgId"> <!--ng-show when length is beyond a certain point-->
-				<article class="pitch-textual">
-					<span class="listing-mouse-over">
-						<h2>{{listing.price | currency:"$":0}}</h2>
-						<h4>Mileage: {{ listing.milage }}</h4>
-						<h4>{{ listing.make.name }}, {{ listing.model.name }}</h4>
-						<!--the level of detail that is presented in the address depends on what the user searched-->
-						<p>{{listing.street}} {{listing.city}} {{listing.state}}</p> 
-						<p>{{listing.zip}}</p>
-						<div class="cta-on-listing">
-							<button class="btn btn-success">Bookmark 
-								<i style="color:#fff;font-size:1em;margin-top:0;margin-bottom:0;marging-left:2px;marging-right:0;" 
-								class="fa fa-bookmark"></i>
-							</button>
-						</div>
-					</span>
-				</article>
-			</div>							
-		</div>
+<div class="find-wrap" ng-controller="findCtrl"> 
+	<div id="listingWindow" class="listing_window">
+		<button class="close" ng-click="toggleListingWindow()"> <span><i class="fa fa-times"></i></span> </button>
+		<article class="pitch listing-pitch">
+			<span class="listing-window-comps" style="background-image:url({{ listingWindowContent.listingImgInWindow }});">
+
+			</span>
+			<span class="listing-window-comps">
+				<div class="user-info-prop">
+					<img src="/imgs/img_route_profile/current_user_null.png" class="img-responsive img-circle" style="width:50px;">
+					<h3>{{ listingOwner.profile.name }}</h3>
+					
+				</div>
+				<div class="sudo-sep"></div>
+				<div class="listing-further-info-prop">
+					<p>Details:</p>
+					<p>{{ listingWindowContent.year }} {{ listingWindowContent.make }}, {{ listingWindowContent.model }}</p>
+					<p>listed at {{ listingWindowContent.price | currency:"$":0}}</p>
+					<p>{{ listingWindowContent.mileage }} miles</p>
+				</div>
+				<div class="sudo-sep"></div>
+				<div class="user-description-prop">
+					<p>The user's description:</p>
+					<p>{{ listingWindowContent.description }}</p>
+				</div>
+				<div class="sudo-sep"></div>
+				<div class="user-contact-prop">
+					<p>Seller Contact:</p>
+					<p>{{ listingOwner.email }}</p>
+					<p>{{ listingOwner.profile.phone | cell }}</p>
+				</div>
+				<div class="sudo-sep"></div>
+				<div class="listing-explore-cta-prop">
+					<a class="btn btn-success" 
+					ui-sref="listingdetails({listingId: listingWindowContent.listingId})"
+					ng-click="updateViewsScaffold(listingWindowContent.listingId);">
+						learn more
+					</a>
+				</div>				
+			</span>
+		</article>
 	</div>
 
-	<div class="col-md-8 map-wrap angular-google-map-container">
+	<div class="col-md-6 listings-wrap" >
+		<!-- filter pop over -->
+		<div class="popover_filter_arrow" ng-show="showFilterPopOver"></div>
+		<div class="popover_filter_prop col-md-6" ng-show="showFilterPopOver">
+			<div class="popover_filter_body">
+
+				<!-- <p>Test</p> -->
+				<div class="table-view-cell">
+					<div class="filter-label col-md-2">
+						<label>Price</label>
+					</div>
+					<div class="filter-range col-md-10">
+
+						<div style="text-align:center;" class="filter-range-pipe col-md-3">
+							
+							<p>min</p>
+						</div>
+
+						<div class="filter-range-pipe col-md-3">
+							<input class="filter-inp" type="number" 
+								placeholder="$ 0" 
+				                ng-model="searchFodder.priceMin" 
+				                ng-minlength="1" 
+				                required>
+						</div>
+
+						<div style="text-align:center;" class="filter-range-pipe col-md-3">
+							<p>max</p>
+						</div>
+
+						<div class="filter-range-pipe col-md-3">
+							<input class="filter-inp" type="number"  
+								placeholder="$ 120,000"
+				                ng-model="searchFodder.priceMax" 
+				                ng-minlength="1" 
+				                required>
+						</div>
+					</div>
+				</div>
+
+				<div class="table-view-cell">
+					<div class="filter-label col-md-2">
+						<label>Milage</label>
+					</div>
+					<div class="filter-range col-md-10">
+						<div style="text-align:center;" class="filter-range-pipe col-md-3">
+							
+							<p>min</p>
+						</div>
+						<div class="filter-range-pipe col-md-3">
+							<input class="filter-inp" type="number" 
+								placeholder="0 mi" 
+				                ng-model="searchFodder.mileageMin" 
+				                ng-minlength="1" 
+				                required>
+						</div>
+						<div style="text-align:center;" class="filter-range-pipe col-md-3">
+							<p>max</p>
+						</div>
+						<div class="filter-range-pipe col-md-3">
+							<input class="filter-inp" type="number"  
+								placeholder="300,000 mi"
+				                ng-model="searchFodder.mileageMax" 
+				                ng-minlength="1" 
+				                required>
+						</div>		
+					</div>
+				</div>
+
+				<div class="table-view-cell">
+					<div class="filter-label col-md-2">
+						<label>Make </label>
+					</div>
+					<div class="filter-range col-md-10">
+						<select style="margin-left:12.5%;width:75%;"  
+						ng-model="searchFodder.make" 
+						ng-options="item as item.name for item in items[0].makes track by item.name">
+							<option value="" ng-show="false" default selected>Make</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="table-view-cell">
+					<div class="filter-label col-md-2">
+						<label>Model </label>
+					</div>
+					<div class="filter-range col-md-10">
+						<select style="margin-left:12.5%;width:75%;" 
+						ng-model="searchFodder.model" 
+						ng-options="item as item.name for item in searchFodder.make.models track by item.name">
+							<option value="" ng-show="false" default selected>Model</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="table-view-cell">
+					<div class="filter-label col-md-2">
+						<label>Year </label>
+					</div>
+					<div class="filter-range col-md-10">
+						<div style="text-align:center;" class="filter-range-pipe col-md-3">
+							
+							<p>min</p>
+						</div>
+						<div class="filter-range-pipe col-md-3">
+							<select style="width:100%;" 
+							ng-model="searchFodder.yearMin">
+								<option value="" ng-show="false" default selected="true">1970</option>
+								<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+							</select>
+						</div>
+						<div style="text-align:center;" class="filter-range-pipe col-md-3">
+							<p>max</p>
+						</div>
+						<div class="filter-range-pipe col-md-3">
+							<select style="width:100%;" 
+							ng-model="searchFodder.yearMax">
+								<option value="" ng-show="false" default selected="true">2015</option>
+								<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<div class="table-view-cell">
+					<div class="filter-label col-md-4">
+						<label>Pre-owned</label>
+					</div>
+					<div class="filter-toggle col-md-8">
+						<div class="toggle toggle_PreOwned" ng-click="mutateFilter($event)">
+							<div class="toggle-handle"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="table-view-cell">
+					<div class="col-md-4"></div>
+					<div class="filter-label col-md-4">
+
+						<button style="display:block; margin:0 auto;" 
+						class="btn btn-success">Apply Filters</button>
+						<!-- ng-click="applyFilters( searchFodder );" -->
+
+						<br>
+						<button style="display:block; margin:0 auto;"
+						class="btn btn-regular">No Filters</button>
+					</div>
+				</div>
+
+				<div style="text-align:center;" 
+					class="table-view-cell">
+					<p ng-hide="!noAddress" style="color:#FF3B30;">Please specify a location !</p>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- no results indicators -->
+		<div class="no-results-indicator col-md-6"
+		ng-show="! (filteredListings.length > 0) ">
+			<article style="text-align:center;" class="pitch">
+				<h3 style="color:#9B9B9B;">No listings to display</h3>
+				<p style="color:#23E363;">start typing to find your new set of wheel !</p>
+			</article>
+		</div>
+
+		<!-- load indicators -->
+		<div class="loading-results-indicator col-md-6"
+		ng-show="loading">
+			<article class="pitch">
+				<div class="sk-three-bounce">
+					<div class="sk-child sk-bounce1"></div>
+					<div class="sk-child sk-bounce2"></div>
+					<div class="sk-child sk-bounce3"></div>
+				</div>
+			</article>
+		</div>
+
+		<div class="search-box-wrap col-md-6">
+			<!-- <div class="sig-wrap"> -->	
+			<span class="search-input-group">
+				<!-- debounce taken out -->
+				<!-- // make directive that clears filterLax on length 0 -->
+				<input type="text"
+				g-places-autocomplete
+				options="autocompleteOptions"
+				force-selection="true"
+				ng-model="searchFodder.address" 
+				placeholder="Search by location" 
+				class="search-geo"><!-- ng-enter="beginSearch(searchFodder.address);" -->
+			</span> 
+
+			<span class="search-filter-group">
+				<button class="btn btn-dropdown-filter" 
+				        ng-click="filterPopOverStateMutator()"
+				        ng-class="{active: searchFodder.address}">
+					Filter <i class="fa fa-angle-down"></i>
+				</button>
+			</span>
+		</div>
+
+		<!-- listings | filter: searchBoxBaseFilter -->
+		<!-- example image link /imgs/vsco_080914.jpg -->
+		<div class="listings-items-wrap"
+		ng-repeat="listing in filteredListings | limitTo: filterLax track by listing._id">
+
+			<div class="listings-item-scaffold col-md-6">
+
+				<div class="listings-item" style="background-image:url('/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}');">
+					<article class="listings-item-preview"
+					ng-click="listingWindowOpen(listing._id)">
+						<span class="col-md-12 lip-text-wrap">
+							<p style="text-align:center;" class="col-md-4 info-pipe">{{ ::listing.price | currency:"$":0}}</p>
+
+							<p style="text-align:center;" class="col-md-4 info-pipe">{{ ::listing.milage }} mi</p>
+
+							<p style="text-align:center;" class="col-md-4 info-pipe">{{ ::listing.year }}</p>
+
+							<p style="text-align:center;" class="col-md-12 peak">{{ ::listing.make.name }}, {{ ::listing.model.name }}<br>
+							{{::listing.address.formatted_address}}</p>
+						</span>
+					</article>	
+				</div>
+
+			</div>
+		</div>
+
+		<!-- <div class="listings_paginate-footer">
+			<button class="btn btn-regular cta-load-more"
+			ng-click="incrementFilterLax()"> 
+				load more
+			</button>
+		</div> -->
+
+		<div style="height: 8vh;" class="col-md-12">
+			<button class="btn btn-regular cta-load-more"
+			ng-show="filteredListings.length > filterLax"
+			ng-click="incrementFilterLax()"> 
+				load more
+			</button>
+		</div>
+
+		<!-- ng-show="filteredListings.length > filterLax" -->
+
+	</div>
+
+	<div class="col-md-6 map-wrap angular-google-map-container">
 			<!-- <div class="pitch" style="z-index: 999;"><h1>{{searchBoxBase}}</h1></div> -->
 			<ui-gmap-google-map 
 				class="map" 
-				center="map.center"
+				center="spMapPan" 
 				options="map.options"
 			    events="map.events" 
 			    zoom="map.zoom"
@@ -46,13 +300,17 @@
 				<ui-gmap-marker options="map.marker.options"
 				ng-repeat="filteredListing in filteredListings"
 				coords="filteredListing.position"
-				idKey="0"
+				idKey="filteredListing._id"
 				icon="map.icon">
+
+					<ui-gmap-window options="listingInfoWindowOptions" click="toggleWindowInMap()">
+		                <div class="listing-info-window-map">
+		                	<p>{{ filteredListing.price | currency:"$":0 }}</p>
+		                </div>
+		            </ui-gmap-window>
 
         		</ui-gmap-marker>
 
 			</ui-gmap-google-map>
 	</div>
 </div>
-
-<!--throw in the right ng-repeats with handlebars and filter that shit too-->

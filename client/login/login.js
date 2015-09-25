@@ -16,7 +16,9 @@ Template.createAuth.events({
 			password: event.target.createuserpassword.value,
 			passwordConfirmed: event.target.createuserpasswordconfirm.value,
 			profile: {
-				name: event.target.createusername.value,
+				firstName: event.target.createuserfirstname.value,
+				lastName: event.target.createuselastrname.value,
+				name: event.target.createuserfirstname.value + ' ' + event.target.createuselastrname.value, 
 				phone: event.target.createusercell.value
 			}
 	    }
@@ -74,7 +76,8 @@ Template.createAuth.events({
 		event.target.createuseremail.value = '';
 		event.target.createuserpassword.value = '';
 		event.target.createuserpasswordconfirm.value = '';
-		event.target.createusername.value = '';
+		event.target.createuserfirstname.value = '';
+		event.target.createuserlastname.value = '';
 		event.target.createusercell.value = '';
         return false;
     }

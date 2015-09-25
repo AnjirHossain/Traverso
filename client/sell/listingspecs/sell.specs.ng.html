@@ -19,15 +19,22 @@
 
 
 
-	<div class="input-group input-group-inline"> 
+	<div class="input-group input-group-nestedinline"> 
 		<input type="text" placeholder="Trim" ng-model="listingFormBaseData.trim" ng-minlength="1" required>
 		<input type="text" placeholder="Body" ng-model="listingFormBaseData.body" ng-minlength="1" required>
 
 	</div>
 	
-	<div class="input-group input-group-inline">
-		<input type="number" placeholder="Year" ng-model="listingFormBaseData.year" ng-minlength="1" required>
-		<input type="number" placeholder="Mileage" ng-model="listingFormBaseData.milage" ng-minlength="1" required>		
+	<div class="input-group">
+		<div class="input-row"> 
+			<label>Year</label>
+			<input type="number" placeholder="ex: 2015" ng-model="listingFormBaseData.year" ng-minlength="4" required>
+		</div>
+		<div class="input-row">
+			<label>Milage</label>
+			<input type="number" placeholder="ex: 42000" ng-model="listingFormBaseData.milage" ng-minlength="1" required>		
+		</div>
+			
 	</div>
 
 
