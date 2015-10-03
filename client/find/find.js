@@ -38,10 +38,13 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         $scope.filteredListings = [];
         $scope.searchBoxBase = '';
         $scope.noAddress = false;
+        $scope.searchFodder = {};
+        $scope._searchFodderInHouse = {};
 
         $scope.passListing = function( id ) {
             listingPageSv.passListing( id );
         };
+
         // tangent: pagination
         $scope.filterLax = 6;
         $scope.incrementFilterLax = function() {
@@ -55,36 +58,57 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
         $scope.loading = false;
 
-        $scope.beginSearch = function( a ) {
+        $scope.beginSearch = function(a) {
+            // console.log( a );
+
             if (!$scope.showFilterPopOver) {
                 $scope.filterPopOverStateMutator();
             }
-            return false;
+
+            // return false;
         };
 
-        // var onlyTheseFields = {};
+        $scope.applyFilters = function(b) {
 
-        $meteor.autorun($scope, function(){
-            $meteor.subscribe('listings', $scope.getReactively('searchFodder', true)).then(function( handler ) {
-                
-                preFilteredListings = $meteor.collection( Listings );
-                console.log( preFilteredListings );
-                // console.log("here's preFilteredListings waiting to be worked on");
-                // console.log( preFilteredListings );
-                // console.log("work work work");
-                
-                $scope.filteredListings = $meteor.collection( Listings );
+            if ( !b.address ) {
 
-                
-            });            
-        });
+                if ( $scope.searchErrorNoAddress ){
+                    $scope.searchErrorNoAddress = false;
+                } else {
+                    $scope.searchErrorNoAddress = true;
+                }
 
-        $scope.showSearchErrorNoAddress = function(){
-            if ($scope.searchErrorNoAddress){
-                $scope.searchErrorNoAddress = false;
-            } else {
-                $scope.searchErrorNoAddress = true;
+                return;
             }
+
+            console.log(b);
+            $scope.searchErrorNoAddress = false;
+
+            $scope.loading = true;
+
+            /*$meteor.subscribe('listings', b).then(function (handler){ 
+                $scope.filteredListings = $meteor.collection(Listings); 
+                $scope.$apply();
+                handler.stop();
+            });*/
+
+            $scope._searchFodderInHouse = b; // hax but fuck it
+
+            $meteor.autorun($scope, function(){
+                $scope.$meteorSubscribe('listings', $scope.getReactively('_searchFodderInHouse', true)).then(function( handler ) {
+          
+                // $scope.filteredListings = $meteor.collection(function(){
+                //     return Listings.find({});
+                // });
+
+                    // console.log($meteor.collection(Listings));
+
+                    $scope.filteredListings = $meteor.collection(Listings);
+                    $scope.loading = false;
+                });            
+            });
+
+            $scope.filterPopOverStateMutator();
         };
 
         $scope.searchErrorNoAddress = false;
@@ -170,6 +194,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             latitude: 47.6097,
             longitude: -122.3331
         };
+
         /* look inside notes for geocoding snippet */
 
         // // tangent: http://goo.gl/vCWGFs migration of inline to controller filtering

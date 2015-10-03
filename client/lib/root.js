@@ -490,7 +490,7 @@ angular.module('Root').run(['$rootScope', '$state',function($rootScope, $state){
           didScroll = false,
           changeHeaderOn = 300,
           efs1 = document.getElementById('modalEndPoint1'),
-          efs2 = document.getElementById('modalEndPoint2')
+          efs2 = document.getElementById('modalEndPoint2'),
           popOverToDash = document.getElementById('testBox');
 
         function init() {

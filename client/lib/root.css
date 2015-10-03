@@ -542,8 +542,8 @@ select option[default] {
   content: "Off";
 }
 .toggle.active {
-  background-color: #5cb85c;
-  border: 2px solid #5cb85c;
+  background-color: #23E363;
+  border: 2px solid #23E363;
 }
 .toggle.active .toggle-handle {
   border-color: #5cb85c;

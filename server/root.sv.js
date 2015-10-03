@@ -7,39 +7,114 @@ Meteor.publish('traversousers', function() {
 });
 
 Meteor.publish('listings', function( searchProps ) {
+	
 	check(searchProps, Object);
-	
-	// to give listings to other parts of app that don't have selectors
+	Listings._ensureIndex({"loc":"2d","make.name":1,"price":1,"year":1,"milage":1});
+
 	var selectors = {};
-	
-	if ( !searchProps ) {
-		// selectors["noop"] = true;	
-	}
 
-	Listings._ensureIndex({"loc": "2dsphere"}); // work around
-
-	if ( searchProps.address && searchProps.address.geometry ) {
-		var lat = searchProps.address.geometry.location.G,
-			lon = searchProps.address.geometry.location.K,
-			maxDistance = 1.5/3963.2;
-
+	// find a better way to store all specificity than just if elses
+	if ( searchProps.address ) {
 		selectors["loc"] = { 
-			$geoWithin: { 
-				$geometry: { 
-					$centerSphere: [ [ lon, lat ], maxDistance ] 
-				}
-			}
-		};
+	   		$near: [ searchProps.address.geometry.location.L, searchProps.address.geometry.location.H],
+	   		$maxDistance: 1.5/3963.2 // radius
+	    };		
+	} 
+ 
+	if ( searchProps.make.name ) {
+		selectors["make.name"] = searchProps.make.name;
 	}
 
-	return Listings.findFaster({
-		$or: [ selectors ]
-	}, { fields: { price: 1 } });
-});
+	if ( searchProps.model.name ) {
+		selectors["model.name"] = searchProps.model.name;
+	}
 
-// Meteor.publish('listings', function(){
-// 	return Listings.find();
-// });
+	if ( searchProps.mileageMax && searchProps.mileageMin ) {
+		selectors["milage"] = { 
+			$gte: parseInt(searchProps.mileageMin), 
+			$lte: parseInt(searchProps.mileageMax)
+		};
+	} else {
+		
+		if ( searchProps.mileageMax ) {
+			selectors["milage"] = {
+				$lte: parseInt(searchProps.mileageMax)	
+			};
+		} 
+			
+		if ( searchProps.mileageMin ) {
+			selectors["milage"] = {
+				$gte: parseInt(searchProps.mileageMin)	
+			};
+		} 
+	}
+
+	if ( searchProps.priceMax && searchProps.priceMin ) {
+		selectors["price"] = { 
+			$gte: parseInt(searchProps.priceMin), 
+			$lte: parseInt(searchProps.priceMax)
+		};
+	} else {
+		
+		if ( searchProps.priceMax ) {
+			selectors["price"] = {
+				$lte: parseInt(searchProps.priceMax)	
+			};
+		} 
+			
+		if ( searchProps.priceMin ) {
+			selectors["price"] = {
+				$gte: parseInt(searchProps.priceMin)	
+			};
+		} 
+	}
+
+	if ( searchProps.priceMax && searchProps.priceMin ) {
+		selectors["price"] = { 
+			$gte: parseInt(searchProps.priceMin), 
+			$lte: parseInt(searchProps.priceMax)
+		};
+	} else {
+		
+		if ( searchProps.priceMax ) {
+			selectors["price"] = {
+				$lte: parseInt(searchProps.priceMax)	
+			};
+		} 
+			
+		if ( searchProps.priceMin ) {
+			selectors["price"] = {
+				$gte: parseInt(searchProps.priceMin)	
+			};
+		} 
+	}
+
+	if ( searchProps.yearMax && searchProps.yearMin ) {
+		selectors["year"] = { 
+			$gte: parseInt(searchProps.yearMin), 
+			$lte: parseInt(searchProps.yearMax)
+		};
+	} else {
+		
+		if ( searchProps.yearMax ) {
+			selectors["year"] = {
+				$lte: parseInt(searchProps.yearMax)	
+			};
+		} 
+			
+		if ( searchProps.yearMin ) {
+			selectors["year"] = {
+				$gte: parseInt(searchProps.yearMin)	
+			};
+		} 
+	}
+
+	// temp
+	return Listings.find({
+		$or: [ selectors ]
+	});
+
+});
 
 Accounts.config({
 	sendVerificationEmail: true,

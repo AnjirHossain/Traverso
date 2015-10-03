@@ -51,6 +51,7 @@ angular.module('Root.sell').config(['$urlRouterProvider', '$stateProvider', '$lo
 angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$stateParams','$location','$state', function($scope,$meteor,$stateParams,$location,$state){
 
 	$scope.listingFormBaseData = {};
+
 	$scope.processListingFormBaseData = function(){
 		// event.preventDefault(); 
 		if (!Meteor.userId()) {
@@ -101,42 +102,39 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 			    var address = $scope.listingFormBaseData.address.formatted_address;
 			    var addressComponentsWrp = $scope.listingFormBaseData.address;
 
-				for ( var i = 0; i < addressComponentsWrp.address_components.length; i++ ) {
-					var addressType = addressComponentsWrp.address_components[i].types[0];
-					if (componentForm[addressType]) {
-						addressComponentsInjWrp[addressType] = addressComponentsWrp.address_components[i][componentForm[addressType]];
-						console.log("inside addressComponentsInjWrp[addressType] for this i: " + addressComponentsInjWrp[addressType]);
-					}
-				}
+				// for ( var i = 0; i < addressComponentsWrp.address_components.length; i++ ) {
+				// 	var addressType = addressComponentsWrp.address_components[i].types[0];
+				// 	if (componentForm[addressType]) {
+				// 		addressComponentsInjWrp[addressType] = addressComponentsWrp.address_components[i][componentForm[addressType]];
+				// 		console.log("inside addressComponentsInjWrp[addressType] for this i: " + addressComponentsInjWrp[addressType]);
+				// 	}
+				// }
 
 				listingItemInjectionObj = $scope.listingFormBaseData;
 				listingItemInjectionObj.addressComponentsInjWrp = addressComponentsInjWrp;
 				listingItemInjectionObj.views = 0;
 			    
 				geocoder.geocode( { 'address': address}, function(results, status) {
-					if (status == google.maps.GeocoderStatus.OK) {
+					if ( status == google.maps.GeocoderStatus.OK ) {
 
-						console.log("my hair fallin' off: " + listingItemInjectionObj.addressComponentsInjWrp["street_number"]);
+						// listingItemInjectionObj.position = {
+						// 	latitude: results[0].geometry.location.G,
+						// 	longitude: results[0].geometry.location.K,
+						// };						
 
-						listingItemInjectionObj.position = {
-							latitude: results[0].geometry.location.G,
-							longitude: results[0].geometry.location.K,
-						};
-
-						listingItemInjectionObj.loc = [ results[0].geometry.location.K, results[0].geometry.location.G ];
-
+						listingItemInjectionObj.loc = [ results[0].geometry.location.lng(), results[0].geometry.location.lat()];
+						console.log( listingItemInjectionObj.loc );
 						var urlLead = Images.findOne({_id: fileObj._id});
-
 						listingItemInjectionObj.imageName = encodeURI(urlLead.name());
 
-
 						$scope.pushListings(listingItemInjectionObj);
-
 					} else {
 						alert('Something went wrong while storing the location: ' + status);
 					}
 				});
+
 			    $scope.listingFormBaseData = {};
+
 			  });
 			}
 		}

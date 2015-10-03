@@ -181,7 +181,8 @@
 					<div class="filter-label col-md-4">
 
 						<button style="display:block; margin:0 auto;" 
-						class="btn btn-success">Apply Filters</button>
+						class="btn btn-success"
+						ng-click="applyFilters( searchFodder )">Apply Filters</button>
 						<!-- ng-click="applyFilters( searchFodder );" -->
 
 						<br>
@@ -192,7 +193,7 @@
 
 				<div style="text-align:center;" 
 					class="table-view-cell">
-					<p ng-hide="!noAddress" style="color:#FF3B30;">Please specify a location !</p>
+					<p ng-show="searchErrorNoAddress" style="color:#FF3B30;">Please specify a location !</p>
 				</div>
 
 			</div>
@@ -229,6 +230,7 @@
 				options="autocompleteOptions"
 				force-selection="true"
 				ng-model="searchFodder.address" 
+				ng-enter="beginSearch(searchFodder)"
 				placeholder="Search by location" 
 				class="search-geo"><!-- ng-enter="beginSearch(searchFodder.address);" -->
 			</span> 
@@ -249,7 +251,9 @@
 
 			<div class="listings-item-scaffold col-md-6">
 
-				<div class="listings-item" style="background-image:url('/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}');">
+				<div class="listings-item" 
+				style="background-image:url('/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}');">
+		
 					<article class="listings-item-preview"
 					ng-click="listingWindowOpen(listing._id)">
 						<span class="col-md-12 lip-text-wrap">
