@@ -143,7 +143,7 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 		return false;
 	};
 
-	$scope.pushListings = function(toPush){
+	$scope.pushListings = function (toPush) {
     	Listings.insert(toPush);
     };
 }]);

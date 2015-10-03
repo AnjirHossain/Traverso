@@ -1,7 +1,7 @@
 // Meteor.subscribe('traversousers');
 
 Template.createAuth.events({
-    'submit #createAuthFormTag': function(event) {
+    'submit #createAuthFormTag': function (event) {
         // event.preventDefault();
         var user, 
         	passwordsDontMatch;
@@ -84,7 +84,7 @@ Template.createAuth.events({
 });
 
 Template.useExistingAuth.events({
-    'submit #useAuthFormTag': function(event) {
+    'submit #useAuthFormTag': function (event) {
         // event.preventDefault();
 
         var username = event.target.loginusername.value,
@@ -122,7 +122,7 @@ Template.useExistingAuth.events({
 });
 
 Template.dashPreviewInNav.events({
-    'click #signOut': function(event){
+    'click #signOut': function (event) {
         // event.preventDefault();
         Meteor.logout(function() {/*handle*/});
         
