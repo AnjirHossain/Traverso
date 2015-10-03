@@ -123,7 +123,6 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 						// };						
 
 						listingItemInjectionObj.loc = [ results[0].geometry.location.lng(), results[0].geometry.location.lat()];
-						console.log( listingItemInjectionObj.loc );
 						var urlLead = Images.findOne({_id: fileObj._id});
 						listingItemInjectionObj.imageName = encodeURI(urlLead.name());
 
