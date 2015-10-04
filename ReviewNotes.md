@@ -10,4 +10,6 @@ Oct 3, 2015 by Sebastian Sastre (sebastian@flowingconcept.com)
 - You might want to try to upgrade to Meteor 1.2 see if all goes fine (1.2 officially supports angular now)
 - After a clean clone, I've found exceptions when `init` and the navar is not rendered, investigating...
 - urigo:angular is deprecated
+- It's a reasonable convention to code Meteor.publish in a `publish.js` file and when/if it gets big you make several of them in subfolders
+- JavaScript should use single quotes for strings (double ones are for html). Here is a really good guide on js style https://github.com/airbnb/javascript
 - 

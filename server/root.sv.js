@@ -7,7 +7,8 @@ Meteor.publish('traversousers', function() {
 });
 
 Meteor.publish('listings', function( searchProps ) {
-	
+	// sas:  this publishing is DEPRECATED (use getListings method instead).
+
 	check(searchProps, Object);
 	Listings._ensureIndex({"loc":"2d","make.name":1,"price":1,"year":1,"milage":1});
 

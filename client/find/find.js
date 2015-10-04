@@ -68,9 +68,9 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             // return false;
         };
 
-        $scope.applyFilters = function(b) {
+        $scope.applyFilters = function(aSearchFodder) {
 
-            if ( !b.address ) {
+            if ( !aSearchFodder.address ) {
 
                 if ( $scope.searchErrorNoAddress ){
                     $scope.searchErrorNoAddress = false;
@@ -81,31 +81,23 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                 return;
             }
 
-            console.log(b);
+            console.log(aSearchFodder);
             $scope.searchErrorNoAddress = false;
 
             $scope.loading = true;
 
-            /*$meteor.subscribe('listings', b).then(function (handler){ 
-                $scope.filteredListings = $meteor.collection(Listings); 
-                $scope.$apply();
-                handler.stop();
-            });*/
+            $scope._searchFodderInHouse = aSearchFodder; // hax but fuck it
 
-            $scope._searchFodderInHouse = b; // hax but fuck it
-
-            $meteor.autorun($scope, function(){
-                $scope.$meteorSubscribe('listings', $scope.getReactively('_searchFodderInHouse', true)).then(function( handler ) {
-          
-                // $scope.filteredListings = $meteor.collection(function(){
-                //     return Listings.find({});
-                // });
-
-                    // console.log($meteor.collection(Listings));
-
-                    $scope.filteredListings = $meteor.collection(Listings);
+            $meteor.autorun( $scope, function () {
+                var searchProps = $scope.getReactively('_searchFodderInHouse', true);
+                console.log('applyFilters reacting to autorun', searchProps);
+                $meteor
+                  .call('getListings', searchProps)
+                  .then(function ( answer ) {
+                    console.log('getListings answered fine: ', answer);
+                    $scope.filteredListings = answer;
                     $scope.loading = false;
-                });            
+                  });            
             });
 
             $scope.filterPopOverStateMutator();
@@ -116,7 +108,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         $scope.$watch('searchFodder.address', function(context){
             // figure out way to watch entire object fcol
             if (!context) {
-                console.log("this is what context is: " + context);
+                console.log('reaction to searchFodder.address. Context is: ', context);
                 $scope.filteredListings = [];
                 $scope.filterLax = 6;
             }
