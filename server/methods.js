@@ -2,6 +2,8 @@ Meteor.methods({
 
   getListings: function ( searchProps ) {
     // Answers the listings that result from querying based on the given searchProps.
+
+
     check(searchProps, Object);
 
     var selectors = {};
@@ -102,6 +104,8 @@ Meteor.methods({
       } 
     }
 
+    console.log('-----> about to make Listings.find() with this query:');
+    console.log(selectors);
     // temp
     return Listings.find({
       $or: [ selectors ]
