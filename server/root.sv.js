@@ -21,11 +21,11 @@ Meteor.publish('listings', function( searchProps ) {
 	    };		
 	} 
  
-	if ( searchProps.make.name ) {
+	if ( searchProps.make && searchProps.make.name ) {
 		selectors["make.name"] = searchProps.make.name;
 	}
 
-	if ( searchProps.model.name ) {
+	if ( searchProps.model && searchProps.model.name ) {
 		selectors["model.name"] = searchProps.model.name;
 	}
 
