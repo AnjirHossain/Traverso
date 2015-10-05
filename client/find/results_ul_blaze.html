@@ -1,0 +1,34 @@
+<template name="listingResults">
+	{{#if Template.subscriptionsReady}}
+		{{#each listings}}
+			{{> listing}}
+		{{/each}}
+	{{/if}}
+</template>
+
+<template name="listing">
+
+	<div class="listings-items-wrap"> 
+		<div class="listings-item-scaffold col-md-6">
+			
+			<div class="listings-item"
+				 style="background-image:url('/cfs/files/images/{{listImgId}}/{{imageName}}');">
+
+				<article class="listings-item-preview">
+					<span class="col-md-12 lip-text-wrap">
+						<p style="text-align:center;" class="col-md-4 info-pipe">&#36; {{ price }}</p>
+
+						<p style="text-align:center;" class="col-md-4 info-pipe">{{ milage }} mi</p>
+
+						<p style="text-align:center;" class="col-md-4 info-pipe">{{ year }}</p>
+
+						<p style="text-align:center;" class="col-md-12 peak">{{ make.name }}, {{ model.name }}<br>
+						{{ address.formatted_address }}</p>
+					</span>
+				</article>	
+
+			</div>
+
+		</div>
+	</div>
+</template>

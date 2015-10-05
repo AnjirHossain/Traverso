@@ -68,9 +68,9 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             // return false;
         };
 
-        $scope.applyFilters = function(b) {
+        $scope.applyFilters = function(aSearchFodder) {
 
-            if ( !b.address ) {
+            if ( !aSearchFodder.address ) {
 
                 if ( $scope.searchErrorNoAddress ){
                     $scope.searchErrorNoAddress = false;
@@ -81,31 +81,37 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                 return;
             }
 
-            console.log(b);
+            console.log(aSearchFodder);
             $scope.searchErrorNoAddress = false;
 
+            // var _t = new Date().getMilliseconds();
+
             $scope.loading = true;
+            $scope._searchFodderInHouse = aSearchFodder; // hax but fuck it
 
-            /*$meteor.subscribe('listings', b).then(function (handler){ 
-                $scope.filteredListings = $meteor.collection(Listings); 
-                $scope.$apply();
-                handler.stop();
-            });*/
+            $meteor.autorun( $scope, function () {
+                var searchProps = $scope.getReactively('_searchFodderInHouse', true);
+                console.log('applyFilters reacting to autorun', searchProps);
 
-            $scope._searchFodderInHouse = b; // hax but fuck it
+                // var searchProps = aSearchFodder;
+                // deployed app cannot get passed this line
 
-            $meteor.autorun($scope, function(){
-                $scope.$meteorSubscribe('listings', $scope.getReactively('_searchFodderInHouse', true)).then(function( handler ) {
-          
-                // $scope.filteredListings = $meteor.collection(function(){
-                //     return Listings.find({});
-                // });
+                $meteor.call('getListings', searchProps).then(
+                    function ( answer ) {
 
-                    // console.log($meteor.collection(Listings));
+                        console.log('getListings answered fine: ', answer);
 
-                    $scope.filteredListings = $meteor.collection(Listings);
-                    $scope.loading = false;
-                });            
+                        Session.set("filteredListings", answer);
+
+                        $scope.loading = false; // seeing loading screen 
+                        // var t_ = new Date().getMilliseconds();
+                        // console.log( t_ - _t ); // just bc
+                    }, 
+                    function ( error ) {
+                        console.log(error); // returns Internal server error [500] in deployed version
+                    }
+                );      
+
             });
 
             $scope.filterPopOverStateMutator();
@@ -116,7 +122,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         $scope.$watch('searchFodder.address', function(context){
             // figure out way to watch entire object fcol
             if (!context) {
-                console.log("this is what context is: " + context);
+                console.log('reaction to searchFodder.address. Context is: ', context);
                 $scope.filteredListings = [];
                 $scope.filterLax = 6;
             }
@@ -124,6 +130,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
         // tangent: listing_window 
         var listingWindowProp = document.getElementById('listingWindow');
+
         $scope.listingWindowOpen = function(listingId){
             var listingInWindow = Listings.findOne({_id:listingId}),
                 listingImgInWindow = Images.findOne({_id:listingInWindow.listImgId});
@@ -143,6 +150,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         };
         
         $scope.toggleListingWindow = function() {
+
             listingWindowProp.classList.toggle('active');
         };
 
@@ -197,26 +205,26 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
         /* look inside notes for geocoding snippet */
 
-        // // tangent: http://goo.gl/vCWGFs migration of inline to controller filtering
-        // $scope.$watchCollection('filteredListings', function(newVal, oldVal){
-        //     var newAddress = '',
-        //         spMapPanSCAFF = {};
+            // // tangent: http://goo.gl/vCWGFs migration of inline to controller filtering
+            // $scope.$watchCollection('filteredListings', function(newVal, oldVal){
+            //     var newAddress = '',
+            //         spMapPanSCAFF = {};
 
-        //     if ( newVal ) {
-        //         // newAddress = '' + newVal[0].street + ' ' + newVal[0].city + ' ' + newVal[0].state + ' ' + newVal[0].zip;
-        //         // newAddress = newVal[0].address.formatted_address;
+            //     if ( newVal ) {
+            //         // newAddress = '' + newVal[0].street + ' ' + newVal[0].city + ' ' + newVal[0].state + ' ' + newVal[0].zip;
+            //         // newAddress = newVal[0].address.formatted_address;
 
-        //         // console.log(newVal);
+            //         // console.log(newVal);
 
-        //         geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
-        //             spMapPanSCAFF.latitude = results[0].geometry.location.G;
-        //             spMapPanSCAFF.longitude = results[0].geometry.location.K;
-        //             $scope.spMapPan = spMapPanSCAFF;
-        //             $scope.$apply();
-        //         });
-                
-        //     } 
-        // });
+            //         geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
+            //             spMapPanSCAFF.latitude = results[0].geometry.location.G;
+            //             spMapPanSCAFF.longitude = results[0].geometry.location.K;
+            //             $scope.spMapPan = spMapPanSCAFF;
+            //             $scope.$apply();
+            //         });
+                    
+            //     } 
+            // });
 
         /* def going inside map controller */
         $scope.map = {
@@ -624,6 +632,23 @@ angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function( $r
   $rootScope
     .$on('$viewContentLoaded',
       function(event, viewConfig){  
-        
+
+        // Meteor.subscribe("listings");
+        // Template.listingResults.onCreated({
+        //     Meteor.subscribe("listings");
+        // });
+
+        Template.listingResults.helpers({
+            listings: function(){
+                
+                return Session.get("filteredListings");
+                
+            }
+        });
     });
 }]);
+
+// another template for the map
+// Template.listingResultsMapMarker.helpers({
+
+// });
