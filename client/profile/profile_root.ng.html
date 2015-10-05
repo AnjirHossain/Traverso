@@ -42,11 +42,16 @@
 					- make changes button that opens all priorly enterd fields in a modal; no clutter & 
 					  isolated attention \ turns into save changes button onclick
 				-->
-				<div class="user_listing_item-wrap" ng-repeat="userListing in profileListings" ng-show="userListing.owner === userIdScaffold()">
+				<!-- reimplementing in Blaze -->
+
+				<div class="user_listing_item-wrap" 
+				ng-repeat="userListing in profileListings" 
+				ng-show="userListing.owner === userIdScaffold()">
 					
 					<!-- we'll decide the 'your' part later with better content editing -->
 					<!-- user color indication cool to warm dependant on fair | unfair listing price -->
 					<div class="user_listing_item">
+						
 						<div style="background-image: url( '/cfs/files/images/{{userListing.listImgId}}/{{userListing.imageName}}' );" 
 							 alt="listing thumbnail"
 							 class="user_listing_sects user_listing_img_thumbnail col-md-2">

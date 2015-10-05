@@ -199,18 +199,21 @@
 			</div>
 		</div>
 
+
+
 		<!-- no results indicators -->
-		<div class="no-results-indicator col-md-6"
+
+        <!-- <div class="no-results-indicator col-md-6"
 		ng-show="! (filteredListings.length > 0) ">
 			<article style="text-align:center;" class="pitch">
 				<h3 style="color:#9B9B9B;">No listings to display</h3>
 				<p style="color:#23E363;">start typing to find your new set of wheel !</p>
 			</article>
-		</div>
+		</div> -->
 
 		<!-- load indicators -->
 		<div class="loading-results-indicator col-md-6"
-		ng-show="loading">
+		     ng-show="loading">
 			<article class="pitch">
 				<div class="sk-three-bounce">
 					<div class="sk-child sk-bounce1"></div>
@@ -221,10 +224,8 @@
 		</div>
 
 		<div class="search-box-wrap col-md-6">
-			<!-- <div class="sig-wrap"> -->	
+			
 			<span class="search-input-group">
-				<!-- debounce taken out -->
-				<!-- // make directive that clears filterLax on length 0 -->
 				<input type="text"
 				g-places-autocomplete
 				options="autocompleteOptions"
@@ -232,7 +233,7 @@
 				ng-model="searchFodder.address" 
 				ng-enter="beginSearch(searchFodder)"
 				placeholder="Search by location" 
-				class="search-geo"><!-- ng-enter="beginSearch(searchFodder.address);" -->
+				class="search-geo">
 			</span> 
 
 			<span class="search-filter-group">
@@ -244,17 +245,19 @@
 			</span>
 		</div>
 
-		<!-- listings | filter: searchBoxBaseFilter -->
-		<!-- example image link /imgs/vsco_080914.jpg -->
-		<div class="listings-items-wrap"
-		ng-repeat="listing in filteredListings | limitTo: filterLax track by listing._id">
+		<!-- <div class="listings-items-wrap"
+		ng-repeat="listing in filteredListings"> -->
 
-			<div class="listings-item-scaffold col-md-6">
+			<!-- <div class="listings-item-scaffold col-md-6"> -->
 
-				<div class="listings-item" 
-				style="background-image:url('/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}');">
-		
-					<article class="listings-item-preview"
+				<!-- <div class="listings-item" 
+				style="background-image:url('/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}');"> -->
+				
+				<!-- <div class="listings-item"> -->
+
+					<!-- <p>{{ ::listing.address.formatted_address }}</p> -->
+
+					<!-- <article class="listings-item-preview"
 					ng-click="listingWindowOpen(listing._id)">
 						<span class="col-md-12 lip-text-wrap">
 							<p style="text-align:center;" class="col-md-4 info-pipe">{{ ::listing.price | currency:"$":0}}</p>
@@ -264,20 +267,16 @@
 							<p style="text-align:center;" class="col-md-4 info-pipe">{{ ::listing.year }}</p>
 
 							<p style="text-align:center;" class="col-md-12 peak">{{ ::listing.make.name }}, {{ ::listing.model.name }}<br>
-							{{::listing.address.formatted_address}}</p>
+							{{ ::listing.address.formatted_address }}</p>
 						</span>
-					</article>	
-				</div>
+					</article>	 -->
 
-			</div>
-		</div>
+				<!-- </div> -->
 
-		<!-- <div class="listings_paginate-footer">
-			<button class="btn btn-regular cta-load-more"
-			ng-click="incrementFilterLax()"> 
-				load more
-			</button>
-		</div> -->
+			<!-- </div> -->
+		<!-- </div> -->
+
+		<blaze-template name="listingResults"></blaze-template>
 
 		<div style="height: 8vh;" class="col-md-12">
 			<button class="btn btn-regular cta-load-more"
@@ -287,34 +286,31 @@
 			</button>
 		</div>
 
-		<!-- ng-show="filteredListings.length > filterLax" -->
-
 	</div>
 
 	<div class="col-md-6 map-wrap angular-google-map-container">
-			<!-- <div class="pitch" style="z-index: 999;"><h1>{{searchBoxBase}}</h1></div> -->
-			<ui-gmap-google-map 
-				class="map" 
-				center="spMapPan" 
-				options="map.options"
-			    events="map.events" 
-			    zoom="map.zoom"
-			    styles="map.styles">
+		<ui-gmap-google-map 
+			class="map" 
+			center="spMapPan" 
+			options="map.options"
+		    events="map.events" 
+		    zoom="map.zoom"
+		    styles="map.styles">
 
-				<ui-gmap-marker options="map.marker.options"
-				ng-repeat="filteredListing in filteredListings"
-				coords="filteredListing.position"
-				idKey="filteredListing._id"
-				icon="map.icon">
+			<ui-gmap-marker options="map.marker.options"
+			ng-repeat="filteredListing in filteredListings"
+			coords="filteredListing.position"
+			idKey="filteredListing._id"
+			icon="map.icon">
 
-					<ui-gmap-window options="listingInfoWindowOptions" click="toggleWindowInMap()">
-		                <div class="listing-info-window-map">
-		                	<p>{{ filteredListing.price | currency:"$":0 }}</p>
-		                </div>
-		            </ui-gmap-window>
+				<ui-gmap-window options="listingInfoWindowOptions" click="toggleWindowInMap()">
+	                <div class="listing-info-window-map">
+	                	<p>{{ filteredListing.price | currency:"$":0 }}</p>
+	                </div>
+	            </ui-gmap-window>
 
-        		</ui-gmap-marker>
+    		</ui-gmap-marker>
 
-			</ui-gmap-google-map>
+		</ui-gmap-google-map>
 	</div>
 </div>

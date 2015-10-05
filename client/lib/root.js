@@ -505,15 +505,15 @@ angular.module('Root').run(['$rootScope', '$state',function($rootScope, $state){
           
           }, false );
 
-          efs2.addEventListener( 'click', function(event) {
-            var em1 = document.getElementById('createAuthError');
-            var em2 = document.getElementById('useAuthError');
-            em1.innerHTML = '';            
-            em2.innerHTML = '';
-          });
+          // efs2.addEventListener( 'click', function (event) {
+          //   var em1 = document.getElementById('createAuthError');
+          //   var em2 = document.getElementById('useAuthError');
+          //   em1.innerHTML = '';            
+          //   em2.innerHTML = '';
+          // });
         }
 
-        function scrollPage() {
+        function scrollPage () {
           var sy = scrollY();
           if ( sy >= changeHeaderOn) {
             classie.add( header, 'active' );
@@ -536,7 +536,7 @@ angular.module('Root').run(['$rootScope', '$state',function($rootScope, $state){
       });
 
   $rootScope
-    .$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
+    .$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error){
       if (error === "AUTH_REQUIRED") {
         $state.go('landing');
         // var efs = document.getElementById('createAuthError'),
@@ -600,11 +600,11 @@ angular.module('Root').factory('listingPageSv', function() {
   }
 
   return {
-      passListing: function(listingId){
+      passListing: function (listingId){
         listingGlobObj.listingToBeDisplayed = Listings.findOne({_id:listingId});
         console.log("pass listing function, alive !: "+listingId);
       },
-      pullListing: function() {
+      pullListing: function () {
         console.log("pull listing function, alive: "+listingGlobObj.listingToBeDisplayed);
         return listingGlobObj.listingToBeDisplayed;
       }
@@ -617,10 +617,10 @@ angular.module('Root').factory('mutateFilteredListings', function() {
   var filteredListingWrp = [];
 
   return {
-      initListing: function(pushingTo) {
+      initListing: function (pushingTo) {
         filteredListingWrp = pushingTo;
       },
-      passListing: function(filteredListingToPush){
+      passListing: function (filteredListingToPush){
         filteredListingWrp.push(filteredListingToPush);
       },
       pullListing: function() {
