@@ -1,0 +1,56 @@
+/* hak */
+.listing-page {
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow-y: auto !important; 
+}
+
+.listing-image-wrap {
+	margin-top: 8vh;
+	height: 80vh;
+	padding: 5vh; /* suspect */
+	border-bottom: 1px solid #ddd;
+	background-color: #dbdbdb;
+}
+
+/*img-wrap*/
+.img-container {
+	height: 70vh;
+	background-size: cover;
+	background-position: center;
+	border-radius: 5px;
+	box-shadow: 0 0 10px #8D9799; 
+}
+
+.listing-content-wrap {
+	height: auto;
+	padding: 5vh 0;
+}
+
+.listing-content-sect {
+	min-height: 40vh;
+	padding: 20px;
+}
+
+.lcs-content-wrap {
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0 0 10px #8D9799;
+}
+
+.lister-avi {
+	display: block;
+	margin: 0 auto;
+	box-shadow: 0 0 10px #8D9799; 
+	width:75px;
+	heigh:75px;
+}
+
+.lister-username {
+	font-size: 1.2em;
+	line-height: 75px;
+}

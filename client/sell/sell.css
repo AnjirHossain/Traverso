@@ -1,0 +1,134 @@
+.container-sell {
+	padding: 0;
+	margin: 8vh 0 0 0;
+	border: 0;
+}
+
+.btn {
+  margin-top: 10px;
+}
+
+.sell-omni-header {
+	position: relative;
+	height: 25vh;
+	border-bottom: 1px solid #ddd;
+}
+
+#listingFormBase {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto !important;
+  margin: 10px 0; 
+}
+
+.sell-segment-wrap {
+  position: relative;
+  height: 67vh;
+}
+
+.form-segment-wrap {
+	position: relative;
+}
+
+/* .input-group {
+  background-color: #fff;
+}
+
+.input-group input:not(input[type="submit"]),
+.input-group textarea {
+  margin-bottom: 0;
+  background-color: transparent;
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+.input-row {
+  height: 35px;
+  overflow: hidden;
+  border-bottom: 1px solid #ddd;
+}
+
+.input-row label {
+  float: left;
+  width: 35%;
+  padding: 8px 15px;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  line-height: 1.1;
+}*/
+
+.input-row input {
+  float: right;
+  width: 65%;
+  padding-left: 0;
+  margin-bottom: 0;
+  border: 0;
+}
+
+form > div.sell-segment-wrap > article {
+  width: 33.33333%;
+}
+
+form > div.sell-segment-wrap > article > h1,
+form > div.sell-segment-wrap > article > h2,
+form > div.sell-segment-wrap > article > h3,
+form > div.sell-segment-wrap > article > h4,
+form > div.sell-segment-wrap > article > h5 {
+  padding: 0;
+  margin: 15px 0;
+  border: 0;
+}
+
+
+
+.form-progress-indication-relative-filler {
+  margin-top: 30px;
+  display: block;
+  position: relative;
+}
+
+.form-progress-indication-relative-filler .form-progress-indication-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -moz-transform: translate(-50%,-50%);
+  -o-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}
+
+.form-progress-indication-relative-filler .form-progress-indication-wrap > span.indicator {
+  font-size: 5px;
+  color: #ddd;
+}
+
+.form-progress-indication-relative-filler .form-progress-indication-wrap > span.indicator.active {
+  color: #23E363;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    /*filter: alpha(opacity=0);*/
+    opacity: 0;
+    outline: none;
+    cursor: inherit;
+    display: block;
+}
+
+.form-cta-group .center {
+  display: block;
+  margin: 30px auto;
+}

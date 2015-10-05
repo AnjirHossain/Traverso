@@ -1,0 +1,52 @@
+<article class="pitch">
+	<h3 style="margin-top: -20px;">Car specs</h3><br>
+	<div class="input-group input-group-inline">
+
+		<select ng-model="listingFormBaseData.make" ng-options="item as item.name for item in items[0].makes track by item.name" required>
+			<option value="" ng-show="false" default selected>Make</option>
+		</select>
+		<select ng-model="listingFormBaseData.model" 
+		ng-options="item as item.name for item in listingFormBaseData.make.models track by item.name" required>
+			<option value="" ng-show="false" default selected>Model</option>
+		</select>
+
+	</div>
+
+
+
+
+
+
+
+
+	<div class="input-group input-group-nestedinline"> 
+		<input type="text" placeholder="Trim" ng-model="listingFormBaseData.trim" ng-minlength="1" required>
+		<input type="text" placeholder="Body" ng-model="listingFormBaseData.body" ng-minlength="1" required>
+
+	</div>
+	
+	<div class="input-group">
+		<div class="input-row"> 
+			<label>Year</label>
+			<input type="number" placeholder="ex: 2015" ng-model="listingFormBaseData.year" ng-minlength="4" required>
+		</div>
+		<div class="input-row">
+			<label>Milage</label>
+			<input type="number" placeholder="ex: 42000" ng-model="listingFormBaseData.milage" ng-minlength="1" required>		
+		</div>
+			
+	</div>
+
+
+	<div class="col-md-12 form-progress-indication-relative-filler">
+		<div class="form-progress-indication-wrap">
+			<span class="indicator" ng-class="{active:stateInit}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateMid}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateFinal}"><i class="fa fa-circle"></i></span>
+		</div>
+	</div>
+	<div class="form-cta-group">
+		<button class="btn btn-primary" ui-sref="sell.listinginfo">back</button>
+		<button class="btn btn-primary pull-right" ui-sref="sell.contact" ng-disabled="listingFormBaseSCAFF.$invalid">continue</button>
+	</div>
+</article>

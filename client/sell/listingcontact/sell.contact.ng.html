@@ -1,0 +1,51 @@
+<article class="pitch">
+	<h3 style="margin-top: -20px;margin-bottom:5px;">Contact info</h3><br>
+	<!-- this step shouldn't be necessito el stumblé upon login form -->
+	<div style="margin-bottom: 10px;">
+		<h4>lets include a photo of your listing</h4>
+		<span ng-show="showUplDImg">
+			<img src="" 
+			id="uplDImg" 
+			class="img-responsive img-rounded col-md-2" 
+			alt="">
+		</span>
+		<span class="btn btn-success btn-file">
+			Upload photo <input id="imgUploadIdScaff" type="file" 
+						 name="listingImg" 
+						 ng-minlength="1" 
+						 required>
+		</span>
+	</div>
+	<div style="margin-bottom: 10px;">
+		<label>lastly, a light of your vehicle from 0 to 150 characters</label>
+		<textarea rows="3" 
+		class="listing-form-textarea" 
+		ng-model="listingFormBaseData.description"
+		ng-minlength="10" 
+		required></textarea>
+	</div>
+
+	<p>update contact info</p>
+	<div class="input-group">
+		<div class="input-row">
+			<label>Update Email</label>
+			<input type="text" name="createuseremail" placeholder="you@example.com" ng-model="emailRemind">
+		</div>
+	</div>
+	<div class="input-group input-nestedinline">		       
+        <input type="text" name="createusername" placeholder="Name" ng-model="name">
+        <input type="text" name="createusercell" placeholder="Phone" ng-model="phone">
+    </div>
+	<p>click 'List' to use current contact info</p>
+	<div class="col-md-12 form-progress-indication-relative-filler">
+		<div class="form-progress-indication-wrap">
+			<span class="indicator" ng-class="{active:stateInit}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateMid}"><i class="fa fa-circle"></i></span>
+			<span class="indicator" ng-class="{active:stateFinal}"><i class="fa fa-circle"></i></span>
+		</div>
+	</div>
+	<div class="form-cta-group">
+		<button class="btn btn-warning" ui-sref="sell.specs">back</button>
+		<input type="submit" id="submitListingFormBase" class="btn btn-success pull-right" value="List" ng-disabled="listingFormBaseSCAFF.$invalid">
+	</div>
+</article>
