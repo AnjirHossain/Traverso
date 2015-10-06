@@ -1,3 +1,4 @@
+// angular.module('Root',['angular-meteor','ui.router','Root.sell','Root.find','Root.landing','Root.profile','Root.listingPage']);
 angular.module('Root',['angular-meteor','ui.router','uiGmapgoogle-maps','google.places','Root.sell','Root.find','Root.landing','Root.profile','Root.listingPage']);
 
 angular.module('Root').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',

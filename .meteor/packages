@@ -8,16 +8,12 @@ meteor-platform
 cfs:standard-packages
 cfs:gridfs
 angularui:angular-ui-router
-danialfarid:ng-file-upload
 twbs:bootstrap
 accounts-base
 accounts-password
 fortawesome:fontawesome
-angularui:angular-google-maps
-aldeed:geocoder
 mquandalle:bower
 underscore
-arunoda:find-faster
 standard-minifiers
 meteor-base
 mobile-experience
@@ -33,4 +29,7 @@ ejson
 spacebars
 check
 angular
+dburles:google-maps
+angularui:angular-google-maps
 urigo:angular-blaze-template
+jeremy:geocomplete

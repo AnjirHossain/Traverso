@@ -1,7 +1,7 @@
 angular.module('Root.sell',[]);
 
 var listingItemInjectionObj = {};
-
+var geocoder;
 
 angular.module('Root.sell').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',
   function($urlRouterProvider, $stateProvider, $locationProvider){
@@ -63,8 +63,9 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 
 
 		var filesTempWrapper = event.target.listingImg.files;
-		var geocoder = new google.maps.Geocoder();
 
+		// GOOGLE
+		geocoder = new google.maps.Geocoder();
 
 		if (!(filesTempWrapper && filesTempWrapper.length)) {
 			alert("Please upload images for your listing! :)");
@@ -114,6 +115,7 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 				listingItemInjectionObj.addressComponentsInjWrp = addressComponentsInjWrp;
 				listingItemInjectionObj.views = 0;
 			    
+			    // GOOGLE
 				geocoder.geocode( { 'address': address}, function(results, status) {
 					if ( status == google.maps.GeocoderStatus.OK ) {
 
@@ -184,4 +186,15 @@ angular.module('Root.sell').controller('sellSuccessCt',['$scope','$meteor','$sta
 	$scope.stateMid = false;
 	$scope.stateFinal = true;
 
+}]);
+
+
+angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function( $rootScope, $meteor, $state ) {
+  $rootScope
+    .$on('$viewContentLoaded',
+      function(event, viewConfig){  
+
+    
+
+    });
 }]);

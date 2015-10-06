@@ -1,6 +1,8 @@
 angular.module('Root.find', []);
 
-angular.module('Root.find').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',function($urlRouterProvider, $stateProvider, $locationProvider){
+var geocoder;
+
+angular.module('Root.find').config(['$urlRouterProvider','$stateProvider', '$locationProvider',function($urlRouterProvider, $stateProvider, $locationProvider){
 
     $locationProvider.html5Mode(true);
 
@@ -23,7 +25,8 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
         // console.log($scope.listings);
         
-        var geocoder = new google.maps.Geocoder(); /* ship to service | factory */
+        // GOOGLE
+        geocoder = new google.maps.Geocoder(); /* ship to service | factory */
         var componentForm = {
             street_number: 'short_name',
             route: 'long_name',
@@ -87,30 +90,39 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             // var _t = new Date().getMilliseconds();
 
             $scope.loading = true;
-            $scope._searchFodderInHouse = aSearchFodder; // hax but fuck it
+            $scope._searchFodderInHouse = aSearchFodder; // hax but oh well
 
+            // if feeding listing location info to uiGoogleMaps then app once slows down
+            // only solution I'm seeing: rebuild map in blaze | react, or map markers in blaze | react
+            // both the map and the list need to be married together and communicate frequently and communicate fast
+            // a feature on the TODO list is being able to hover over a car in the list and have the map zoom and pan
+            // to where that car is located, custom map marker icons as well
             $meteor.autorun( $scope, function () {
                 var searchProps = $scope.getReactively('_searchFodderInHouse', true);
                 console.log('applyFilters reacting to autorun', searchProps);
-
-                // var searchProps = aSearchFodder;
-                // deployed app cannot get passed this line
 
                 $meteor.call('getListings', searchProps).then(
                     function ( answer ) {
 
                         console.log('getListings answered fine: ', answer);
 
-                        Session.set("filteredListings", answer);
+                        // turning off loading screen so perceived latency is mitigated
+                        Session.set("filteredListings", answer); // data for list
+                        $scope.loading = false; 
+                        // $scope.filteredListings = answer; 
+                        // way too slow, ideal solution use blaze and set some blaze session variable
 
-                        $scope.loading = false; // seeing loading screen 
-                        // var t_ = new Date().getMilliseconds();
-                        // console.log( t_ - _t ); // just bc
                     }, 
                     function ( error ) {
-                        console.log(error); // returns Internal server error [500] in deployed version
+                        console.log( error ); // returns Internal server error [500] in deployed version
                     }
                 );      
+                
+                // the latency drops when we introduced any form of abgular ng-repeat
+                // if ( Session.get("filteredListings") ) {
+                //     $scope.filteredListings = Session.get("filteredListings");
+                // } 
+                // else set map center to user's query location
 
             });
 
@@ -131,7 +143,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         // tangent: listing_window 
         var listingWindowProp = document.getElementById('listingWindow');
 
-        $scope.listingWindowOpen = function(listingId){
+        $scope.listingWindowOpen = function( listingId ){
             var listingInWindow = Listings.findOne({_id:listingId}),
                 listingImgInWindow = Images.findOne({_id:listingInWindow.listImgId});
 
@@ -203,28 +215,27 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             longitude: -122.3331
         };
 
+        // WATCH STATEMENTS
         /* look inside notes for geocoding snippet */
 
-            // // tangent: http://goo.gl/vCWGFs migration of inline to controller filtering
-            // $scope.$watchCollection('filteredListings', function(newVal, oldVal){
-            //     var newAddress = '',
-            //         spMapPanSCAFF = {};
+        // tangent: http://goo.gl/vCWGFs migration of inline to controller filtering
+        $scope.$watchCollection('filteredListings', function(newVal){
+            var newAddress = '',
+                spMapPanSCAFF = {};
 
-            //     if ( newVal ) {
-            //         // newAddress = '' + newVal[0].street + ' ' + newVal[0].city + ' ' + newVal[0].state + ' ' + newVal[0].zip;
-            //         // newAddress = newVal[0].address.formatted_address;
+            if ( newVal[0] ) {
 
-            //         // console.log(newVal);
+                // console.log(newVal);
 
-            //         geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
-            //             spMapPanSCAFF.latitude = results[0].geometry.location.G;
-            //             spMapPanSCAFF.longitude = results[0].geometry.location.K;
-            //             $scope.spMapPan = spMapPanSCAFF;
-            //             $scope.$apply();
-            //         });
-                    
-            //     } 
-            // });
+                geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
+                    spMapPanSCAFF.latitude = results[0].geometry.location.lat();
+                    spMapPanSCAFF.longitude = results[0].geometry.location.lng();
+                    $scope.spMapPan = spMapPanSCAFF;
+                    $scope.$apply();
+                });
+                
+            } 
+        });
 
         /* def going inside map controller */
         $scope.map = {
@@ -553,102 +564,124 @@ angular.module('Root.find').directive('ngEnter', function () {
     };
 });
 
-angular.module('Root.find').filter('filterOmniBase', ['mutateFilteredListings','$meteor',
-function(mutateFilteredListings,$meteor) {
-  return function( unfilteredItems, unfilteredItemImgs, modelWRT ) {
-    var filteredItems = [],
-        geocoder = new google.maps.Geocoder();
 
-    var test;
+/*
+        // angular.module('Root.find').filter('filterOmniBase', ['mutateFilteredListings','$meteor',
+        // function(mutateFilteredListings,$meteor) {
+        //   return function( unfilteredItems, unfilteredItemImgs, modelWRT ) {
+        //     var filteredItems = [],
+        //         geocoder = new google.maps.Geocoder();
 
-    // pivot point
-    var geoCodeThenFilter = function(address, callback) {
+        //     var test;
 
-        geocoder.geocode({'address': address}, function(results,status) {
-            if ( status == google.maps.GeocoderStatus.OK ) {
-                searchLtLng.position = {
-                    latitude: results[0].geometry.location.lat(),
-                    longitude: results[0].geometry.location.lng()
-                };
-                callback(searchLtLng.position);
-            } else {
-                alert(status);
-            }
-        });
-    }
-    var deGunkify = function(ltLngToCompareWith) {
-        test = "geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude;
-        // console.log("geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude);
-        // console.log("and so does unfilteredItems: " + unfilteredItems[0]);
-    }
+        //     // pivot point
+        //     var geoCodeThenFilter = function(address, callback) {
 
-    // a new chapter of long over due promises
+        //         geocoder.geocode({'address': address}, function(results,status) {
+        //             if ( status == google.maps.GeocoderStatus.OK ) {
+        //                 searchLtLng.position = {
+        //                     latitude: results[0].geometry.location.lat(),
+        //                     longitude: results[0].geometry.location.lng()
+        //                 };
+        //                 callback(searchLtLng.position);
+        //             } else {
+        //                 alert(status);
+        //             }
+        //         });
+        //     }
+        //     var deGunkify = function(ltLngToCompareWith) {
+        //         test = "geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude;
+        //         // console.log("geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude);
+        //         // console.log("and so does unfilteredItems: " + unfilteredItems[0]);
+        //     }
 
-    var ltlngPromise = new Promise(function(resolve, reject) {
-        // do a thing, possibly async, then…
-        var address = modelWRT.address.formatted_address; // any address
-        var searchLtLng = {};
+        //     // a new chapter of long over due promises
 
-        geocoder.geocode({'address': address}, function(results,status) {
-            if ( status == google.maps.GeocoderStatus.OK ) {
-                searchLtLng.position = {
-                    latitude: results[0].geometry.location.lat(),
-                    longitude: results[0].geometry.location.lng()
-                };
-                resolve(searchLtLng.position);
-            } else {
-                reject(alert(status));
-            }
-        });
+        //     var ltlngPromise = new Promise(function(resolve, reject) {
+        //         // do a thing, possibly async, then…
+        //         var address = modelWRT.address.formatted_address; // any address
+        //         var searchLtLng = {};
 
-    });
+        //         geocoder.geocode({'address': address}, function(results,status) {
+        //             if ( status == google.maps.GeocoderStatus.OK ) {
+        //                 searchLtLng.position = {
+        //                     latitude: results[0].geometry.location.lat(),
+        //                     longitude: results[0].geometry.location.lng()
+        //                 };
+        //                 resolve(searchLtLng.position);
+        //             } else {
+        //                 reject(alert(status));
+        //             }
+        //         });
 
-    return ltlngPromise.then(function(result) {
-        for ( var i = 0; i < unfilteredItems.length; i++ ) {
-            if ( unfilteredItems[i].position === result ) {
-                // push this listing
-                filteredItems.push(unfilteredItems[i]);
-            } else {
-                var range = 8046, // 5 miles
-                    listingPin = new google.maps.LatLng(unfilteredItems[i].position.latitude, unfilteredItems[i].position.longitude),
-                    userPin = new google.maps.LatLng(result.latitude, result.longitude); 
+        //     });
 
-                var inProximity = google.maps.geometry.spherical.computeDistanceBetween(userPin, listingPin);
+        //     return ltlngPromise.then(function(result) {
+        //         for ( var i = 0; i < unfilteredItems.length; i++ ) {
+        //             if ( unfilteredItems[i].position === result ) {
+        //                 // push this listing
+        //                 filteredItems.push(unfilteredItems[i]);
+        //             } else {
+        //                 var range = 8046, // 5 miles
+        //                     listingPin = new google.maps.LatLng(unfilteredItems[i].position.latitude, unfilteredItems[i].position.longitude),
+        //                     userPin = new google.maps.LatLng(result.latitude, result.longitude); 
 
-                if ( range >= inProximity ) {
-                    filteredItems.push(unfilteredItems[i]);
-                }
-            }
-        }
-        return filteredItems;
-    });
+        //                 var inProximity = google.maps.geometry.spherical.computeDistanceBetween(userPin, listingPin);
 
-  };
-}]); /**/
+        //                 if ( range >= inProximity ) {
+        //                     filteredItems.push(unfilteredItems[i]);
+        //                 }
+        //             }
+        //         }
+        //         return filteredItems;
+        //     });
 
+        //   };
+        // }]); 
+*/
 
-// not being used
 angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function( $rootScope, $meteor, $state ) {
   $rootScope
     .$on('$viewContentLoaded',
       function(event, viewConfig){  
 
-        // Meteor.subscribe("listings");
-        // Template.listingResults.onCreated({
-        //     Meteor.subscribe("listings");
+        // geocoder = new google.maps.Geocoder();
+        // Meteor.startup(function() {  
+        //     GoogleMaps.load();
         // });
 
+
         Template.listingResults.helpers({
-            listings: function(){
-                
+            listings: function() {
                 return Session.get("filteredListings");
-                
             }
         });
+
+        // Template.listingResultsMap.helpers({  
+        //     mapOptions: function() {
+        //         if ( GoogleMaps.loaded() ) {
+
+        //           console.log("GoogleMaps.loaded() aint suspect in listingResultsMap");
+        //           return {
+        //             center: new google.maps.LatLng(47.6097, -122.3331),
+        //             zoom: 8
+        //           };
+        //         }
+        //     }
+        // });
+
+        // Template.searchGeo.onRendered(function() {
+        //     this.autorun(function () {
+        //         if ( GoogleMaps.loaded() ) {
+                    
+        //             console.log('GoogleMaps.loaded() aint suspect in searchGeo');
+                    
+        //             $('search-geo').geocomplete().bind('geocode:result', function(event, result){
+        //                 console.log(result);
+        //             });
+        //         }
+        //     });
+        // });
+
     });
 }]);
-
-// another template for the map
-// Template.listingResultsMapMarker.helpers({
-
-// });
