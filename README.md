@@ -1,2 +1,2 @@
 # Traverso
-Car shopping and car payments
+Car shopping and digital car payments made easier with location and context.
