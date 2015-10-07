@@ -203,13 +203,13 @@
 
 		<!-- no results indicators -->
 
-        <!-- <div class="no-results-indicator col-md-6"
-		ng-show="! (filteredListings.length > 0) ">
+        <div class="no-results-indicator col-md-6"
+		ng-show="noResults">
 			<article style="text-align:center;" class="pitch">
 				<h3 style="color:#9B9B9B;">No listings to display</h3>
 				<p style="color:#23E363;">start typing to find your new set of wheel !</p>
 			</article>
-		</div> -->
+		</div>
 
 		<!-- load indicators -->
 		<div class="loading-results-indicator col-md-6"
@@ -318,29 +318,33 @@
 
 
 	<div class="col-md-6 map-wrap angular-google-map-container">
-		<ui-gmap-google-map 
+		
+		<div id="listingResultsMap" class="map">
+			
+		</div><!-- native version loads -->
+
+<!-- 		<ui-gmap-google-map 
 			class="map" 
 			center="spMapPan" 
 			options="map.options"
 		    events="map.events" 
 		    zoom="map.zoom"
-		    styles="map.styles">
+		    styles="map.styles"> -->
 
 			<!-- TODO records don't have a property position -->
-			<ui-gmap-marker options="map.marker.options"
+<!-- 			<ui-gmap-marker options="map.marker.options"
 			ng-repeat="filteredListing in filteredListings track by filteredListing._id"
 			coords="filteredListing.position"
-			idKey="filteredListing._id">
+			idKey="filteredListing._id"> -->
 
-				<ui-gmap-window options="listingInfoWindowOptions" click="toggleWindowInMap()">
+<!-- 				<ui-gmap-window options="listingInfoWindowOptions" click="toggleWindowInMap()">
 	                <div class="listing-info-window-map">
 	                	<p>{{ filteredListing.price | currency:"$":0 }}</p>
 	                </div>
 	            </ui-gmap-window>
     		</ui-gmap-marker>
-		</ui-gmap-google-map>
+		</ui-gmap-google-map> -->
 		
 		<!-- <blaze-template name="listingResultsMap"></blaze-template> -->
-
 	</div>
 </div>

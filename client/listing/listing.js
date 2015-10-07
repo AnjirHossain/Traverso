@@ -23,11 +23,15 @@ angular.module('Root.listingPage').controller('listingCtrl',['$scope','$meteor',
 	function($scope, $meteor, $stateParams, $filter, $location, $rootScope) {
     
     $scope.$meteorSubscribe('listings', {}).then(function() {
+      console.log('Root.listingPage');
+      console.log($stateParams);
       $scope.listing = $meteor.object(Listings, $stateParams.listingId);  
 
       // bug: user data only persists when the owner is logged in
       var listingOwner = $scope.listing.getRawObject().owner;
+      console.log($scope.listing.getRawObject());
       $scope.listingOwner = Meteor.users.findOne({_id: listingOwner});
+      console.log($scope.listingOwner);
     });
 	}
 ]);

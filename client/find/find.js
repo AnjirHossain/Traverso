@@ -1,6 +1,7 @@
 angular.module('Root.find', []);
 
-var geocoder;
+var geocoder,
+    listingResultsMap;
 
 angular.module('Root.find').config(['$urlRouterProvider','$stateProvider', '$locationProvider',function($urlRouterProvider, $stateProvider, $locationProvider){
 
@@ -43,6 +44,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         $scope.noAddress = false;
         $scope.searchFodder = {};
         $scope._searchFodderInHouse = {};
+        $scope.noResults = true;
 
         $scope.passListing = function( id ) {
             listingPageSv.passListing( id );
@@ -92,37 +94,56 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             $scope.loading = true;
             $scope._searchFodderInHouse = aSearchFodder; // hax but oh well
 
-            // if feeding listing location info to uiGoogleMaps then app once slows down
-            // only solution I'm seeing: rebuild map in blaze | react, or map markers in blaze | react
-            // both the map and the list need to be married together and communicate frequently and communicate fast
-            // a feature on the TODO list is being able to hover over a car in the list and have the map zoom and pan
-            // to where that car is located, custom map marker icons as well
             $meteor.autorun( $scope, function () {
                 var searchProps = $scope.getReactively('_searchFodderInHouse', true);
                 console.log('applyFilters reacting to autorun', searchProps);
 
                 $meteor.call('getListings', searchProps).then(
-                    function ( answer ) {
+                    function (answer) {
+                        
+                        if ( answer.length > 0 ) {
+                            $scope.noResults = false;
+                        } else {
+                            $scope.noResults = true;
+                        }
 
                         console.log('getListings answered fine: ', answer);
-
-                        // turning off loading screen so perceived latency is mitigated
                         Session.set("filteredListings", answer); // data for list
-                        $scope.loading = false; 
-                        // $scope.filteredListings = answer; 
-                        // way too slow, ideal solution use blaze and set some blaze session variable
 
+                        /*
+                            TODOS
+                            -----
+                            - map pans to whatever listing the user hovers over
+                            - better alternative than for loop or place this else where
+                        */
+
+                        for ( var i = answer.length-1; i > 0; i-- ) {
+                            new google.maps.Marker({
+                                position: {
+                                    lat: answer[i].address.geometry.location.H, 
+                                    lng: answer[i].address.geometry.location.L
+                                },
+                                map: listingResultsMap,
+                                title: 'Hello World!'
+                            });
+                        }
+
+
+                        $scope.loading = false; 
+
+                        var panToThis = {
+                            lat: answer[0].address.geometry.location.H,
+                            lng: answer[0].address.geometry.location.L
+                        };
+
+                        listingResultsMap.setCenter(panToThis);
+                        listingResultsMap.setZoom(13);
                     }, 
                     function ( error ) {
-                        console.log( error ); // returns Internal server error [500] in deployed version
+                        console.log( error ); // 500 error on meteor server, currently on Heroku
                     }
                 );      
-                
-                // the latency drops when we introduced any form of abgular ng-repeat
-                // if ( Session.get("filteredListings") ) {
-                //     $scope.filteredListings = Session.get("filteredListings");
-                // } 
-                // else set map center to user's query location
+
 
             });
 
@@ -143,7 +164,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         // tangent: listing_window 
         var listingWindowProp = document.getElementById('listingWindow');
 
-        $scope.listingWindowOpen = function( listingId ){
+        $scope.listingWindowOpen = function (listingId){
             var listingInWindow = Listings.findOne({_id:listingId}),
                 listingImgInWindow = Images.findOne({_id:listingInWindow.listImgId});
 
@@ -158,6 +179,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             $scope.listingWindowContent.body = listingInWindow.body;
             $scope.listingWindowContent.description = listingInWindow.description;
             $scope.listingOwner = Meteor.users.findOne({_id:listingInWindow.owner});
+            
             $scope.toggleListingWindow();
         };
         
@@ -218,24 +240,26 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         // WATCH STATEMENTS
         /* look inside notes for geocoding snippet */
 
-        // tangent: http://goo.gl/vCWGFs migration of inline to controller filtering
-        $scope.$watchCollection('filteredListings', function(newVal){
-            var newAddress = '',
-                spMapPanSCAFF = {};
+        /*
+            // the real issue
+            // $scope.$watch('filteredListings', function(newVal){
+            //     var newAddress = '',
+            //         spMapPanSCAFF = {};
 
-            if ( newVal[0] ) {
+            //     if ( newVal[0] ) {
 
-                // console.log(newVal);
+            //         // console.log(newVal);
 
-                geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
-                    spMapPanSCAFF.latitude = results[0].geometry.location.lat();
-                    spMapPanSCAFF.longitude = results[0].geometry.location.lng();
-                    $scope.spMapPan = spMapPanSCAFF;
-                    $scope.$apply();
-                });
-                
-            } 
-        });
+            //         geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
+            //             spMapPanSCAFF.latitude = results[0].geometry.location.lat();
+            //             spMapPanSCAFF.longitude = results[0].geometry.location.lng();
+            //             $scope.spMapPan = spMapPanSCAFF;
+            //             $scope.$apply();
+            //         });
+                    
+            //     } 
+            // });
+        */
 
         /* def going inside map controller */
         $scope.map = {
@@ -547,7 +571,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
     }
 ]);
 
-angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function($scope,$meteor,$stateParams){}]);
+angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function ($scope,$meteor,$stateParams){}]);
 
 angular.module('Root.find').directive('ngEnter', function () {
     return function (scope, element, attrs) {
@@ -640,23 +664,29 @@ angular.module('Root.find').directive('ngEnter', function () {
         // }]); 
 */
 
-angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function( $rootScope, $meteor, $state ) {
+angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function ( $rootScope, $meteor, $state ) {
   $rootScope
     .$on('$viewContentLoaded',
-      function(event, viewConfig){  
-
-        // geocoder = new google.maps.Geocoder();
-        // Meteor.startup(function() {  
-        //     GoogleMaps.load();
-        // });
-
+      function (event, viewConfig){  
+        Session.set("filteredListings", []);
+        
+        var initMap = function () {
+            // cahced at top
+            listingResultsMap = new google.maps.Map(document.getElementById('listingResultsMap'), {
+                center: {lat: 47.6097, lng: -122.3331},
+                zoom: 14
+            });
+        } 
 
         Template.listingResults.helpers({
-            listings: function() {
+            listings: function () {
                 return Session.get("filteredListings");
             }
         });
 
+        initMap();
+
+    /*    
         // Template.listingResultsMap.helpers({  
         //     mapOptions: function() {
         //         if ( GoogleMaps.loaded() ) {
@@ -682,6 +712,7 @@ angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function( $r
         //         }
         //     });
         // });
+    */
 
     });
 }]);
