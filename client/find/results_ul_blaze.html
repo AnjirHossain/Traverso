@@ -4,6 +4,8 @@
 			{{> listing}}
 		{{/each}}
 	{{/if}}
+
+	{{> listingModal}}
 </template>
 
 <template name="listing">
@@ -14,7 +16,7 @@
 			<div class="listings-item"
 				 style="background-image:url('/cfs/files/images/{{listImgId}}/{{imageName}}');">
 
-				<article class="listings-item-preview">
+				<article id="listingItem" class="listings-item-preview">
 					<span class="col-md-12 lip-text-wrap">
 						<p style="text-align:center;" class="col-md-4 info-pipe">&#36; {{ price }}</p>
 
@@ -31,4 +33,75 @@
 
 		</div>
 	</div>
+</template>
+
+<template name="listingModal">
+	<div class="modal modal-wide fade" id="listingModal">
+		<div class="modal-dialog modal-lg">
+			<button type="button" 
+					id="closeListingModal"
+					class="close z-index-8" 
+					data-dismiss="modal" 
+					aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+
+			
+			<div class="modal-content no-padding col-md-12">		
+				<div class="modal-body no-padding">
+				<!-- left -->
+					<div class="col-md-6 image-container" 
+	style="background-image:url('/cfs/files/images/{{listingContent.listImgId}}/{{listingContent.imageName}}');"></div>
+								<!-- right -->
+					<div class="col-md-6 listing-text-container">
+
+						<span class="listing-window-comps">
+							<div class="user-info-prop">
+								<img src="/imgs/img_route_profile/current_user_null.png" class="img-responsive img-circle" style="width:50px;">
+								<h3>{{ listingOwner.profile.firstName }} {{ listingOwner.profile.lastName }}</h3>
+								
+							</div>
+							<div class="sudo-sep"></div>
+							<div class="listing-further-info-prop">
+								<p>Details:</p>
+								<p>
+									{{ listingContent.year }} 
+									{{ listingContent.make.name }}, 
+									{{ listingContent.model.name }}
+								</p>
+								<p>listed at {{ listingContent.price }}</p>
+								<p>{{ listingContent.milage }} miles</p>
+							</div>
+							<div class="sudo-sep"></div>
+							<div class="user-description-prop">
+								<p>The user's description:</p>
+								<p>{{ listingContent.description }}</p>
+							</div>
+							<div class="sudo-sep"></div>
+							<div class="user-contact-prop">
+								<p>Seller Contact:</p>
+								<!-- pending -->
+								<p>{{ listingOwner.email }}</p>
+								<p>{{ listingOwner.profile.phone }}</p>
+							</div>
+							<div class="sudo-sep"></div>
+
+							<div class="listing-explore-cta-prop">
+								<a id="viewListing" 
+								class="btn btn-success" 
+								href="/listing/{{listingContent._id}}">
+									learn more
+								</a>
+							</div>				
+
+						</span>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
 </template>

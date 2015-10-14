@@ -1,7 +1,9 @@
 angular.module('Root.find', []);
 
 var geocoder,
-    listingResultsMap;
+    listingResultsMap,
+    listingMarkers = [],
+    listingClusters;
 
 angular.module('Root.find').config(['$urlRouterProvider','$stateProvider', '$locationProvider',function($urlRouterProvider, $stateProvider, $locationProvider){
 
@@ -66,85 +68,184 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         $scope.beginSearch = function(a) {
             // console.log( a );
 
-            if (!$scope.showFilterPopOver) {
-                $scope.filterPopOverStateMutator();
-            }
-
-            // return false;
+            // if (!$scope._searchFodderInHouse) {
+                if (!$scope.showFilterPopOver) {
+                    $scope.filterPopOverStateMutator();
+                }
+            // }
         };
 
         $scope.applyFilters = function(aSearchFodder) {
 
-            if ( !aSearchFodder.address ) {
+            if ( !aSearchFodder.address.address_components ) {
 
                 if ( $scope.searchErrorNoAddress ){
                     $scope.searchErrorNoAddress = false;
                 } else {
                     $scope.searchErrorNoAddress = true;
                 }
-
                 return;
             }
 
-            console.log(aSearchFodder);
+            // green light for computation
             $scope.searchErrorNoAddress = false;
 
-            // var _t = new Date().getMilliseconds();
-
+            // loading indicator
             $scope.loading = true;
-            $scope._searchFodderInHouse = aSearchFodder; // hax but oh well
+
+            // temporary
+            $scope._searchFodderInHouse = aSearchFodder;
+
+            // store icon & mcOptions inside const
+            var icon = {
+                url: '/mapmarker.png',
+                size: new google.maps.Size(32, 32),
+                origin: new google.maps.Point(0, 0),
+                scaledSize: new google.maps.Size(32, 32)
+            };
+
+            var mcOptions = {
+                gridSize: 50, 
+                maxZoom: 13,
+                styles: [
+                    {
+                        textColor: 'white',
+                        height: 45,
+                        url: "/cluster45x45.png",
+                        width: 45
+                    },
+                    {
+                        textColor: 'white',
+                        height: 47,
+                        url: "/cluster47x47.png",
+                        width: 47
+                    },
+                    {
+                        textColor: 'white',
+                        height: 53,
+                        url: "/cluster53x53.png",
+                        width: 53
+                    },
+                    {
+                        textColor: 'white',
+                        height: 78,
+                        url: "/cluster78x78.png",
+                        width: 78
+                    },
+                    {
+                        textColor: 'white',
+                        height: 78,
+                        url: "/cluster78x78.png",
+                        width: 78
+                    }
+                ]
+            };
 
             $meteor.autorun( $scope, function () {
-                var searchProps = $scope.getReactively('_searchFodderInHouse', true);
-                console.log('applyFilters reacting to autorun', searchProps);
+
+                var test = $scope._searchFodderInHouse;
+
+                // temporary moving inside the dynamic formula for stripping out lat long
+                if ( test.address.geometry.location.lat ) {
+                    test.address.geometry.location.latitudeFinal = test.address.geometry.location.lat();
+                    console.log('lat');
+                }
+
+                if ( test.address.geometry.location.lng ) {
+                    test.address.geometry.location.longitudeFinal = test.address.geometry.location.lng();
+                    console.log('lng');
+                }
+
+                var searchProps = test;
+                console.log('location in client: ', searchProps.address);
+
+
 
                 $meteor.call('getListings', searchProps).then(
-                    function (answer) {
-                        
-                        if ( answer.length > 0 ) {
-                            $scope.noResults = false;
-                        } else {
-                            $scope.noResults = true;
-                        }
-
-                        console.log('getListings answered fine: ', answer);
-                        Session.set("filteredListings", answer); // data for list
+                    function ( answer ) {
 
                         /*
                             TODOS
                             -----
-                            - map pans to whatever listing the user hovers over
-                            - better alternative than for loop or place this else where
+                            - map clusters
+                            - map panning to location of listing that user hovers over
+                            - function for adding | removing markers 
+                            - attach _id to every listing marker
                         */
+                        
+                        var panToThis,
+                            location_obj,
+                            location_arr = [];
 
-                        for ( var i = answer.length-1; i > 0; i-- ) {
-                            new google.maps.Marker({
-                                position: {
-                                    lat: answer[i].address.geometry.location.H, 
-                                    lng: answer[i].address.geometry.location.L
-                                },
-                                map: listingResultsMap,
-                                title: 'Hello World!'
-                            });
+                        // GOOGLE will not stop changing its vars, outsmart and check for every 
+                        // possible flank that they try to pull
+                        if ( answer.length > 0 ) {
+                            $scope.noResults = false;
+
+                            // prime up pan so map centers on first listing
+                            location_obj = answer[0].address.geometry.location;
+                        } else {
+                            $scope.noResults = true;
+
+                            // prime up pan so map centers on where the user searched
+                            if ( searchProps.address ) {
+                                location_obj = searchProps.address.geometry.location;
+                            }
                         }
 
+                        for (var k in location_obj) {
 
-                        $scope.loading = false; 
+                            location_arr.push(location_obj[k]);        
+                        }
 
-                        var panToThis = {
-                            lat: answer[0].address.geometry.location.H,
-                            lng: answer[0].address.geometry.location.L
+                        panToThis = {
+                            lat: location_arr[0],
+                            lng: location_arr[1]
                         };
 
                         listingResultsMap.setCenter(panToThis);
                         listingResultsMap.setZoom(13);
+
+                        console.log('getListings answered fine: ', answer);
+                        Session.set("filteredListings", answer); // data for list
+
+
+
+                        // clearing markers 
+                        listingMarkers.map(function (m) {
+                            m.setMap(null);
+                            console.log("markers should've been cleared");
+                        });                        
+                        console.log("latest markers", listingMarkers);
+
+                        listingClusters = new MarkerClusterer(listingResultsMap, listingMarkers, mcOptions);
+
+                        answer.map(function (e) {
+
+                            // must attach e._id to every marker for later use
+                            var listingMarker = new google.maps.Marker({
+                                position: {
+                                    lat: e.loc[1], 
+                                    lng: e.loc[0]
+                                },
+                                map: listingResultsMap,
+                                icon: icon,
+                                title: '$ ' + e.price 
+                            });
+
+                            listingMarkers.push(listingMarker);
+                        });
+
+                        listingClusters.addMarkers(listingMarkers);
                     }, 
-                    function ( error ) {
-                        console.log( error ); // 500 error on meteor server, currently on Heroku
+                    function (error) {
+
+                        // immediately check terminal when developing and getting 500
+                        console.log(error); 
                     }
                 );      
 
-
+                $scope.loading = false; 
             });
 
             $scope.filterPopOverStateMutator();
@@ -562,16 +663,18 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         };
 
         $scope.listingInfoWindowOptions = {
+
             visible: false
         };
 
         $scope.toggleWindowInMap = function() {
+            
             $scope.listingInfoWindowOptions.visible = !$scope.listingInfoWindowOptions.visible;
         };
     }
 ]);
 
-angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function ($scope,$meteor,$stateParams){}]);
+// angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function ($scope,$meteor,$stateParams){}]);
 
 angular.module('Root.find').directive('ngEnter', function () {
     return function (scope, element, attrs) {
@@ -588,82 +691,6 @@ angular.module('Root.find').directive('ngEnter', function () {
     };
 });
 
-
-/*
-        // angular.module('Root.find').filter('filterOmniBase', ['mutateFilteredListings','$meteor',
-        // function(mutateFilteredListings,$meteor) {
-        //   return function( unfilteredItems, unfilteredItemImgs, modelWRT ) {
-        //     var filteredItems = [],
-        //         geocoder = new google.maps.Geocoder();
-
-        //     var test;
-
-        //     // pivot point
-        //     var geoCodeThenFilter = function(address, callback) {
-
-        //         geocoder.geocode({'address': address}, function(results,status) {
-        //             if ( status == google.maps.GeocoderStatus.OK ) {
-        //                 searchLtLng.position = {
-        //                     latitude: results[0].geometry.location.lat(),
-        //                     longitude: results[0].geometry.location.lng()
-        //                 };
-        //                 callback(searchLtLng.position);
-        //             } else {
-        //                 alert(status);
-        //             }
-        //         });
-        //     }
-        //     var deGunkify = function(ltLngToCompareWith) {
-        //         test = "geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude;
-        //         // console.log("geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude);
-        //         // console.log("and so does unfilteredItems: " + unfilteredItems[0]);
-        //     }
-
-        //     // a new chapter of long over due promises
-
-        //     var ltlngPromise = new Promise(function(resolve, reject) {
-        //         // do a thing, possibly async, then…
-        //         var address = modelWRT.address.formatted_address; // any address
-        //         var searchLtLng = {};
-
-        //         geocoder.geocode({'address': address}, function(results,status) {
-        //             if ( status == google.maps.GeocoderStatus.OK ) {
-        //                 searchLtLng.position = {
-        //                     latitude: results[0].geometry.location.lat(),
-        //                     longitude: results[0].geometry.location.lng()
-        //                 };
-        //                 resolve(searchLtLng.position);
-        //             } else {
-        //                 reject(alert(status));
-        //             }
-        //         });
-
-        //     });
-
-        //     return ltlngPromise.then(function(result) {
-        //         for ( var i = 0; i < unfilteredItems.length; i++ ) {
-        //             if ( unfilteredItems[i].position === result ) {
-        //                 // push this listing
-        //                 filteredItems.push(unfilteredItems[i]);
-        //             } else {
-        //                 var range = 8046, // 5 miles
-        //                     listingPin = new google.maps.LatLng(unfilteredItems[i].position.latitude, unfilteredItems[i].position.longitude),
-        //                     userPin = new google.maps.LatLng(result.latitude, result.longitude); 
-
-        //                 var inProximity = google.maps.geometry.spherical.computeDistanceBetween(userPin, listingPin);
-
-        //                 if ( range >= inProximity ) {
-        //                     filteredItems.push(unfilteredItems[i]);
-        //                 }
-        //             }
-        //         }
-        //         return filteredItems;
-        //     });
-
-        //   };
-        // }]); 
-*/
-
 angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function ( $rootScope, $meteor, $state ) {
   $rootScope
     .$on('$viewContentLoaded',
@@ -671,7 +698,7 @@ angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function ( $
         Session.set("filteredListings", []);
         
         var initMap = function () {
-            // cahced at top
+            // cached at top, try (user's location via ip) before resorting to this area
             listingResultsMap = new google.maps.Map(document.getElementById('listingResultsMap'), {
                 center: {lat: 47.6097, lng: -122.3331},
                 zoom: 14
@@ -681,6 +708,38 @@ angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function ( $
         Template.listingResults.helpers({
             listings: function () {
                 return Session.get("filteredListings");
+            }
+        });
+
+        Template.listingResults.events({
+            'click #listingItem': function (event) {
+
+                // store listing nad lister and set it as the session variable
+                var listingClicked = Listings.findOne({_id: this._id});
+                
+                Session.set('currentListingBeingViewed', listingClicked);
+                Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
+
+                $('#listingModal').modal('toggle');
+            }
+        });
+
+        Template.listingModal.helpers({
+            'listingContent': function () {
+                return Session.get('currentListingBeingViewed');
+            },
+            'listingOwner': function (){
+                return Session.get('currentListingOwner');
+            }
+        });
+
+        Template.listingModal.events({
+            'click #viewListing': function (event) {
+
+                // temporary until I read up more on Temporary UI State in meteor
+                $('#listingModal').modal('hide');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
             }
         });
 

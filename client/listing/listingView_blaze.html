@@ -1,9 +1,15 @@
-<div class="listing-page">
+<!-- entire template for listing -->
 
-	<!-- all of angular js listing components factored in blaze fragments -->
-	<blaze-template name="listingView"></blaze-template>
+<template name="listingView">
+	
+	<div class="listing-image-wrap col-md-12">
+		<div class="col-md-6 col-md-offset-3 img-container"
+			 style="background-image:url('/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}');">
+		</div>
+	</div>
 
-<!-- 	<div class="listing-content-wrap">
+	<div class="listing-content-wrap">
+
 		<div class="col-md-4 listing-content-sect">
 			<div class="col-md-12 lcs-content-wrap">
 				<div style="padding: 30px 0;" class="col-md-4">
@@ -12,29 +18,40 @@
 					class="img-circle lister-avi">
 				</div>
 				<div style="padding: 30px 0;" class="col-md-8">
-					<p class="lister-username">{{ ::listingOwner.profile.name }}</p>
+					<p class="lister-username">
+						
+						<!-- not rendering -->
+						{{ listingOwner.profile.name }}	
+						
+					</p>
 				</div>
 				<div style="padding: 15px 0;" class="col-md-12">
 					<p style="font-size:1.4em;">Lister's contact</p><br>
 					<hr class="muted"><br>
-					<p style="margin:15px 0;">{{ ::listingOwner.emails[0].address }}</p>
-					<p style="margin:15px 0;">{{ listingOwner.profile.phone | cell }}</p>
+					<p style="margin:15px 0;">
+						{{ listerEmail }}
+					</p>
+					<p style="margin:15px 0;">
+						{{ listingOwner.profile.phone }}
+					</p>
 				</div>
 			</div>
 		</div>
+
 		<div class="col-md-4 listing-content-sect">
 			<div class="col-md-12 lcs-content-wrap">
 				<div style="text-align:left;" class="col-md-12">
 					<p style="font-size:1.4em;">What the lister has to say about this vehicle</p><br>
 					<hr class="muted"><br>
-					<p>{{ ::listing.description }}</p>
+					<p>{{ listing.description }}</p>
 				</div>
 			</div>
 		</div>
+
 		<div class="col-md-4 listing-content-sect">
 			<div class="col-md-12 lcs-content-wrap">
 				<div style="text-align:center;" class="col-md-12">
-					<p style="font-size:1.4em;">{{ ::listing.views }} views</p>
+					<p style="font-size:1.4em;">{{ listing.views }} views</p>
 				</div>
 				<div style="padding: 30px 0;" class="col-md-12">
 					<p style="font-size:1.4em;">Tags</p><br>
@@ -47,13 +64,17 @@
 					<hr class="muted"><br>
 					<p>Trim level: <span class="muted_emph">{{ listing.trim }}</span></p>
 					<p>Specs: 
-					<span class="muted_emph" ng-show="listing.specs">{{ listing.trim }}</span>
-					<span class="muted_emph" ng-show="!listing.specs">not provided by lister</span> 
+
+					<span class="muted_emph">{{ listing.trim }}</span>
+					<!-- conditional -->
+					<!-- <span class="muted_emph">not provided by lister</span>  -->
+					
 					</p>
 					<p>Additional features added to this vehicle</p>
 					<p><span class="muted_emph">none</span></p>
 				</div>
 			</div>
 		</div>
-	</div> -->
-</div>
+
+	</div>
+</template>

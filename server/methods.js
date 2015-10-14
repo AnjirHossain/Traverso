@@ -6,21 +6,46 @@ Meteor.methods({
 
     // default, manages to retreive 
     var selectors = {},
-        maxDistance = 0.009;
+        maxDistance = 16/3963;
 
     // find a better way to store all specificity than just if elses
     if ( searchProps.address ) {
 
       // magic numbers for now, will get much better
-      if ( searchProps.address.address_components && searchProps.address.address_components.length < 6 ) {
-        maxDistance = 0.15;        
+      if ( searchProps.address.address_components && searchProps.address.address_components.length > 6 ) {
+        maxDistance = 7/3963;        
       }      
 
-      selectors['loc'] = { 
-        $near: [ searchProps.address.geometry.location.L, searchProps.address.geometry.location.H],
-        $maxDistance: maxDistance
-      };    
-    } 
+      // google api geom object returns letters
+      // instead of lat long, so this is a way to always have the right value
+      var location_obj = {},
+          location_arr = [];
+
+      console.log('location in server: ', searchProps.address.geometry.location);
+
+      if ( searchProps.address.geometry.location ) {
+        // location_obj = searchProps.address.geometry.location;
+        // console.log("inside geometry: ", searchProps.address.geometry);
+
+        console.log('here it is: ', searchProps.address.geometry.location);
+        // location_obj = searchProps.address.geometry.location
+        
+        var lng = searchProps.address.geometry.location.longitudeFinal,
+            lat = searchProps.address.geometry.location.latitudeFinal;
+
+        selectors['loc'] = {
+          $geoWithin: {
+            $centerSphere: [[ lng, lat], maxDistance]
+          }
+        };
+      }
+
+      // for (var k in location_obj) {
+        
+      //     location_arr.push( location_obj[k] );        
+        
+      // }
+    }
    
     if ( searchProps.make && searchProps.make.name ) {
       selectors['make.name'] = searchProps.make.name;
@@ -36,7 +61,7 @@ Meteor.methods({
         $lte: parseInt(searchProps.mileageMax)
       };
     } else {
-      
+
       if ( searchProps.mileageMax ) {
         selectors['milage'] = {
           $lte: parseInt(searchProps.mileageMax)  
@@ -113,6 +138,12 @@ Meteor.methods({
     // temp
     return Listings.find({
       $or: [ selectors ]
-    }).fetch();
+    }, { sort: {'loc': -1} }).fetch();
+  },
+  // get listingOwner
+  getListingOwner: function ( ownerId ) {
+    check(ownerId, String);
+
+    return Meteor.users.find({_id: ownerId}).fetch();
   }
 });

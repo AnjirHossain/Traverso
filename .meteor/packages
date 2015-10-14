@@ -8,7 +8,6 @@ meteor-platform
 cfs:standard-packages
 cfs:gridfs
 angularui:angular-ui-router
-twbs:bootstrap
 accounts-base
 accounts-password
 fortawesome:fontawesome
@@ -33,3 +32,4 @@ dburles:google-maps
 angularui:angular-google-maps
 urigo:angular-blaze-template
 jeremy:geocomplete
+twbs:bootstrap

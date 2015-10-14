@@ -24,7 +24,7 @@ Meteor.methods({
 	updateViews: function(listingId){
 		var viewsScf = Listings.findOne({_id: listingId}).views;
 		viewsScf++;
-		Listings.update({_id: listingId}, {$set: {views: viewsScf}});
+		Listings.update({_id: listingId}, { $set: { views: viewsScf } });
 		return viewsScf;
 	}
 });
@@ -43,3 +43,4 @@ Images.allow({
 		return true;
 	}
 });
+
