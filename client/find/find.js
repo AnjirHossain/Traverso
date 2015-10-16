@@ -172,14 +172,20 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                 var test = $scope._searchFodderInHouse;
 
                 // temporary moving inside the dynamic formula for stripping out lat long
+
+                /*
+                    Normalizing lat lng
+                    -------------------
+                    - server does not detect lat() lng() funcs
+                      sent from client; (would probably be a huge security risk).
+                    - rename and embrace
+
+                */
                 if ( test.address.geometry.location.lat ) {
                     test.address.geometry.location.latitudeFinal = test.address.geometry.location.lat();
-                    console.log('lat');
                 }
-
                 if ( test.address.geometry.location.lng ) {
                     test.address.geometry.location.longitudeFinal = test.address.geometry.location.lng();
-                    console.log('lng');
                 }
 
                 var searchProps = test;
@@ -205,21 +211,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             // vett
                             $scope.noResults = false;
 
-                            /*
-                                At this point we know
-                                ---------------------
-                                - answer contains listings 
-                                - listings contain loc 
-                                - loc has lat lng for map 
-                                  panning 
-
-                                So do as follows
-                                ----------------
-                                - reverse loc
-                                - store loc in location_arr
-
-                            */
-
                             // if loc is actually population
                             if ( answer[0].loc.length ) {
                                 
@@ -228,46 +219,23 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
                                 location_arr = loc;
                             }
-
-
                         } else {
                             // vett
                             $scope.noResults = true;
 
-                            // SUUUUUUSPEEEECT
-
-                            /*
-                                // // prime up pan so map centers on where the user searched
-                                // if ( searchProps.address ) {
-                                    
-                                //     location_obj = searchProps.address.geometry.location;
-
-                                //     // window.searchProps = searchProps.address.geometry.location;
-                                    
-                                //     console.log('non empty searchProps', searchProps);
-
-                                //     for (var k in location_obj) {
-                                //         // []
-                                //         location_arr.push(location_obj[k]);        
-                                //     }
-
-                                // }
-                            */
-
                             if ( searchProps.address ) {
-
-
                                 if ( searchProps.address.geometry.location ) {
-                                    
-                                    console.log('location object', searchProps.address.geometry.location);
+                                    location_obj = searchProps.address.geometry.location;
+      
+                                    if ( location_obj.lat() && location_obj.lng()) {
+                                        console.log('lat lng funcs', location_obj);
+
+                                        location_arr.push( location_obj.lat() );
+                                        location_arr.push( location_obj.lng() );
+                                    }                
                                 }
                             }
-
-
                         }
-
-                        
-                        // console.log('location_obj contains ', location_obj);
 
                         panToThis = {
                             lat: location_arr[0],
@@ -280,12 +248,12 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                         listingResultsMap.setZoom(13);
 
                         console.log('getListings answered fine: ', answer);
-                        Session.set("filteredListings", answer); // data for list
+                        Session.set('filteredListings', answer); // data for list
 
                         // removing markers from google maps
                         listingMarkers.map(function (m) {
                             m.setMap(null);
-                            console.log("markers should've been cleared");
+                            console.log('markers should\'ve been cleared');
                         });       
 
                         listingMarkers = [];
