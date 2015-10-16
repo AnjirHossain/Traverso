@@ -205,7 +205,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             // prime up pan so map centers on first listing
                             location_obj = answer[0].address.geometry.location; // location.lat() 
 
-                            window.answer = answer[0].address.geometry.location; 
+                            // window.answer = answer[0].address.geometry.location; 
 
                             console.log('location_obj ', location_obj);
 
@@ -217,7 +217,10 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
                             // }
                             if ( answer[0].loc.length ) {
-                                location_arr = answer[0].loc.length;
+                                
+                                console.log('loc in listing', answer[0].loc);
+
+                                location_arr = answer[0].loc;
                             }
 
 
@@ -229,7 +232,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                                 
                                 location_obj = searchProps.address.geometry.location;
 
-                                window.searchProps = searchProps.address.geometry.location;
+                                // window.searchProps = searchProps.address.geometry.location;
                                 
                                 console.log('non empty searchProps', searchProps);
 
