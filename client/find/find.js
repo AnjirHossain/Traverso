@@ -185,6 +185,8 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             // prime up pan so map centers on first listing
                             location_obj = answer[0].address.geometry.location;
 
+                            window.answer = answer[0].address.geometry.location;
+
                             console.log('non empty answer', answer);
 
                         } else {
@@ -192,7 +194,11 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
                             // prime up pan so map centers on where the user searched
                             if ( searchProps.address ) {
+                                
                                 location_obj = searchProps.address.geometry.location;
+
+                                window.searchProps = searchProps.address.geometry.location;
+                                
                                 console.log('non empty searchProps', searchProps);
                             }
                         }
