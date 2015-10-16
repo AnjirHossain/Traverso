@@ -1,17 +1,23 @@
-var centerAndZoomOn = function ( aGoogleAnswer ) {
-    // Uses given aGoogleAnswer to center and zoom on it. (what it does? expose intention)
-    // Defaults to the general area of the entered address when there are no results.
+// var getNormalizedCoordinatesFrom( someWeirdFormat) {
+
+//     return theRightThing
+
+// };
+
+// var centerAndZoomOn = function ( aGoogleAnswer ) {
+//     // Uses given aGoogleAnswer to center and zoom on it. (what it does? expose intention)
+//     // Defaults to the general area of the entered address when there are no results.
 
 
-    // Normalize coordinates
+//     // Normalize coordinates
 
 
 
-    // center
+//     // center
 
-    // zoom
+//     // zoom
 
-};
+// };
 
 angular.module('Root.find', []);
  
@@ -195,56 +201,73 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             location_obj,
                             location_arr = [];
 
-                        // centerAndZoomOn();
-                        // addMarkersOn();
-
-                        // normalizing latitude longitude
                         if ( answer.length > 0 ) {
+                            // vett
                             $scope.noResults = false;
 
-                            // prime up pan so map centers on first listing
-                            location_obj = answer[0].address.geometry.location; // location.lat() 
+                            /*
+                                At this point we know
+                                ---------------------
+                                - answer contains listings 
+                                - listings contain loc 
+                                - loc has lat lng for map 
+                                  panning 
 
-                            // window.answer = answer[0].address.geometry.location; 
+                                So do as follows
+                                ----------------
+                                - reverse loc
+                                - store loc in location_arr
 
-                            console.log('location_obj ', location_obj);
+                            */
 
-                            // if (answer. ... loc) {
-
-                                //}
-
-                            // if ( answer[0].loc.length ) {
-
-                            // }
+                            // if loc is actually population
                             if ( answer[0].loc.length ) {
                                 
-                                console.log('loc in listing', answer[0].loc);
+                                var loc = answer[0].loc.slice();
+                                loc.reverse();  
 
-                                location_arr = answer[0].loc;
+                                location_arr = loc;
                             }
 
 
                         } else {
+                            // vett
                             $scope.noResults = true;
 
-                            // prime up pan so map centers on where the user searched
+                            // SUUUUUUSPEEEECT
+
+                            /*
+                                // // prime up pan so map centers on where the user searched
+                                // if ( searchProps.address ) {
+                                    
+                                //     location_obj = searchProps.address.geometry.location;
+
+                                //     // window.searchProps = searchProps.address.geometry.location;
+                                    
+                                //     console.log('non empty searchProps', searchProps);
+
+                                //     for (var k in location_obj) {
+                                //         // []
+                                //         location_arr.push(location_obj[k]);        
+                                //     }
+
+                                // }
+                            */
+
                             if ( searchProps.address ) {
-                                
-                                location_obj = searchProps.address.geometry.location;
 
-                                // window.searchProps = searchProps.address.geometry.location;
-                                
-                                console.log('non empty searchProps', searchProps);
 
-                                for (var k in location_obj) {
-                                    // []
-                                    location_arr.push(location_obj[k]);        
+                                if ( searchProps.address.geometry.location ) {
+                                    
+                                    console.log('location object', searchProps.address.geometry.location);
                                 }
                             }
+
+
                         }
 
                         
-                        console.log('location_obj contains ', location_obj);
+                        // console.log('location_obj contains ', location_obj);
 
                         panToThis = {
                             lat: location_arr[0],
