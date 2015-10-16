@@ -67,6 +67,8 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 		// GOOGLE
 		geocoder = new google.maps.Geocoder();
 
+
+		// MULTIPLE IMAGE UPLOADS
 		if (!(filesTempWrapper && filesTempWrapper.length)) {
 			alert("Please upload images for your listing! :)");
 			return;
@@ -102,14 +104,6 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 
 			    var address = $scope.listingFormBaseData.address.formatted_address;
 			    var addressComponentsWrp = $scope.listingFormBaseData.address;
-
-				// for ( var i = 0; i < addressComponentsWrp.address_components.length; i++ ) {
-				// 	var addressType = addressComponentsWrp.address_components[i].types[0];
-				// 	if (componentForm[addressType]) {
-				// 		addressComponentsInjWrp[addressType] = addressComponentsWrp.address_components[i][componentForm[addressType]];
-				// 		console.log("inside addressComponentsInjWrp[addressType] for this i: " + addressComponentsInjWrp[addressType]);
-				// 	}
-				// }
 
 				listingItemInjectionObj = $scope.listingFormBaseData;
 				listingItemInjectionObj.addressComponentsInjWrp = addressComponentsInjWrp;

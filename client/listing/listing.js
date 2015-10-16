@@ -70,15 +70,17 @@ angular.module('Root.listingPage').run(['$rootScope', '$meteor', '$state', '$sta
     .$on('$viewContentLoaded', 
       function (event, viewConfig){
 
-        // console.log("$stateParams: ", $stateParams);
-        // console.log("breathe: ", Listings.findOne({_id: $stateParams.listingId}));
+        if ( $stateParams.listingId ) {
+          $meteor.call('incrementViews', $stateParams.listingId).then(
+            function (data){
+              // console.log('something was returned', data);
+            },
+            function (error){
+              // console.log('o no', error);
+            }
+          );
+        }
 
-        // image container
-        // Template.listing.helpers({
-        //   'listing': function () {
-        //     return Session.get('listing');
-        //   }
-        // });
 
     });
 }]);

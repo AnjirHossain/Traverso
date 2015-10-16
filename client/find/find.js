@@ -41,6 +41,50 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             postal_code: 'short_name'
         };
 
+        var icon = {
+            url: '/mapmarker.png',
+            size: new google.maps.Size(32, 32),
+            origin: new google.maps.Point(0, 0),
+            scaledSize: new google.maps.Size(32, 32)
+        };
+
+        var mcOptions = {
+            gridSize: 50, 
+            maxZoom: 13,
+            styles: [
+                {
+                    textColor: 'white',
+                    height: 45,
+                    url: "/cluster45x45.png",
+                    width: 45
+                },
+                {
+                    textColor: 'white',
+                    height: 47,
+                    url: "/cluster47x47.png",
+                    width: 47
+                },
+                {
+                    textColor: 'white',
+                    height: 53,
+                    url: "/cluster53x53.png",
+                    width: 53
+                },
+                {
+                    textColor: 'white',
+                    height: 78,
+                    url: "/cluster78x78.png",
+                    width: 78
+                },
+                {
+                    textColor: 'white',
+                    height: 78,
+                    url: "/cluster78x78.png",
+                    width: 78
+                }
+            ]
+        };
+
         $scope.searchBoxRangeFilter = {};
         $scope.listingWindowContent = {};
         $scope.filteredListings = [];
@@ -67,14 +111,15 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
         $scope.loading = false;
 
-        $scope.beginSearch = function(a) {
-            // console.log( a );
-
-            // if (!$scope._searchFodderInHouse) {
-                if (!$scope.showFilterPopOver) {
-                    $scope.filterPopOverStateMutator();
-                }
-            // }
+        $scope.beginSearch = function(a) {            
+            if (!$scope.showFilterPopOver) {
+                $scope.filterPopOverStateMutator();
+            }
+            
+            // reset markers upon address budge
+            if ( listingMarkers.length ) {
+                listingMarkers = [];
+            }
         };
 
         $scope.applyFilters = function(aSearchFodder) {
@@ -98,50 +143,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             // temporary
             $scope._searchFodderInHouse = aSearchFodder;
 
-            // store icon & mcOptions inside const
-            var icon = {
-                url: '/mapmarker.png',
-                size: new google.maps.Size(32, 32),
-                origin: new google.maps.Point(0, 0),
-                scaledSize: new google.maps.Size(32, 32)
-            };
-
-            var mcOptions = {
-                gridSize: 50, 
-                maxZoom: 13,
-                styles: [
-                    {
-                        textColor: 'white',
-                        height: 45,
-                        url: "/cluster45x45.png",
-                        width: 45
-                    },
-                    {
-                        textColor: 'white',
-                        height: 47,
-                        url: "/cluster47x47.png",
-                        width: 47
-                    },
-                    {
-                        textColor: 'white',
-                        height: 53,
-                        url: "/cluster53x53.png",
-                        width: 53
-                    },
-                    {
-                        textColor: 'white',
-                        height: 78,
-                        url: "/cluster78x78.png",
-                        width: 78
-                    },
-                    {
-                        textColor: 'white',
-                        height: 78,
-                        url: "/cluster78x78.png",
-                        width: 78
-                    }
-                ]
-            };
 
             $meteor.autorun( $scope, function () {
 
@@ -193,7 +194,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                         }
 
                         for (var k in location_obj) {
-
                             location_arr.push(location_obj[k]);        
                         }
 
@@ -208,18 +208,16 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                         console.log('getListings answered fine: ', answer);
                         Session.set("filteredListings", answer); // data for list
 
-                        // clearing markers 
+                        // removing markers from google maps
                         listingMarkers.map(function (m) {
                             m.setMap(null);
                             console.log("markers should've been cleared");
-                        });                        
-                        console.log("latest markers", listingMarkers);
+                        });       
 
+                        listingMarkers = [];
                         listingClusters = new MarkerClusterer(listingResultsMap, listingMarkers, mcOptions);
 
                         answer.map(function (e) {
-
-                            // must attach e._id to every marker for later use
                             var listingMarker = new google.maps.Marker({
                                 position: {
                                     lat: e.loc[1], 
@@ -237,7 +235,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                     }, 
                     function (error) {
 
-                        // immediately check terminal when developing and getting 500
                         console.log(error); 
                     }
                 );      
@@ -334,30 +331,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             latitude: 47.6097,
             longitude: -122.3331
         };
-
-        // WATCH STATEMENTS
-        /* look inside notes for geocoding snippet */
-
-        /*
-            // the real issue
-            // $scope.$watch('filteredListings', function(newVal){
-            //     var newAddress = '',
-            //         spMapPanSCAFF = {};
-
-            //     if ( newVal[0] ) {
-
-            //         // console.log(newVal);
-
-            //         geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
-            //             spMapPanSCAFF.latitude = results[0].geometry.location.lat();
-            //             spMapPanSCAFF.longitude = results[0].geometry.location.lng();
-            //             $scope.spMapPan = spMapPanSCAFF;
-            //             $scope.$apply();
-            //         });
-                    
-            //     } 
-            // });
-        */
 
         /* def going inside map controller */
         $scope.map = {

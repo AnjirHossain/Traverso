@@ -1,5 +1,4 @@
 Meteor.methods({
-
   getListings: function ( searchProps ) {
     // Answers the listings that result from querying based on the given searchProps.
     check(searchProps, Object);
@@ -137,5 +136,18 @@ Meteor.methods({
     check(ownerId, String);
 
     return Meteor.users.find({_id: ownerId}).fetch();
+  },
+  incrementViews: function( listingId ){
+    var viewsScf = Listings.findOne({_id: listingId}).views;
+    viewsScf++;
+    Listings.update({_id: listingId}, { $set: { views: viewsScf } });
+    return viewsScf;
   }
+
+  /*
+    UPDATE USER ACCOUNTS
+    ____________________
+
+     - Meteor.users.update({_id:Meteor.user()._id}, {$set:{"profile.name":"Carlos"}})
+  */
 });

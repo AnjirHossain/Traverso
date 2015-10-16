@@ -34,7 +34,6 @@ angular.module('Root.profile').controller('profileRootListingsCtrl', ['$scope','
   
   
   $scope.profileListings = $meteor.collection(Listings).subscribe('listings');
-  
 
   $scope.message = "This user's listings !";
   
@@ -43,7 +42,7 @@ angular.module('Root.profile').controller('profileRootListingsCtrl', ['$scope','
   };
 
   $scope.removeListing = function(target) {
-    Listings.remove({_id:target._id}); 
+    Listings.remove({_id: target._id}); 
   };
 
 }]);
@@ -51,4 +50,24 @@ angular.module('Root.profile').controller('profileRootListingsCtrl', ['$scope','
 /*rg*/
 angular.module('Root.profile').controller('profileSettingsCtrl', ['$scope','$meteor','$stateParams', function($scope,$meteor,$stateParams){
   $scope.message = "Settings in profile @#$!";
+
+  $scope.editProfilePic = function (){  
+    // properly retrieve image
+    // call secure server method to update user account
+    // clear all states 
+
+
+  };
+
+  $scope.editContactInfo = function (){
+    // properly retrieve changes
+    // call secure server method to update user account
+    // clear all states 
+
+  };
+
 }]);
+
+
+
+

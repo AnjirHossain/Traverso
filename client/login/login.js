@@ -1,5 +1,3 @@
-// Meteor.subscribe('traversousers');
-
 Template.createAuth.events({
     'submit #createAuthFormTag': function (event) {
         // event.preventDefault();
@@ -16,23 +14,13 @@ Template.createAuth.events({
 			password: event.target.createuserpassword.value,
 			passwordConfirmed: event.target.createuserpasswordconfirm.value,
 			profile: {
+				profilePic: '',
 				firstName: event.target.createuserfirstname.value,
 				lastName: event.target.createuselastrname.value,
 				name: event.target.createuserfirstname.value + ' ' + event.target.createuselastrname.value, 
 				phone: event.target.createusercell.value
 			}
 	    }
-
-	    /*
-			if ( passwordsDontMatch ) {
-				alert user through dom
-
-					select e in dom 
-					update its message
-					clear password fields
-					return 
-			}
-	    */
 
 	    passwordsDontMatch = !(user.password === user.passwordConfirmed);
 
@@ -55,7 +43,7 @@ Template.createAuth.events({
 				if (error.reason){
 					console.log(error.reason);
 					if (error.reason === 'internal server error') {
-						errMessage = "Make sure you've entered valid all fields and provided a valid email";
+						errMessage = "Make sure you've provided all fields and provided a valid email";
 						document.getElementById('createAuthError').innerHTML = errMessage;
 					} 
 

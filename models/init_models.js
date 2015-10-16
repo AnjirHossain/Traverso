@@ -4,7 +4,13 @@ Images = new FS.Collection("images", {
     stores: [
         new FS.Store.GridFS("images")
     ]
-})
+});
+
+UserImages = new FS.Collection("userimages", {
+    stores: [
+        new FS.Store.GridFS("userimages")
+    ]
+});
 
 Listings.allow({
 	insert: function(userId, listing) {
@@ -17,15 +23,6 @@ Listings.allow({
 	},
 	remove: function(userId, listing){
 		return userId && listing.owner === userId;
-	}
-});
-
-Meteor.methods({
-	updateViews: function(listingId){
-		var viewsScf = Listings.findOne({_id: listingId}).views;
-		viewsScf++;
-		Listings.update({_id: listingId}, { $set: { views: viewsScf } });
-		return viewsScf;
 	}
 });
 
@@ -43,4 +40,8 @@ Images.allow({
 		return true;
 	}
 });
+
+// UserImages.allow({
+	
+// });
 
