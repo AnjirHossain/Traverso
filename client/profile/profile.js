@@ -55,7 +55,7 @@ angular.module('Root.profile').controller('profileSettingsCtrl', ['$scope','$met
     // properly retrieve image
     // call secure server method to update user account
     // clear all states 
-    alert('coming very soon!');
+    alert('coming very soon!!');
 
   };
 
@@ -63,7 +63,7 @@ angular.module('Root.profile').controller('profileSettingsCtrl', ['$scope','$met
     // properly retrieve changes
     // call secure server method to update user account
     // clear all states 
-    alert('coming very soon!');
+    alert('coming very soon!!');
   };
 
 }]);
