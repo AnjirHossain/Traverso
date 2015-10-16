@@ -1,3 +1,18 @@
+var centerAndZoomOn = function ( aGoogleAnswer ) {
+    // Uses given aGoogleAnswer to center and zoom on it. (what it does? expose intention)
+    // Defaults to the general area of the entered address when there are no results.
+
+
+    // Normalize coordinates
+
+
+
+    // center
+
+    // zoom
+
+};
+
 angular.module('Root.find', []);
  
 var geocoder,
@@ -120,6 +135,8 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             if ( listingMarkers.length ) {
                 listingMarkers = [];
             }
+
+            console.log('address ', a);
         };
 
         $scope.applyFilters = function(aSearchFodder) {
@@ -171,23 +188,38 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             - map panning to location of listing that user hovers over
                             - function for adding | removing markers 
                             - attach _id to every listing marker
+                            - refactor tasks into functions
                         */
                         
                         var panToThis,
                             location_obj,
                             location_arr = [];
 
-                        // GOOGLE will not stop changing its vars, outsmart and check for every 
-                        // possible flank that they try to pull
+                        // centerAndZoomOn();
+                        // addMarkersOn();
+
+                        // normalizing latitude longitude
                         if ( answer.length > 0 ) {
                             $scope.noResults = false;
 
                             // prime up pan so map centers on first listing
-                            location_obj = answer[0].address.geometry.location;
+                            location_obj = answer[0].address.geometry.location; // location.lat() 
 
-                            window.answer = answer[0].address.geometry.location;
+                            window.answer = answer[0].address.geometry.location; 
 
-                            console.log('non empty answer', answer);
+                            console.log('location_obj ', location_obj);
+
+                            // if (answer. ... loc) {
+
+                                //}
+
+                            // if ( answer[0].loc.length ) {
+
+                            // }
+                            if ( answer[0].loc.length ) {
+                                location_arr = answer[0].loc.length;
+                            }
+
 
                         } else {
                             $scope.noResults = true;
@@ -200,15 +232,16 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                                 window.searchProps = searchProps.address.geometry.location;
                                 
                                 console.log('non empty searchProps', searchProps);
+
+                                for (var k in location_obj) {
+                                    // []
+                                    location_arr.push(location_obj[k]);        
+                                }
                             }
                         }
 
                         
                         console.log('location_obj contains ', location_obj);
-
-                        for (var k in location_obj) {
-                            location_arr.push(location_obj[k]);        
-                        }
 
                         panToThis = {
                             lat: location_arr[0],
