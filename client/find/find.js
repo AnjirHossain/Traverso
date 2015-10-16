@@ -193,6 +193,9 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             }
                         }
 
+                        
+                        console.log('location_obj contains ', location_obj);
+
                         for (var k in location_obj) {
                             location_arr.push(location_obj[k]);        
                         }
@@ -201,6 +204,8 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             lat: location_arr[0],
                             lng: location_arr[1]
                         };
+
+                        console.log('panToThis contains ', panToThis);
 
                         listingResultsMap.setCenter(panToThis);
                         listingResultsMap.setZoom(13);
