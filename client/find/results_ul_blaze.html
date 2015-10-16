@@ -16,7 +16,10 @@
 			<div class="listings-item"
 				 style="background-image:url('/cfs/files/images/{{listImgId}}/{{imageName}}');">
 
-				<article id="listingItem" class="listings-item-preview">
+				<article id="listingItem" 
+				class="listings-item-preview"
+				data-toggle="modal"
+				data-target="#listingModal">
 					<span class="col-md-12 lip-text-wrap">
 						<p style="text-align:center;" class="col-md-4 info-pipe">&#36; {{ price }}</p>
 
@@ -36,10 +39,14 @@
 </template>
 
 <template name="listingModal">
+
 	<div class="modal modal-wide fade" id="listingModal">
+
 		<div class="modal-dialog modal-lg">
+
+			<!-- pause -->
 			<button type="button" 
-					id="closeListingModal"
+					id="closeModal"
 					class="close z-index-8" 
 					data-dismiss="modal" 
 					aria-label="Close">
@@ -50,8 +57,10 @@
 			<div class="modal-content no-padding col-md-12">		
 				<div class="modal-body no-padding">
 				<!-- left -->
+
 					<div class="col-md-6 image-container" 
-	style="background-image:url('/cfs/files/images/{{listingContent.listImgId}}/{{listingContent.imageName}}');"></div>
+					style="background-image:url('/cfs/files/images/{{listingContent.listImgId}}/{{listingContent.imageName}}');">
+					</div>
 								<!-- right -->
 					<div class="col-md-6 listing-text-container">
 
@@ -101,6 +110,7 @@
 			</div>
 
 		</div>
+		
 	</div>
 
 

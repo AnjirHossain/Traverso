@@ -24,11 +24,8 @@ Meteor.methods({
       console.log('location in server: ', searchProps.address.geometry.location);
 
       if ( searchProps.address.geometry.location ) {
-        // location_obj = searchProps.address.geometry.location;
-        // console.log("inside geometry: ", searchProps.address.geometry);
 
         console.log('here it is: ', searchProps.address.geometry.location);
-        // location_obj = searchProps.address.geometry.location
         
         var lng = searchProps.address.geometry.location.longitudeFinal,
             lat = searchProps.address.geometry.location.latitudeFinal;
@@ -39,12 +36,7 @@ Meteor.methods({
           }
         };
       }
-
-      // for (var k in location_obj) {
-        
-      //     location_arr.push( location_obj[k] );        
-        
-      // }
+      
     }
    
     if ( searchProps.make && searchProps.make.name ) {

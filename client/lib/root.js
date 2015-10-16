@@ -414,8 +414,7 @@ angular.module('Root').run(['$rootScope', '$state',function($rootScope, $state){
               }
 
               reader.readAsDataURL(inputProp.files[0]);
-              $rootAjsElementScope.showUplDImg = true;
-              console.log("Some random shit happened");            
+              $rootAjsElementScope.showUplDImg = true;          
             });
 
           }
@@ -506,12 +505,12 @@ angular.module('Root').run(['$rootScope', '$state',function($rootScope, $state){
           
           }, false );
 
-          // efs2.addEventListener( 'click', function (event) {
-          //   var em1 = document.getElementById('createAuthError');
-          //   var em2 = document.getElementById('useAuthError');
-          //   em1.innerHTML = '';            
-          //   em2.innerHTML = '';
-          // });
+          efs2.addEventListener( 'click', function (event) {
+            var em1 = document.getElementById('createAuthError');
+            var em2 = document.getElementById('useAuthError');
+            em1.innerHTML = '';            
+            em2.innerHTML = '';
+          });
         }
 
         function scrollPage () {

@@ -537,7 +537,7 @@ div.sudo-sep {
 	overflow-y: hidden !important;
 }
 
-#closeListingModal {
+#closeModal {
 	-webkit-transform: translateX(75px);
 	-moz-transform: translateX(75px);
 	-o-transform: translateX(75px);

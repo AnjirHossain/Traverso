@@ -25,6 +25,8 @@ angular.module('Root.find').config(['$urlRouterProvider','$stateProvider', '$loc
 
 angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$stateParams','$filter','listingPageSv', 
     function($scope,$meteor,$stateParams,$filter,listingPageSv) {
+        // initializeTemplates creates blaze methods
+        initializeTemplates();
 
         // console.log($scope.listings);
         
@@ -77,7 +79,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
         $scope.applyFilters = function(aSearchFodder) {
 
-            if ( !aSearchFodder.address.address_components ) {
+            if ( !aSearchFodder.address ) {
 
                 if ( $scope.searchErrorNoAddress ){
                     $scope.searchErrorNoAddress = false;
@@ -157,9 +159,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                 }
 
                 var searchProps = test;
-                console.log('location in client: ', searchProps.address);
-
-
 
                 $meteor.call('getListings', searchProps).then(
                     function ( answer ) {
@@ -208,8 +207,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
                         console.log('getListings answered fine: ', answer);
                         Session.set("filteredListings", answer); // data for list
-
-
 
                         // clearing markers 
                         listingMarkers.map(function (m) {
@@ -705,73 +702,47 @@ angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function ( $
             });
         } 
 
-        Template.listingResults.helpers({
-            listings: function () {
-                return Session.get("filteredListings");
-            }
-        });
-
-        Template.listingResults.events({
-            'click #listingItem': function (event) {
-
-                // store listing nad lister and set it as the session variable
-                var listingClicked = Listings.findOne({_id: this._id});
-                
-                Session.set('currentListingBeingViewed', listingClicked);
-                Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
-
-                $('#listingModal').modal('toggle');
-            }
-        });
-
-        Template.listingModal.helpers({
-            'listingContent': function () {
-                return Session.get('currentListingBeingViewed');
-            },
-            'listingOwner': function (){
-                return Session.get('currentListingOwner');
-            }
-        });
-
-        Template.listingModal.events({
-            'click #viewListing': function (event) {
-
-                // temporary until I read up more on Temporary UI State in meteor
-                $('#listingModal').modal('hide');
-                $('body').removeClass('modal-open');
-                $('.modal-backdrop').remove();
-            }
-        });
-
         initMap();
-
-    /*    
-        // Template.listingResultsMap.helpers({  
-        //     mapOptions: function() {
-        //         if ( GoogleMaps.loaded() ) {
-
-        //           console.log("GoogleMaps.loaded() aint suspect in listingResultsMap");
-        //           return {
-        //             center: new google.maps.LatLng(47.6097, -122.3331),
-        //             zoom: 8
-        //           };
-        //         }
-        //     }
-        // });
-
-        // Template.searchGeo.onRendered(function() {
-        //     this.autorun(function () {
-        //         if ( GoogleMaps.loaded() ) {
-                    
-        //             console.log('GoogleMaps.loaded() aint suspect in searchGeo');
-                    
-        //             $('search-geo').geocomplete().bind('geocode:result', function(event, result){
-        //                 console.log(result);
-        //             });
-        //         }
-        //     });
-        // });
-    */
 
     });
 }]);
+
+function initializeTemplates() {
+
+    Template.listingResults.helpers({
+        listings: function () {
+            return Session.get("filteredListings");
+        }
+    });
+
+    // need dismiss code for modal
+    Template.listingResults.events({
+        'click #listingItem': function (event) {
+
+            // store listing nad lister and set it as the session variable
+            var listingClicked = Listings.findOne({_id: this._id});
+            
+            Session.set('currentListingBeingViewed', listingClicked);
+            Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
+        }
+    });
+
+    Template.listingModal.helpers({
+        'listingContent': function () {
+            return Session.get('currentListingBeingViewed');
+        },
+        'listingOwner': function (){
+            return Session.get('currentListingOwner');
+        }
+    });
+
+    Template.listingModal.events({
+        'click #viewListing': function (event) {
+
+            // temporary until I read up more on Temporary UI State in meteor
+            $('#listingModal').modal('hide');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+    });
+}

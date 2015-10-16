@@ -674,6 +674,17 @@ input[type="number"].filter-inp:focus,
     font-style: italic;
 }
 
+/*MODAL REDONE*/
+.modal-content {
+  padding: 15px;
+}
+.modal.modal-moderate .modal-dialog {
+  width: 50%;
+}
+.modal-moderate .modal-body {
+  overflow-y: hidden !important;
+}
+
 /* system wide loading spinners */
 .sk-three-bounce {
   margin: 40px auto;
