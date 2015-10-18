@@ -131,23 +131,58 @@ Meteor.methods({
       $or: [ selectors ]
     }, { sort: {'loc': -1} }).fetch();
   },
-  // get listingOwner
   getListingOwner: function ( ownerId ) {
     check(ownerId, String);
 
     return Meteor.users.find({_id: ownerId}).fetch();
   },
-  incrementViews: function( listingId ){
+  incrementViews: function ( listingId ){
     var viewsScf = Listings.findOne({_id: listingId}).views;
     viewsScf++;
     Listings.update({_id: listingId}, { $set: { views: viewsScf } });
     return viewsScf;
+  },
+  updateUserProfileData: function ( userId, updateWith ) {
+    /*
+      UPDATE USER ACCOUNT
+      ___________________
+      - 
+    */
+    var changesToUserProfileData = {};
+
+    // username update works
+    if ( updateWith['username'] ) {
+      changesToUserProfileData['username'] = '' + updateWith['username'];
+    }
+
+    // doesn't do anything
+    if ( updateWith['email'] ) {
+      changesToUserProfileData['emails.0.address'] = '' + updateWith['email'];
+    }
+
+    // all profile updates work
+    if ( updateWith.profile ) {
+      if ( updateWith.profile.firstName ) {
+        changesToUserProfileData['profile.firstName'] = updateWith.profile.firstName;
+      }
+
+      if ( updateWith.profile.lastName ) {
+        changesToUserProfileData['profile.lastName'] = updateWith.profile.lastName;
+      }
+
+      if ( updateWith.profile.name ) {
+        changesToUserProfileData['profile.name'] = updateWith.profile.name; 
+      }
+
+      if ( updateWith.profile.phone ) {
+        changesToUserProfileData['profile.phone'] = updateWith.profile.phone; 
+      }
+
+      if ( updateWith.profile.profilePicUrl ) {
+        changesToUserProfileData['profile.profilePicUrl'] = updateWith.profile.profilePicUrl;
+      }
+    }
+
+    Meteor.users.update({ _id: userId }, { $set: changesToUserProfileData });
   }
-
-  /*
-    UPDATE USER ACCOUNTS
-    ____________________
-
-     - Meteor.users.update({_id:Meteor.user()._id}, {$set:{"profile.name":"Carlos"}})
-  */
 });

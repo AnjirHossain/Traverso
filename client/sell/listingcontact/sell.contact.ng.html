@@ -17,7 +17,7 @@
 		</span>
 	</div>
 	<div style="margin-bottom: 10px;">
-		<label>lastly, a light of your vehicle from 0 to 150 characters</label>
+		<label>lastly, a description (minimum 10 characters) of your listing</label>
 		<textarea rows="3" 
 		class="listing-form-textarea" 
 		ng-model="listingFormBaseData.description"
@@ -29,7 +29,11 @@
 	<div class="input-group">
 		<div class="input-row">
 			<label>Update Email</label>
-			<input type="text" name="createuseremail" placeholder="you@example.com" ng-model="emailRemind">
+			<input type="text" 
+			       class="input-three-fourths" 
+				   name="createuseremail" 
+				   placeholder="you@example.com" 
+				   ng-model="emailRemind">
 		</div>
 	</div>
 	<div class="input-group input-nestedinline">		       

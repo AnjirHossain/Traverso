@@ -1,5 +1,11 @@
+// CALL FOR IMPROVEMENT
+// PUBLISHING WAY MORE DATA THAN NECESSARY
 Meteor.publish('images', function() {
 	return Images.find();
+});
+
+Meteor.publish('userimages', function() {
+	return UserImages.find();
 });
 
 Meteor.publish('listings', function() {

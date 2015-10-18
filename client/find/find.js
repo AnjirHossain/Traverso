@@ -1,23 +1,4 @@
-// var getNormalizedCoordinatesFrom( someWeirdFormat) {
-
-//     return theRightThing
-
-// };
-
-// var centerAndZoomOn = function ( aGoogleAnswer ) {
-//     // Uses given aGoogleAnswer to center and zoom on it. (what it does? expose intention)
-//     // Defaults to the general area of the entered address when there are no results.
-
-
-//     // Normalize coordinates
-
-
-
-//     // center
-
-//     // zoom
-
-// };
+// REFACTOR LONG TASKS W/ EXPRESSIVE JS
 
 angular.module('Root.find', []);
  
@@ -46,8 +27,8 @@ angular.module('Root.find').config(['$urlRouterProvider','$stateProvider', '$loc
 
 angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$stateParams','$filter','listingPageSv', 
     function($scope,$meteor,$stateParams,$filter,listingPageSv) {
-        // initializeTemplates creates blaze methods
-        initializeTemplates();
+        // initFindTemplates creates blaze methods
+        initFindTemplates();
 
         // console.log($scope.listings);
         
@@ -235,7 +216,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                                     }                
                                 }
                             }
-                        }
+                        } 
 
                         panToThis = {
                             lat: location_arr[0],
@@ -255,8 +236,9 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             m.setMap(null);
                             console.log('markers should\'ve been cleared');
                         });       
-
                         listingMarkers = [];
+                        
+                        
                         listingClusters = new MarkerClusterer(listingResultsMap, listingMarkers, mcOptions);
 
                         answer.map(function (e) {
@@ -281,22 +263,23 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                     }
                 );      
 
-                $scope.loading = false; 
+                
             });
 
             $scope.filterPopOverStateMutator();
+            $scope.loading = false; 
         };
 
         $scope.searchErrorNoAddress = false;
 
-        $scope.$watch('searchFodder.address', function(context){
-            // figure out way to watch entire object fcol
-            if (!context) {
-                console.log('reaction to searchFodder.address. Context is: ', context);
-                $scope.filteredListings = [];
-                $scope.filterLax = 6;
-            }
-        });
+        // $scope.$watch('searchFodder.address', function(context){
+        //     // figure out way to watch entire object fcol
+        //     if (!context) {
+        //         console.log('reaction to searchFodder.address. Context is: ', context);
+        //         $scope.filteredListings = [];
+        //         $scope.filterLax = 6;
+        //     }
+        // });
 
         // tangent: listing_window 
         var listingWindowProp = document.getElementById('listingWindow');
@@ -722,7 +705,7 @@ angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function ( $
     });
 }]);
 
-function initializeTemplates() {
+function initFindTemplates() {
 
     Template.listingResults.helpers({
         listings: function () {
@@ -739,6 +722,7 @@ function initializeTemplates() {
             
             Session.set('currentListingBeingViewed', listingClicked);
             Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
+            Session.set('currentListingOwnerEamil', Session.get('currentListingOwner').emails[0].address);
         }
     });
 
@@ -748,6 +732,11 @@ function initializeTemplates() {
         },
         'listingOwner': function (){
             return Session.get('currentListingOwner');
+        },
+        'listingOwnerEmail': function (){
+            if ( Session.get('currentListingOwnerEamil') ) {
+                return Session.get('currentListingOwnerEamil');
+            }
         }
     });
 

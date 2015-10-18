@@ -439,10 +439,22 @@ input[type="number"].filter-inp {
 	border-bottom: 1px solid #ddd !important;
 }
 
-.input-row input {
+.input-group-nestedinline input.input-three-eighths {
+  float: left;
+  width: 37.5%;
+}
+
+.input-row input.input-three-fourths {
 	float: right;
 	width: 75%;
 }
+
+.input-row input.input-whole {
+  float: left;
+  width: 100%;
+}
+
+
 
 .input-group input:not(input[type="submit"]),
 .input-group .input-row input:not(input[type="submit"]) {
@@ -683,6 +695,10 @@ input[type="number"].filter-inp:focus,
 }
 .modal-moderate .modal-body {
   overflow-y: hidden !important;
+}
+
+img {
+  object-fit: cover;
 }
 
 /* system wide loading spinners */
