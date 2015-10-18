@@ -41,6 +41,22 @@ Images.allow({
 	}
 });
 
+UserImages.allow({
+	insert: function(userId, image) {
+		return true;
+	},
+	update: function(userId, image, fields, modifier) {
+		return true;
+	},
+	remove: function(userId, image){
+		return true;
+	},
+	download:function(){
+		return true;
+	}
+});
+
+
 // UserImages.allow({
 	
 // });

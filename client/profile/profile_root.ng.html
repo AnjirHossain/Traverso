@@ -1,33 +1,18 @@
 <!--style="color:#1DB954;"-->
 <div ng-show="$root.currentUser" class="container-profile">
-	<div class="profile_areas_wrap">
-		<div class="col-md-4" ng-controller="profileSettingsCtrl">
-			<div class="user_setting-wrap">
-				<div class="user_settings_img-wrap">
-					<img src="/imgs/img_route_profile/current_user_null.png" 
-						alt="user profile pic" 
-						class="user_profile-pic img-responsive img-circle">
 
-					<!-- <input id="myInput" type="file" style="visibility:hidden" />
-					<button class="floater_user_profile_change btn btn-circle-only"
-							onclick="$('#myInput').click();"><span><i class="fa fa-pencil"></i></span></button> -->
-							
-					<button class="floater_user_profile_change btn btn-circle-only"
-							ng-click="editProfilePic();"><span><i class="fa fa-pencil"></i></span></button>
-				</div>
-				<div class="user_info-wrap">
-					<h3 class="name_present">{{ currentUser.profile.name }}</h3>
-					<hr>
-					<p>Username: <span class="muted_emph">{{ currentUser.username }}</span></p>
-					<hr>
-					<p>Email: <span class="muted_emph">{{ currentUser.emails[0].address }}</span></p>
-					<hr>
-					<p>Phone: <span class="muted_emph">{{ currentUser.profile.phone | cell }}</span></p> <br>
-<!-- 					<button class="btn btn-cta-user_edit"
-							ng-click="editContactInfo()">Edit</button><br> -->
-				</div>
-			</div>
+	<!-- transfer to blaze -->
+	<div class="profile_areas_wrap">
+
+		<!-- concerns profile -->
+		<div class="col-md-4" 
+		     ng-controller="profileSettingsCtrl">
+
+			<!-- concerns profile -->
+			<blaze-template name="editProfile"></blaze-template>
 		</div>
+
+		<!-- concerns user listings -->
 		<div class="col-md-8">
 			<div class="user_listings-wrap" ng-controller="profileRootListingsCtrl">
 
@@ -63,6 +48,8 @@
 			</div>
 		</div>
 	</div>
+
+
 </div>
 
 <!-- use $root.currentUser to verify current user or usher someone to login -->

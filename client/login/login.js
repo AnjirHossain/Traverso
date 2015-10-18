@@ -8,13 +8,14 @@ Template.createAuth.events({
 
 	    // You can go about getting your data from the form any way you choose, but
 	    // in the end you want something formatted like so:
+	    // storing urls to avatars
 	    user = {
 			username: event.target.createuserusername.value,
 			email: event.target.createuseremail.value,
 			password: event.target.createuserpassword.value,
 			passwordConfirmed: event.target.createuserpasswordconfirm.value,
 			profile: {
-				profilePic: '',
+				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
 				firstName: event.target.createuserfirstname.value,
 				lastName: event.target.createuselastrname.value,
 				name: event.target.createuserfirstname.value + ' ' + event.target.createuselastrname.value, 
@@ -26,7 +27,7 @@ Template.createAuth.events({
 
 	    if ( passwordsDontMatch ) {
 
-	    	var errMessage = "Oops! passwords don't match, <span style=\"color:#00E364;\"> lets try that again !</span>";
+	    	var errMessage = 'Oops! passwords don\'t match, <span style=\'color:#00E364;\'> lets try that again !</span>';
 	    	document.getElementById('createAuthError').innerHTML = errMessage;
 	    	
 	    	event.target.createuserpassword.value = '';

@@ -124,6 +124,7 @@ angular.module('Root.sell').controller('sellCtrl', ['$scope','$meteor','$statePa
 
 						$scope.pushListings(listingItemInjectionObj);
 					} else {
+						// handle
 						alert('Something went wrong while storing the location: ' + status);
 					}
 				});
