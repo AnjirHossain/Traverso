@@ -236,8 +236,9 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             m.setMap(null);
                             console.log('markers should\'ve been cleared');
                         });       
-
                         listingMarkers = [];
+                        
+                        
                         listingClusters = new MarkerClusterer(listingResultsMap, listingMarkers, mcOptions);
 
                         answer.map(function (e) {
@@ -262,22 +263,23 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                     }
                 );      
 
-                $scope.loading = false; 
+                
             });
 
             $scope.filterPopOverStateMutator();
+            $scope.loading = false; 
         };
 
         $scope.searchErrorNoAddress = false;
 
-        $scope.$watch('searchFodder.address', function(context){
-            // figure out way to watch entire object fcol
-            if (!context) {
-                console.log('reaction to searchFodder.address. Context is: ', context);
-                $scope.filteredListings = [];
-                $scope.filterLax = 6;
-            }
-        });
+        // $scope.$watch('searchFodder.address', function(context){
+        //     // figure out way to watch entire object fcol
+        //     if (!context) {
+        //         console.log('reaction to searchFodder.address. Context is: ', context);
+        //         $scope.filteredListings = [];
+        //         $scope.filterLax = 6;
+        //     }
+        // });
 
         // tangent: listing_window 
         var listingWindowProp = document.getElementById('listingWindow');
@@ -720,6 +722,7 @@ function initFindTemplates() {
             
             Session.set('currentListingBeingViewed', listingClicked);
             Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
+            Session.set('currentListingOwnerEamil', Session.get('currentListingOwner').emails[0].address);
         }
     });
 
@@ -729,6 +732,11 @@ function initFindTemplates() {
         },
         'listingOwner': function (){
             return Session.get('currentListingOwner');
+        },
+        'listingOwnerEmail': function (){
+            if ( Session.get('currentListingOwnerEamil') ) {
+                return Session.get('currentListingOwnerEamil');
+            }
         }
     });
 

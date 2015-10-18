@@ -69,29 +69,29 @@ angular.module('Root.profile').run(['$rootScope', '$meteor', '$state', function 
       function (event, viewConfig){
         // Session.set('editMode', false);        
         
-        // Tracker.autorun(function(){
-        //   if (Meteor.user()) {
-        //     Session.set('avi', Meteor.user().profile.profilePicUrl);
-        //     console.log('stay calm', Session.get('avi'));
-        //   }
-        // });
+        Tracker.autorun(function(){
+          if (Meteor.user()) {
+            Session.setDefault('avi', Meteor.user().profile.profilePicUrl);
+            // Session.setDefault('');
+            console.log('stay calm', Session.get('avi'));
+          }
+        });
+
     });
 }]);
 
 function initProfileTemplates() {
   // setting editMode false using Session var
-  Session.set('editMode', false);
-  Session.set('avi', currentUser.profile.profilePicUrl);
+  // must change to reactive vars
+  Session.setDefault('editMode', false);
+  // Session.setDefault('avi', currentUser.profile.profilePicUrl);
 
   Template.editProfile.helpers({
     'currentUser_Email': function () {
-
       return Meteor.user().emails[0].address;
     },
     'userAvatar': function () {
-      // if (Session.get('avi')) {
       return Session.get('avi');
-      // }
     },
     'editProfileMode': function () {
       if ( Session.get('editMode') ) {
@@ -103,15 +103,12 @@ function initProfileTemplates() {
 
   Template.editProfile.events({
     'click #startProfileEdit': function ( event ) {
-      if (Session.get('editMode')) {
-        Session.set('editMode', false);
-      } else {
-        Session.set('editMode', true);  
-      }
+      Session.set('editMode', true);  
     },
-
+    'click #saveChangesToProfile': function ( event ){
+      Session.set('editMode', false);  
+    },
     'submit #userDataUpdateForm': function (event) {
-      event.preventDefault();
 
       // gather all data from form; (password & avatar pending).
       var userAccountChanges = {
@@ -124,7 +121,7 @@ function initProfileTemplates() {
           name: event.target.userFirstNameChanged.value + ' ' + event.target.userLastNameChanged.value, 
           phone: event.target.userPhoneNumberChanged.value
         }
-      };
+      }; 
 
       if ( event.target.userImgFileChanged.files[0] ) {
         // storing all files
@@ -155,11 +152,13 @@ function initProfileTemplates() {
         Meteor.call('updateUserProfileData', Meteor.userId(), userAccountChanges);
       }
       event.target.userImgFileChanged.value = '';
+      return false;
     },
 
     'change #userImgFile': function (event) {
-      console.log(event);
-      // WTF
+      // console.log(event);
+      event.preventDefault();
+
       var selectedFiles = event.target.files,
           readerProfile = new FileReader();
 

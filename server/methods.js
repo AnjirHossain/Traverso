@@ -131,7 +131,6 @@ Meteor.methods({
       $or: [ selectors ]
     }, { sort: {'loc': -1} }).fetch();
   },
-  // get listingOwner
   getListingOwner: function ( ownerId ) {
     check(ownerId, String);
 
@@ -143,32 +142,25 @@ Meteor.methods({
     Listings.update({_id: listingId}, { $set: { views: viewsScf } });
     return viewsScf;
   },
-
-  /*
-    UPDATE USER ACCOUNTS
-    ____________________
-
-     - Meteor.users.update({_id:Meteor.user()._id}, {$set:{"profile.name":"Carlos"}})
-  */
   updateUserProfileData: function ( userId, updateWith ) {
-    // vett updateWith 
-    // add selectivity to things being updated
-    // run update
-    // Meteor.users.update({_id: userId}, {$set:{"profile.usersname":"Carlos"}});
-    console.log('id', userId);
-    console.log('changes passed in', updateWith); // right url
-
+    /*
+      UPDATE USER ACCOUNT
+      ___________________
+      - 
+    */
     var changesToUserProfileData = {};
 
+    // username update works
     if ( updateWith['username'] ) {
       changesToUserProfileData['username'] = '' + updateWith['username'];
     }
 
+    // doesn't do anything
     if ( updateWith['email'] ) {
-      changesToUserProfileData['email'] = '' + updateWith['email'];
+      changesToUserProfileData['emails.0.address'] = '' + updateWith['email'];
     }
 
-    // diff the profile
+    // all profile updates work
     if ( updateWith.profile ) {
       if ( updateWith.profile.firstName ) {
         changesToUserProfileData['profile.firstName'] = updateWith.profile.firstName;
