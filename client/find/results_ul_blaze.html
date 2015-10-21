@@ -21,14 +21,22 @@
 				data-toggle="modal"
 				data-target="#listingModal">
 					<span class="col-md-12 lip-text-wrap">
-						<p style="text-align:center;" class="col-md-4 info-pipe">&#36; {{ price }}</p>
+						<p style="text-align:center;" class="col-md-4 info-pipe">
+							<span style="font-weight:500;">&#36;</span> {{ price }}
+						</p>
 
-						<p style="text-align:center;" class="col-md-4 info-pipe">{{ milage }} mi</p>
+						<p style="text-align:center;" class="col-md-4 info-pipe">
+							{{ milage }} <span style="font-weight:500;">mi</span>
+						</p>
 
-						<p style="text-align:center;" class="col-md-4 info-pipe">{{ year }}</p>
+						<p style="text-align:center;" class="col-md-4 info-pipe">
+							<span style="font-weight:500;">yr</span> {{ year }}
+						</p>
 
-						<p style="text-align:center;" class="col-md-12 peak">{{ make.name }}, {{ model.name }}<br>
-						{{ address.formatted_address }}</p>
+						<p style="text-align:center;" class="col-md-12 peak">
+							{{ make.name }}, {{ model.name }}<br>
+							{{ address.formatted_address }}
+						</p>
 					</span>
 				</article>	
 
@@ -58,8 +66,10 @@
 				<div class="modal-body no-padding">
 				<!-- left -->
 
-					<div class="col-md-6 image-container" 
-					style="background-image:url('/cfs/files/images/{{listingContent.listImgId}}/{{listingContent.imageName}}');">
+					<div class="col-md-6 image-container no-padding">
+						<img src="/cfs/files/images/{{listingContent.listImgId}}/{{listingContent.imageName}}" 
+							 class="img-responsive col-md-12 listing-images" 
+							 alt="an image of the listing vehicle">
 					</div>
 								<!-- right -->
 					<div class="col-md-6 listing-text-container">

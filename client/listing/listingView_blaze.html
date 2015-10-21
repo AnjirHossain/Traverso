@@ -3,8 +3,11 @@
 <template name="listingView">
 	
 	<div class="listing-image-wrap col-md-12">
-		<div class="col-md-6 col-md-offset-3 img-container"
-			 style="background-image:url('/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}');">
+		<div class="col-md-6 col-md-offset-3 img-container">
+
+			 <img src="/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}" 
+			 	  class="img-responsive listing-images-full" 
+			      alt="one of the images of the listers car">
 		</div>
 	</div>
 
@@ -19,7 +22,8 @@
 					style="width:75px;height:75px;object-fit:cover">
 				</div>
 				<div style="padding: 30px 0;" class="col-md-8">
-					<p class="lister-username">
+					<p class="lister-username"
+					   style="font-weight: 500;">
 						
 						<!-- not rendering -->
 						{{ listingOwner.profile.name }}	
@@ -27,7 +31,7 @@
 					</p>
 				</div>
 				<div style="padding: 15px 0;" class="col-md-12">
-					<p style="font-size:1.4em;">Lister's contact</p><br>
+					<p style="font-size:1.4em;font-weight: 400;">Lister's contact</p><br>
 					<hr class="muted"><br>
 					<p style="margin:15px 0;">
 						{{ listerEmail }}
@@ -42,7 +46,7 @@
 		<div class="col-md-4 listing-content-sect">
 			<div class="col-md-12 lcs-content-wrap">
 				<div style="text-align:left;" class="col-md-12">
-					<p style="font-size:1.4em;">What the lister has to say about this vehicle</p><br>
+					<p style="font-size:1.4em;font-weight: 400;">What the lister has to say about this vehicle</p><br>
 					<hr class="muted"><br>
 					<p>{{ listing.description }}</p>
 				</div>
@@ -52,7 +56,7 @@
 		<div class="col-md-4 listing-content-sect">
 			<div class="col-md-12 lcs-content-wrap">
 				<div style="text-align:center;" class="col-md-12">
-					<p style="font-size:1.4em;">{{ listing.views }} views</p>
+					<p style="font-size:1.4em;font-weight: 400;">{{ listing.views }} views</p>
 				</div>
 <!-- 				<div style="padding: 30px 0;" class="col-md-12">
 					<p style="font-size:1.4em;">Tags</p><br>
@@ -61,7 +65,7 @@
 					<span class="badge badge-positive">#newtires</span>
 				</div> -->
 				<div style="padding: 30px 0;" class="col-md-12">
-					<p style="font-size:1.4em;">Additional info</p><br>
+					<p style="font-size:1.4em;font-weight: 400;">Additional info</p><br>
 					<hr class="muted"><br>
 					<p>Trim level: <span class="muted_emph">{{ listing.trim }}</span></p>
 					<p>Specs: 

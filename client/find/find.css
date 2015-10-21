@@ -72,17 +72,17 @@ input[type="text"].search-geo:focus {
 .btn-dropdown-filter.active,
 .btn-dropdown-filter.active i {
 	color: #23E363;	
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	-o-box-shadow: none;
+	box-shadow: none;
+	box-shadow: none;
+	box-shadow: none;
 	box-shadow: none;
 }
 
 .btn-dropdown-filter.active {
 	border-color: #23E363;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	-o-box-shadow: none;
+	box-shadow: none;
+	box-shadow: none;
+	box-shadow: none;
 	box-shadow: none;
 }
 
@@ -522,6 +522,24 @@ div.sudo-sep {
 	background-size: cover;
 	background-position-x: 50%;
 	background-position-y: 50%;
+	position: relative;
+	/*border-right: 1px solid #ddd;*/
+	background-color: #212124;
+}
+
+.listing-images {
+	position: absolute;
+	padding: 0;
+	/*margin: 0;*/
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%,-50%);
+	-moz-transform: translate(-50%,-50%);
+	-o-transform: translate(-50%,-50%);
+	transform: translate(-50%,-50%);
+	border-bottom-left-radius: 7px !important;
+	border-top-left-radius: 7px !important;
+	/*box-shadow: -10px 0px 12px 0px #8D9799;*/
 }
 
 .listing-text-container {
