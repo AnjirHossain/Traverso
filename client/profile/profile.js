@@ -73,7 +73,7 @@ angular.module('Root.profile').run(['$rootScope', '$meteor', '$state', function 
           if (Meteor.user()) {
             Session.setDefault('avi', Meteor.user().profile.profilePicUrl);
             // Session.setDefault('');
-            console.log('stay calm', Session.get('avi'));
+            // console.log('stay calm', Session.get('avi'));
           }
         });
 

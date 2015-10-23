@@ -1,5 +1,7 @@
 Listings = new Mongo.Collection('listings');
 
+CarModels = new Mongo.Collection('carmodels');
+
 Images = new FS.Collection("images", {
     stores: [
         new FS.Store.GridFS("images")
@@ -26,6 +28,7 @@ Listings.allow({
 	}
 });
 
+// make strict allow deny rules
 Images.allow({
 	insert: function(userId, image) {
 		return true;
@@ -56,8 +59,19 @@ UserImages.allow({
 	}
 });
 
+CarModels.allow({
+	insert: function(userId, image) {
+		return true;
+	},
+	update: function(userId, image, fields, modifier) {
+		return true;
+	},
+	remove: function(userId, image){
+		return true;
+	}
+});
+
 
 // UserImages.allow({
 	
 // });
-

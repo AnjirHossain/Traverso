@@ -12,6 +12,10 @@ Meteor.publish('listings', function() {
 	return Listings.find();
 });
 
+Meteor.publish('carmodels', function() {
+	return CarModels.find();
+});
+
 Meteor.publish('users', function(){
 	return Meteor.users.find({}, { fields: { emails: 1, username: 1, profile: 1 }});
 });

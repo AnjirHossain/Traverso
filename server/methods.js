@@ -184,5 +184,37 @@ Meteor.methods({
     }
 
     Meteor.users.update({ _id: userId }, { $set: changesToUserProfileData });
+  },
+  dabbleCarModels: function () {
+    return CarModels.find({
+      $or: [ 
+
+        {
+          name: 'Mazda',
+          models: {
+            $elemMatch: {
+              name: '3'
+            }
+          } 
+        }
+
+        
+      ]
+    }).fetch();
   }
+
+  // passing in .niceNames
+  // getMakes: function () {
+
+  // },
+  // getModels: function (modelsForThisMake) {
+
+  // },
+  // getYears: function (yearsForThisMake, yearsForThisModel) {
+
+  // },
+  // // outliar really getting styles because trims are nested inside styles
+  // getTrims: function (trimsForThisMake, trimsForThisModel, trimsForThisYear) {
+
+  // }
 });

@@ -1,10 +1,19 @@
 <article class="pitch">
 	<h3 style="margin-top: -20px;">Car specs</h3><br>
+	<a href="http://www.edmunds.com/?id=apis">
+		<img style="width:220px;" src="/220_red.png" class="img-responsive">
+	</a><br>
 	<div class="input-group input-group-inline">
 
-		<select ng-model="listingFormBaseData.make" ng-options="item as item.name for item in items[0].makes track by item.name" required>
+		<select ng-model="listingFormBaseData.make" 
+		ng-options="item as item.name for item in items[0].makes track by item.name" required>
 			<option value="" ng-show="false" default selected>Make</option>
 		</select>
+
+		<!-- <select ng-options="">
+			<option value="" ng-show="false" default selected>Make</option>
+		</select>	 -->
+
 		<select ng-model="listingFormBaseData.model" 
 		ng-options="item as item.name for item in listingFormBaseData.make.models track by item.name" required>
 			<option value="" ng-show="false" default selected>Model</option>
@@ -46,8 +55,6 @@
 		</div>
 			
 	</div>
-
-
 	<div class="col-md-12 form-progress-indication-relative-filler">
 		<div class="form-progress-indication-wrap">
 			<span class="indicator" ng-class="{active:stateInit}"><i class="fa fa-circle"></i></span>
