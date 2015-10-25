@@ -30,18 +30,19 @@ function ensureVehicleAPI () {
 	var url = 'http://api.edmunds.com/api/vehicle/v2/makes?fmt=json&api_key=jjawk3r63ms55jx5n8phfss7';
 
 	HTTP.call( 'GET', url, function (error, answer) {
-		// iterating over makes in answer
-		// for each one collect styles for ea year & model
-
+    // Get all makes from the API.
+		// Iterate over them and one collect styles for each year & model
+    if(error) {
+      return console.log('Problem fetching makes from edmunds: ', error);
+    }
+    
 		// parameters being passed before styles w/ aMake/aModel/aYear
-		answer.data.makes.forEach(function (aMake){
-
+		answer.data.makes.forEach(function (aMake) {
 
 			aMake.models.forEach(function (aModel, i) {
 
 				aModel.years.forEach(function (aYear, j) {
 					
-
 					// if ( this make model year in CarModels doesn't have styles ) 
 
 						var styleUrl = 'http://api.edmunds.com/api/vehicle/v2/'+aMake.niceName+'/'+aModel.niceName+'/'+aYear.year.toString()+'/styles?fmt=json&api_key=jjawk3r63ms55jx5n8phfss7'; 
