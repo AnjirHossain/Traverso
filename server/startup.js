@@ -69,7 +69,13 @@ function ensureVehicleAPI () {
 						aMake.models[i].years[j].styles = theStyles;
 						console.log('years:   ', JSON.stringify(aMake.models[i].years[j]));
 
-						CarModels.insert(aMake);
+						CarModels.upsert(
+              { // selector
+                id: aMake.id
+              }
+              , { // what to update
+                $set: aMake
+              });
 						// console.log(aMake.niceName+' '+ aModel.niceName +' '+aYear.year+' styles: ', theStyles);
 					});
 
