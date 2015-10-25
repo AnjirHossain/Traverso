@@ -35,7 +35,7 @@ function ensureVehicleAPI () {
     if(error) {
       return console.log('Problem fetching makes from edmunds: ', error);
     }
-    
+
 		// parameters being passed before styles w/ aMake/aModel/aYear
 		answer.data.makes.forEach(function (aMake) {
 
@@ -43,27 +43,35 @@ function ensureVehicleAPI () {
 
 				aModel.years.forEach(function (aYear, j) {
 					
-					// if ( this make model year in CarModels doesn't have styles ) 
+          // 1. We might have aMake locally, lets check that
+          var makeToUpsert = CarModels.findOne(aModel.id);
 
-						var styleUrl = 'http://api.edmunds.com/api/vehicle/v2/'+aMake.niceName+'/'+aModel.niceName+'/'+aYear.year.toString()+'/styles?fmt=json&api_key=jjawk3r63ms55jx5n8phfss7'; 
-						// here the delay
-						Meteor._sleepForMs(500);
+          // 2. Do we have this make locally AND it has styles already?
+          if(!!makeToUpsert && !!makeToUpsert.models[i].years[j].styles) {
+            return;  // by pass with no action because we already have it.
+          }
 
-						HTTP.call('GET', styleUrl, function (err, ans){
-							
-							if (err) {
-								return console.log('Could not fetch style: ', err);
-							}
+          // 3. Lets insert it after fetching the styles that corresponds to it
+					var styleUrl = 'http://api.edmunds.com/api/vehicle/v2/'+aMake.niceName+'/'+aModel.niceName+'/'+aYear.year.toString()+'/styles?fmt=json&api_key=jjawk3r63ms55jx5n8phfss7'; 
 
-							var theStyles = JSON.parse(ans.content).styles;
+					// This delay is to satisfy the requests per second allowed by the API.
+					Meteor._sleepForMs(500);
 
-							
-							aMake.models[i].years[j].styles = theStyles;
-							console.log('years:   ', JSON.stringify(aMake.models[i].years[j]));
+					HTTP.call('GET', styleUrl, function (err, ans){
+						
+						if (err) {
+							return console.log('Could not fetch style: ', err);
+						}
 
-							CarModels.insert(aMake);
-							// console.log(aMake.niceName+' '+ aModel.niceName +' '+aYear.year+' styles: ', theStyles);
-						});
+						var theStyles = JSON.parse(ans.content).styles;
+
+						
+						aMake.models[i].years[j].styles = theStyles;
+						console.log('years:   ', JSON.stringify(aMake.models[i].years[j]));
+
+						CarModels.insert(aMake);
+						// console.log(aMake.niceName+' '+ aModel.niceName +' '+aYear.year+' styles: ', theStyles);
+					});
 
 					// }
 
