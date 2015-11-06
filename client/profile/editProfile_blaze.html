@@ -22,26 +22,42 @@
 					name="userImgFileChanged"/>
 
 					<button class="update-user-image btn btn-circle-only z-index-10"
-							onclick="document.getElementById('userImgFile').click()">
+							onclick="event.preventDefault();document.getElementById('userImgFile').click();">
 						<span><i class="fa fa-camera"></i></span>
 					</button>
 				</div>
 
 				<div class="user_info-wrap">
 					<!-- values !!! -->
-					<div class="input-group-nestedinline">
-						<label>Name</label>
-						<input type="text"
-							   class="input-three-eighths" 
-							   name="userFirstNameChanged" 
-							   placeholder="First"
-							   value="{{currentUser.profile.firstName}}">
-						<input type="text"
-							   class="input-three-eighths" 
-							   name="userLastNameChanged" 
-							   placeholder="Last"
-							   value="{{currentUser.profile.lastName}}">
-					</div>
+					
+
+						{{#if accountTypeIndividual}}
+							<div class="input-group-nestedinline">
+								<label>Name</label>
+								<input type="text"
+									   class="input-three-eighths" 
+									   name="userFirstNameChanged" 
+									   placeholder="First"
+									   value="{{currentUser.profile.firstName}}">
+								<input type="text"
+									   class="input-three-eighths" 
+									   name="userLastNameChanged" 
+									   placeholder="Last"
+									   value="{{currentUser.profile.lastName}}">
+							</div>
+						{{/if}}
+
+						{{#if accountTypeDealer}}
+							<div class="input-row">
+								<label>Name</label>
+								<input type="text"
+									   class="input-three-fourths" 
+									   name="userNameChanged" 
+									   placeholder="username"
+									   value="{{currentUser.profile.name}}">
+							</div>
+						{{/if}}
+						
 
 					<div class="input-row">
 						<label>User Name</label>

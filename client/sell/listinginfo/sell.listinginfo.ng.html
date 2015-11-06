@@ -1,23 +1,28 @@
 <article class="pitch">
-	<h3 style="margin-top: -20px; margin-bottom:30px;">Listing details</h3>
+	<h3 style="margin-top: -20px; margin-bottom:30px;font-weight:400 !important;">Listing details</h3>
 	<div class="input-group">
 		<div class="input-row">
-			<label>Listing Price</label>
-			<input type="number" placeholder="$ 25000" ng-model="listingFormBaseData.price" ng-minlength="1" required>
+			<!-- <label style="font-weight:300;">Listing Price</label> -->
+			<input type="number" 
+			class="input-whole" 
+			placeholder="Listing Price" 
+			ng-model="listingFormBaseData.price" 
+			ng-minlength="1" 
+			required>
 		</div>
-	</div>
+	</div><br>
 	<!--Location fields-->
 	<div class="input-group input-group-inline">
-		<h4 style="margin-bottom:15px;">Where can people find your vehicle?</h4>
+		<h4 style="margin-bottom:15px;font-weight:300;">Where can people find your vehicle?</h4>
 		<div class="input-row">		
-			<label>Address</label>
+			<!-- <label style="font-weight:300;">Address</label> -->
 			<input type="text"
-			    class="input-three-fourths" 
+			    class="input-whole" 
 				g-places-autocomplete
 				force-selection="true"
 				options="autocompleteOptions"
 				ng-model="listingFormBaseData.address" 
-				placeholder="1234 123rd st sw Somewhere Dr 12345"
+				placeholder="Address"
 				ng-minlength="1" 
 				required>
 		</div>

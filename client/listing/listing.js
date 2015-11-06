@@ -34,6 +34,7 @@ angular.module('Root.listingPage').controller('listingCtrl',['$scope','$meteor',
 
           Session.set('listingOwnerId', listingOwner);
           console.log('recently set session variable', Session.get('listingOwnerId'));
+          console.log(listing.speculations);
           return listing;
         }
       }, 

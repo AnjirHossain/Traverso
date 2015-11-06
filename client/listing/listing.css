@@ -9,9 +9,9 @@
 }
 
 .listing-image-wrap {
-	margin-top: 8vh;
+	margin-top: 7vh;
 	position: relative;
-	height: 80vh;
+	height: auto;
 	padding: 5vh; /* suspect */
 	border-bottom: 1px solid #ddd;
 	background-color: #212124;
@@ -20,7 +20,7 @@
 /*image loading gif*/
 .img-container {
 	position: relative;
-	height: 70vh;
+	height: auto;
 	background-size: cover;
 	background-position: center;
 }

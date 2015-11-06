@@ -1,14 +1,14 @@
+// helpers
+
+// events
 Template.createAuth.events({
     'submit #createAuthFormTag': function (event) {
-        // event.preventDefault();
+        event.preventDefault();
+
         var user, 
-        	passwordsDontMatch;
+		    passwordsDontMatch;
 
-	    // Collect data and validate it.
-
-	    // You can go about getting your data from the form any way you choose, but
-	    // in the end you want something formatted like so:
-	    // storing urls to avatars
+	    // get auth input and validate it.
 	    user = {
 			username: event.target.createuserusername.value,
 			email: event.target.createuseremail.value,
@@ -16,12 +16,13 @@ Template.createAuth.events({
 			passwordConfirmed: event.target.createuserpasswordconfirm.value,
 			profile: {
 				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
+				profileType: 'individual',
 				firstName: event.target.createuserfirstname.value,
 				lastName: event.target.createuselastrname.value,
 				name: event.target.createuserfirstname.value + ' ' + event.target.createuselastrname.value, 
 				phone: event.target.createusercell.value
 			}
-	    }
+	    };
 
 	    passwordsDontMatch = !(user.password === user.passwordConfirmed);
 
@@ -54,13 +55,17 @@ Template.createAuth.events({
 				document.getElementById('createAuthError').innerHTML = errMessage;
 				return;
 			} else {
-				console.log(user);
+				console.log('individual account', user);
+				Session.set('avi', user.profile.profilePicUrl);
+				Session.set('createDealerAccount', false);
+				Session.set('createIndividualAccount', false);
+				Session.set('chooseAccountType', true);
 			}
 		});
 
 
-		// a lil twist o da knob to get things right
-
+		// reset EVERYTHING
+		Session.set('createDealerAccount', false);
 		event.target.createuserusername.value = '';
 		event.target.createuseremail.value = '';
 		event.target.createuserpassword.value = '';
@@ -68,7 +73,6 @@ Template.createAuth.events({
 		event.target.createuserfirstname.value = '';
 		event.target.createuserlastname.value = '';
 		event.target.createusercell.value = '';
-        return false;
     }
 });
 
@@ -97,7 +101,8 @@ Template.useExistingAuth.events({
             	}
             	return;
             } else if(Meteor.user()) {
-            	console.log("Sombody logged in: " + Meteor.user().profile.name);
+            	console.log('Sombody logged in: ' + Meteor.user().profile.name);
+            	Session.set('avi', Meteor.user().profile.profilePicUrl);
             } else {
             	console.log("multiple things could've gone wrong");
             }
@@ -113,7 +118,8 @@ Template.useExistingAuth.events({
 Template.dashPreviewInNav.events({
     'click #signOut': function (event) {
         // event.preventDefault();
-        Meteor.logout(function() {/*handle*/});
+        Meteor.logout(function() {
+        });
         
         return;
     }

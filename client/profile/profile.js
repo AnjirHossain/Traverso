@@ -83,7 +83,7 @@ angular.module('Root.profile').run(['$rootScope', '$meteor', '$state', function 
 function initProfileTemplates() {
   // setting editMode false using Session var
   // must change to reactive vars
-  Session.setDefault('editMode', false);
+  Session.set('editMode', false);
   // Session.setDefault('avi', currentUser.profile.profilePicUrl);
 
   Template.editProfile.helpers({
@@ -98,6 +98,30 @@ function initProfileTemplates() {
         
         return Session.get('editMode');
       }
+    },
+    'accountTypeDealer': function () {
+      if (Meteor.user()) {
+        if (Meteor.user().profile) {
+          if ( Meteor.user().profile.profileType === 'dealership') {
+            console.log('user profile', Meteor.user().profile);
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+    },
+    'accountTypeIndividual': function () {
+      if (Meteor.user()) {
+        if (Meteor.user().profile) {
+          if ( Meteor.user().profile.profileType === 'individual') {
+            console.log('user profile', Meteor.user().profile);
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
     } 
   });
 
@@ -106,11 +130,39 @@ function initProfileTemplates() {
       Session.set('editMode', true);  
     },
     'click #saveChangesToProfile': function ( event ){
+      event.preventDefault();
       Session.set('editMode', false);  
     },
     'submit #userDataUpdateForm': function (event) {
+      event.preventDefault();
 
       // gather all data from form; (password & avatar pending).
+      var userAccountChanges;
+
+      if (Meteor.user().profile.profileType === 'dealership') {
+        userAccountChanges = {
+          username: event.target.userNameChanged.value,
+          email: event.target.userEmailChanged.value,
+          profile: {
+            profilePicUrl: '' + Meteor.user().profile.profilePicUrl,
+            name: event.target.userNameChanged.value, 
+            phone: event.target.userPhoneNumberChanged.value
+          }
+        }; 
+      } else {
+        userAccountChanges = {
+          username: event.target.userNameChanged.value,
+          email: event.target.userEmailChanged.value,
+          profile: {
+            profilePicUrl: '' + Meteor.user().profile.profilePicUrl,
+            firstName: event.target.userFirstNameChanged.value,
+            lastName: event.target.userLastNameChanged.value,
+            name: event.target.userFirstNameChanged.value + ' ' + event.target.userLastNameChanged.value, 
+            phone: event.target.userPhoneNumberChanged.value
+          }
+        }; 
+      }
+
       var userAccountChanges = {
         username: event.target.userNameChanged.value,
         email: event.target.userEmailChanged.value,
@@ -152,7 +204,6 @@ function initProfileTemplates() {
         Meteor.call('updateUserProfileData', Meteor.userId(), userAccountChanges);
       }
       event.target.userImgFileChanged.value = '';
-      return false;
     },
 
     'change #userImgFile': function (event) {
@@ -171,7 +222,6 @@ function initProfileTemplates() {
     }
 
   });
-
 }
 
 

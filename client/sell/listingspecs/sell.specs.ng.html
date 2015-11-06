@@ -1,54 +1,41 @@
 <article class="pitch">
-	<h3 style="margin-top: -20px;">Car specs</h3><br>
-	<a href="http://www.edmunds.com/?id=apis">
-		<img style="width:220px;" src="/220_red.png" class="img-responsive">
-	</a><br>
+	<h3 style="margin-top: -20px;font-weight:400 !important;">Vehicle details</h3><br>
 	<div class="input-group input-group-inline">
 
-		<select ng-model="listingFormBaseData.make" 
-		ng-options="item as item.name for item in items[0].makes track by item.name" required>
-			<option value="" ng-show="false" default selected>Make</option>
+		<!-- nail best practices -->
+		<select ng-change="getModels(listingFormBaseData.make)"
+		ng-model="listingFormBaseData.make" 
+		ng-options="make as make.name for make in makes track by make.name">
+			<option value=''>Make</option>
 		</select>
 
-		<!-- <select ng-options="">
-			<option value="" ng-show="false" default selected>Make</option>
-		</select>	 -->
-
-		<select ng-model="listingFormBaseData.model" 
-		ng-options="item as item.name for item in listingFormBaseData.make.models track by item.name" required>
-			<option value="" ng-show="false" default selected>Model</option>
+		<select ng-change="getYears(listingFormBaseData.model)"
+		ng-model="listingFormBaseData.model"
+		ng-options="model as model.name for model in listingFormBaseData.make.models track by model.name">
+			<option value=''>Model</option>
 		</select>
 
-	</div>
+		<select ng-change="getTrims(listingFormBaseData.year)"
+		ng-model="listingFormBaseData.year"
+		ng-options="year as year.year for year in listingFormBaseData.model.years track by year.year">
+			<option value=''>Year</option>
+		</select>
 
+		<select ng-change="logTrim(listingFormBaseData.trim)"
+		ng-model="listingFormBaseData.trim"
+		ng-options="style as style.trim for style in listingFormBaseData.year.styles track by style.trim">
+			<option value=''>Trim</option>
+		</select>
 
-
-
-
-
-
-
-	<div class="input-group input-group-nestedinline"> 
-		<input type="text" placeholder="Trim" ng-model="listingFormBaseData.trim" ng-minlength="1" required>
-		<input type="text" placeholder="Body" ng-model="listingFormBaseData.body" ng-minlength="1" required>
-
-	</div>
+	</div><br>
 	
 	<div class="input-group">
-		<div class="input-row"> 
-			<label>Year</label>
-			<input type="number" 
-			       class="input-three-fourths" 
-			       placeholder="ex: 2015" 
-				   ng-model="listingFormBaseData.year" 
-				   ng-minlength="4" 
-				   required>
-		</div>
+
 		<div class="input-row">
-			<label>Milage</label>
+			<!-- <label>Milage</label> -->
 			<input type="number" 
-			       class="input-three-fourths" 
-			       placeholder="ex: 42000" 
+			       class="input-whole" 
+			       placeholder="Mileage" 
 			       ng-model="listingFormBaseData.milage" 
 			       ng-minlength="1" 
 			       required>		

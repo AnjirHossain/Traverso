@@ -1,21 +1,25 @@
 <div class="container-landing"><!-- Full Width Image Header -->
-    <header class="header-image">
-<!--         <video autoplay loop poster="polina.jpg" id="bgvid" muted>
-            <source src="/IMG_2159.mp4" type="video/webm">
-            <source src="/IMG_2159.mp4" type="video/mp4">
-        </video> -->
-        <video autoplay loop poster="polina.jpg" id="bgvid" muted>
-            <source src="/IMG_2159.mp4" type="video/webm">
-            <source src="/IMG_2159.mp4" type="video/mp4">
-        </video>
-        <article class="pitch">
-            <h1 style="color:#fff;">let the deal find <span class="emph slogan">YOU</span></h1>
-            <!-- <h1 style="color:#fff;">let the deal find <span class="emph slogan">YOU</span></h1> -->
-            <span class="cta-group">
-                <button class="btn cta-find" ui-sref="find">Find</button>
-                <button class="btn cta-sell" ui-sref="sell.listinginfo">Sell</button>
-            </span>
-        </article>
+    <header class="header-image z-index-1">
+        <div class="header-image-cloak z-index-2">
+            <article class="pitch z-index-3">
+                <h1 style="color:#fff;
+                text-shadow:
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);">let the deal find 
+                <span class="emph slogan"
+                style="font-weight:700;">YOU</span></h1>
+                
+                <span class="cta-group">
+                    <button class="btn cta-find" ui-sref="find.dealership">Find</button>
+                    <button class="btn cta-sell" ui-sref="sell.listinginfo">Sell</button>
+                </span>
+            </article>
+        </div>
     </header>
 
     <!-- Page Content -->
@@ -27,9 +31,13 @@
         <div class="featurette first">
             <img class="featurette-image img-circle img-responsive pull-right" 
             style="width:550px;height:550px;object-fit:cover;" 
-            src="https://d13yacurqjgara.cloudfront.net/users/29889/screenshots/2013307/streams.gif">
-            <h1 class="featurette-heading">Find</h1>
-            <p class="lead"><span class="emph-color-green">thousands</span> of listings from curated dealerships <br> and personal sellers.</p>
+            src="/carkeys.gif">
+            <h1 class="featurette-heading"
+            style="font-weight:600;">Find</h1>
+            <p class="lead">
+                <span class="emph-color-green"
+                style="font-weight:600;">thousands</span> of listings from curated dealerships <br> and personal sellers.
+            </p>
         </div>
 
         <hr class="featurette-divider">
@@ -38,17 +46,23 @@
         <div class="featurette second">
             <img class="featurette-image img-circle img-responsive pull-left" 
             style="width:550px;height:550px;object-fit:cover;" 
-            src="https://d13yacurqjgara.cloudfront.net/users/11867/screenshots/1423478/preview_niv_01.gif">
-            <h1 class="featurette-heading">Sell</h1>
-            <p class="lead">list your vehicle or your whole inventory at <span class="emph-color-blue">obnoxious speeds</span></p>
+            src="/pricetag.png">
+            <h1 class="featurette-heading"
+            style="font-weight:600;">Sell</h1>
+            <p class="lead">
+                list your vehicle or your whole inventory at 
+                <span class="emph-color-blue" style="font-weight:600;">obnoxious speeds</span>
+            </p>
         </div>
 
-        <hr class="featurette-divider">
+        <hr id="aboutUs" class="featurette-divider">
 
         <section class="aboutus-wrap sudo-sep">
             <article class="pitch">
-                <h1>About Us</h1>        
-                <p>We’re a company focused on bringing the consumer what they want without any nuisance. We've always been frustrated with the complexity and endless forms of other sites and decided that we were going to do it better. With hard work we built what you see today; simplicity and efficiency.</p>
+                <h1 class="featurette-heading"
+                style="font-weight:600;">About Us</h1>    
+                <p class="lead" 
+                style="font-size:1.15em;">We’re a company focused on bringing the consumer what they want without any nuisance. We've always been frustrated with the complexity and endless forms of other sites and decided that we were going to do it better. With hard work we built what you see today; simplicity and efficiency.</p>
             </article>
         </section>
 
@@ -56,18 +70,28 @@
 
     <!-- Footer -->
     <footer>
-        <div class="col-md-4 footer-sep">
-            <p>Traverso</p>
+        <div class="col-md-4 no-padding no-margin">
+            <h4><a ui-sref="landing" style="font-weight:700;margin-bottom:10px;">Traverso</a></h4>
+            
         </div>
-        <div class="col-md-4 footer-sep">
-            <span>
-                <i class="fa fa-twitter"></i>
-                <i class="fa fa-facebook"></i>
-                <i class="fa fa-instagram"></i>
-            </span>
+        <div class="col-md-4 no-padding no-margin">
+            <p><a ui-sref="find.dealership">Find</a></p>
+            <p><a ui-sref="sell" style="margin-bottom:10px;">Sell</a></p>
+            <p ng-show="!$root.currentUser">
+                <a data-toggle="modal" data-target="#authModal" style="margin-bottom:10px;">Login</a>
+            </p>
+            <p ng-show="$root.currentUser">
+                <a ui-sref="profile" style="margin-bottom:10px;">Profile</a>
+            </p>
+            <p ng-show="$root.currentUser">
+                <a data-toggle="modal" data-target="#authModal" style="margin-bottom:10px;">Sign Out</a>
+            </p>
         </div>
-        <div class="col-md-4 footer-sep">
-            <p>Copy rights &copy; Traverso 2015</p>
+        <div class="col-md-4 no-padding no-margin">
+            <p><a href="#aboutUs" style="margin-bottom:10px;">About Us</a></p>
+            <p><a style="margin-bottom:10px;">Explore | Coming soon</a></p>
+            <p><a style="margin-bottom:10px;">Jobs | Coming soon</a></p>
+            <p><a style="margin-bottom:10px;" href="mailto:anjirhossain@icloud.com">Contact us</a></p>
         </div>
     </footer>
 </div>

@@ -1,5 +1,7 @@
 // REFACTOR LONG TASKS W/ EXPRESSIVE JS
 
+// angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function ($scope,$meteor,$stateParams){}]);
+
 angular.module('Root.find', []);
  
 var geocoder,
@@ -11,15 +13,29 @@ angular.module('Root.find').config(['$urlRouterProvider','$stateProvider', '$loc
 
     $locationProvider.html5Mode(true);
 
+    $urlRouterProvider.when('/find', '/:personallistings');
+
     $stateProvider
 
-    /*sell subdir*/
-    /*find subdir*/
-      .state('find', {
-        url: '/find',
-        templateUrl: 'client/find/find.ng.html',
-        controller: 'findCtrl'
-      });
+        /*sell subdir*/
+        /*find subdir*/
+        .state('find', {
+            url: '/find',
+            templateUrl: 'client/find/find.ng.html',
+            controller: 'findCtrl'
+        })
+
+        .state('find.dealership', {
+            url: '/:dealershiplistings',
+            templateUrl: 'client/find/dealershiplistings/dealershipView.ng.html',
+            controller: 'findCtrl'
+        })
+
+        .state('find.personal', {
+            url: '/:personallistings',
+            templateUrl: 'client/find/privatelistings/privateView.ng.html',
+            controller: 'findCtrl'
+        });
 
       /*root subdir*/
       // $url.when - > where to ?
@@ -126,7 +142,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             console.log('address ', a);
         };
 
-        $scope.applyFilters = function(aSearchFodder) {
+        $scope.applyFilters = function (aSearchFodder) {
 
             if ( !aSearchFodder.address ) {
 
@@ -171,7 +187,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
                 var searchProps = test;
 
-                $meteor.call('getListings', searchProps).then(
+                $meteor.call('getDealershipListings', searchProps).then(
                     function ( answer ) {
 
                         /*
@@ -270,15 +286,90 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             $scope.loading = false; 
         };
 
+        // FACTOR INTO RESPECTIVE CONTROLLER
+        $scope.applyFiltersPrivate = function (aSearchFodder) { 
+            if ( !aSearchFodder.address ) {
+
+                if ( $scope.searchErrorNoAddress ){
+                    $scope.searchErrorNoAddress = false;
+                } else {
+                    $scope.searchErrorNoAddress = true;
+                }
+                return;
+            }
+            // green light for computation
+            $scope.searchErrorNoAddress = false;
+            // loading indicator
+            $scope.loading = true;
+            // temporary
+            $scope._searchFodderInHouse = aSearchFodder;
+
+            $meteor.autorun( $scope, function () {
+
+                var test = $scope._searchFodderInHouse;
+
+                // temporary moving inside the dynamic formula for stripping out lat long
+
+                /*
+                    Normalizing lat lng
+                    -------------------
+                    - server does not detect lat() lng() funcs
+                      sent from client; (would probably be a huge security risk).
+                    - rename and embrace
+
+                */
+                if ( test.address.geometry.location.lat ) {
+                    test.address.geometry.location.latitudeFinal = test.address.geometry.location.lat();
+                }
+                if ( test.address.geometry.location.lng ) {
+                    test.address.geometry.location.longitudeFinal = test.address.geometry.location.lng();
+                }
+
+                var searchProps = test;
+
+                $meteor.call('getPrivateListings', searchProps).then(
+                    function ( answer ) {
+
+                        /*
+                            TODOS
+                            -----
+                            - map clusters
+                            - map panning to location of listing that user hovers over
+                            - function for adding | removing markers 
+                            - attach _id to every listing marker
+                            - refactor tasks into functions
+                        */
+                        if ( answer.length > 0 ) {
+                            // vett
+                            $scope.noResults = false;
+                            console.log('getListings answered fine: ', answer);
+                            Session.set('filteredListings', answer); // data for list
+                        } else {
+                            // vett
+                            $scope.noResults = true;
+                        } 
+                    }, 
+                    function (error) {
+                        console.log(error); 
+                    }
+                );      
+
+                
+            });
+
+            $scope.filterPopOverStateMutator();
+            $scope.loading = false;
+        };
+
         $scope.searchErrorNoAddress = false;
 
         // $scope.$watch('searchFodder.address', function(context){
-        //     // figure out way to watch entire object fcol
-        //     if (!context) {
-        //         console.log('reaction to searchFodder.address. Context is: ', context);
-        //         $scope.filteredListings = [];
-        //         $scope.filterLax = 6;
-        //     }
+            //     // figure out way to watch entire object fcol
+            //     if (!context) {
+            //         console.log('reaction to searchFodder.address. Context is: ', context);
+            //         $scope.filteredListings = [];
+            //         $scope.filterLax = 6;
+            //     }
         // });
 
         // tangent: listing_window 
@@ -290,8 +381,8 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
             $scope.listingWindowContent.listingId = listingId;
             $scope.listingWindowContent.year = listingInWindow.year;
-            $scope.listingWindowContent.make = listingInWindow.make.name;
-            $scope.listingWindowContent.model = listingInWindow.model.name;
+            $scope.listingWindowContent.make = listingInWindow.make;
+            $scope.listingWindowContent.model = listingInWindow.model;
             $scope.listingWindowContent.mileage = listingInWindow.milage;
             $scope.listingWindowContent.listingImgInWindow = "/cfs/files/images/"+listingInWindow.listImgId+"/"+listingInWindow.imageName;
             $scope.listingWindowContent.price = listingInWindow.price;
@@ -669,7 +760,17 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
     }
 ]);
 
-// angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function ($scope,$meteor,$stateParams){}]);
+angular.module('Root.find').controller('dealershipViewControl', ['$scope','$meteor','$stateParams','$filter','listingPageSv', 
+    function ($scope, $meteor, $stateParams, $filter, listingPageSv) {
+
+    }
+]);
+
+angular.module('Root.find').controller('personalViewControl', ['$scope','$meteor','$stateParams','$filter','listingPageSv', 
+    function ($scope, $meteor, $stateParams, $filter, listingPageSv) {
+        
+    }
+]);
 
 angular.module('Root.find').directive('ngEnter', function () {
     return function (scope, element, attrs) {
@@ -709,7 +810,31 @@ function initFindTemplates() {
 
     Template.listingResults.helpers({
         listings: function () {
-            return Session.get("filteredListings");
+            return Session.get('filteredListings');
+        }
+    });
+
+    Template.listingResultsPrivate.helpers({
+        listings: function () {
+            return Session.get('filteredListings');
+        }
+    });
+
+    Template.listingPrivate.helpers({
+        lister: function () {
+            return Meteor.users.findOne({_id: this.owner});
+        }
+    });
+
+    Template.listingResultsPrivate.events({
+        'click #listingItem': function (event) {
+
+            // store listing nad lister and set it as the session variable
+            var listingClicked = Listings.findOne({_id: this._id});
+            
+            Session.set('currentListingBeingViewed', listingClicked);
+            Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
+            Session.set('currentListingOwnerEamil', Session.get('currentListingOwner').emails[0].address);
         }
     });
 

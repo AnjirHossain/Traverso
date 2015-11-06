@@ -1,7 +1,10 @@
+<!-- Dealership listings template -->
 <template name="listingResults">
 	{{#if Template.subscriptionsReady}}
 		{{#each listings}}
+			
 			{{> listing}}
+			
 		{{/each}}
 	{{/if}}
 
@@ -9,41 +12,119 @@
 </template>
 
 <template name="listing">
+	
+		<div class="listings-items-wrap"> 
+			<div class="listings-item-scaffold col-md-6">
+				
+				<div class="listings-item"
+					 style="background-image:url('/cfs/files/images/{{listImgId}}/{{imageName}}');">
 
-	<div class="listings-items-wrap"> 
-		<div class="listings-item-scaffold col-md-6">
-			
-			<div class="listings-item"
-				 style="background-image:url('/cfs/files/images/{{listImgId}}/{{imageName}}');">
+					<article id="listingItem" 
+					class="listings-item-preview"
+					data-toggle="modal"
+					data-target="#listingModal">
+						<span class="col-md-12 lip-text-wrap">
+							<p style="text-align:center;" class="col-md-4 info-pipe">
+								<span style="font-weight:500;">&#36;</span> {{ price }}
+							</p>
 
-				<article id="listingItem" 
-				class="listings-item-preview"
-				data-toggle="modal"
-				data-target="#listingModal">
-					<span class="col-md-12 lip-text-wrap">
-						<p style="text-align:center;" class="col-md-4 info-pipe">
-							<span style="font-weight:500;">&#36;</span> {{ price }}
-						</p>
+							<p style="text-align:center;" class="col-md-4 info-pipe">
+								{{ milage }} <span style="font-weight:500;">mi</span>
+							</p>
 
-						<p style="text-align:center;" class="col-md-4 info-pipe">
-							{{ milage }} <span style="font-weight:500;">mi</span>
-						</p>
+							<p style="text-align:center;" class="col-md-4 info-pipe">
+								<span style="font-weight:500;">yr</span> {{ year }}
+							</p>
 
-						<p style="text-align:center;" class="col-md-4 info-pipe">
-							<span style="font-weight:500;">yr</span> {{ year }}
-						</p>
+							<p style="text-align:center;" class="col-md-12 peak">
+								{{ make }}, {{ model }}<br>
+								{{ address.formatted_address }}
+							</p>
+						</span>
+					</article>	
 
-						<p style="text-align:center;" class="col-md-12 peak">
-							{{ make.name }}, {{ model.name }}<br>
-							{{ address.formatted_address }}
-						</p>
-					</span>
-				</article>	
+				</div>
 
 			</div>
+		</div>	
+</template>
 
+<!-- Individual listings template -->
+<template name="listingResultsPrivate">
+	{{#if Template.subscriptionsReady}}
+		{{#each listings}}
+			
+			{{> listingPrivate}}
+			
+		{{/each}}
+	{{/if}}
+
+	{{> listingModal}}
+</template>
+
+<template name="listingPrivate">	
+		
+		<div class="col-md-12 listing-items-wrap-private">
+			<div class="col-md-4 listing-img-sect no-padding no-padding">
+				<img src="/cfs/files/images/{{listImgId}}/{{imageName}}" 
+				alt="a picture of the listing"
+				class="img-responsive img-rounded">
+			</div>
+			<div class="col-md-8 listing-text-sect no-padding">
+				<span class="col-md-12 user-info-enlarged"
+				style="margin-bottom:10px;">
+					<span class="col-md-2">
+						<img src="{{lister.profile.profilePicUrl}}" 
+							class="img-responsive img-circle" 
+							style="width:50px;height:50px;object-fit:cover;">
+					</span>	
+					<span class="col-md-10 user-name-private">
+						<h3 style="font-weight: 600;">
+							{{ lister.profile.name }}
+						</h3>
+					</span>		
+				</span><br>
+
+				<span class="col-md-12 listing-info-enlarge"
+				style="margin-bottom:10px;">
+					<span class="col-md-4">
+						<h4>
+							<span style="font-weight:600;">&#36;</span> {{price}}
+						</h4>
+					</span>
+					<span class="col-md-4">
+						<h4>
+							{{milage}} <span style="font-weight:600;">mi</span> 
+						</h4>
+					</span>
+					<span class="col-md-4">
+						<h4>
+							<span style="font-weight:600;">yr</span> {{year}} 
+						</h4>
+					</span>
+				</span><br>
+
+				<span class="col-md-12 listing-description"
+				style="margin-bottom:10px;">
+					<span class="col-md-12">
+						<p>{{description}}</p>
+					</span>
+				</span><br>
+
+				<span class="col-md-12"
+				style="margin-bottom:10px;">
+					<span class="col-md-12">
+						<a class="btn btn-success" 
+							href="/listing/{{_id}}">	
+								learn more...
+						</a>
+					</span>
+				</span>
+			</div>
 		</div>
-	</div>
+
+		
+
 </template>
 
 <template name="listingModal">
@@ -55,14 +136,14 @@
 			<!-- pause -->
 			<button type="button" 
 					id="closeModal"
-					class="close z-index-8" 
+					class="close z-index-11" 
 					data-dismiss="modal" 
 					aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
 
 			
-			<div class="modal-content no-padding col-md-12">		
+			<div class="modal-content no-padding col-md-12 z-index-11">		
 				<div class="modal-body no-padding">
 				<!-- left -->
 
@@ -91,8 +172,8 @@
 								<p style="font-weight: 500;">Details:</p>
 								<p>
 									{{ listingContent.year }} 
-									{{ listingContent.make.name }}, 
-									{{ listingContent.model.name }}
+									{{ listingContent.make }}, 
+									{{ listingContent.model }}
 								</p>
 								<p>listed at {{ listingContent.price }}</p>
 								<p>{{ listingContent.milage }} miles</p>
@@ -128,6 +209,4 @@
 		</div>
 		
 	</div>
-
-
 </template>

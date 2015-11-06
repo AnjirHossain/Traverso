@@ -6,9 +6,12 @@
 
     {{else}}
 
-        {{> createAuth}}
-        <hr>
-        {{> useExistingAuth}}
+        <div class="no-padding col-md-12">
+            {{> createAuth}}
+        </div>
+        <div class="no-padding col-md-12">
+            {{> useExistingAuth}}
+        </div>
     
     {{/if}}
 </template>
@@ -24,10 +27,9 @@
     <button id="signOut" class="btn btn-regular" data-toggle="modal" data-target="#authModal">Sign Out</button>
 </template>
 
+<!-- auth-create-parent-template -->
 <template name="createAuth">
     <form id="createAuthFormTag" name="createAuthFormTagAjsScaff" class="input-group">
-
-        
         <div class="input-row">
             <label>User Name</label>
             <input type="text" 
@@ -99,7 +101,8 @@
         </div>
 
         <!-- praise the ajs gods for $invalid -->
-        <div class="input-group">
+        <div class="input-group"
+             style="margin: 10px 0 !important;">
             <input type="submit" class="btn btn-success" value="Sign Up" ng-disabled="createAuthFormTagAjsScaff.$invalid">
         </div>
         <p id="createAuthError" style="margin:10px 0;"></p>
@@ -107,8 +110,9 @@
 </template>
 
 <template name="useExistingAuth">
-    <!--implemento el doublê loginio-->
-    <form id="useAuthFormTag" name="useAuthFormTagAjsScaff" class="input-group">
+    <form id="useAuthFormTag" 
+    name="useAuthFormTagAjsScaff" 
+    class="input-group">
 
         <div class="input-row">
             <label>User Name</label>
@@ -132,9 +136,10 @@
                 ng-required="true">
         </div>
 
-        <div class="input-group">
-            <input type="submit" class="btn btn-warning" value="Log In" 
-            ng-disabled="useAuthFormTagAjsScaff.$invalid">    
+        <div class="input-group"
+             style="margin: 10px 0 !important;">
+            <button type="submit" class="btn btn-warning" value="Log In" 
+            ng-disabled="useAuthFormTagAjsScaff.$invalid">Log In</button>   
         </div>
         
         <p id="useAuthError" style="margin:10px 0;"></p>

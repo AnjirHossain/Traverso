@@ -6,7 +6,7 @@
 		<div class="col-md-6 col-md-offset-3 img-container">
 
 			 <img src="/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}" 
-			 	  class="img-responsive listing-images-full" 
+			 	  class="img-responsive img-rounded" 
 			      alt="one of the images of the listers car">
 		</div>
 	</div>
@@ -23,7 +23,7 @@
 				</div>
 				<div style="padding: 30px 0;" class="col-md-8">
 					<p class="lister-username"
-					   style="font-weight: 500;">
+					   style="font-size:2em;font-weight: 500;">
 						
 						<!-- not rendering -->
 						{{ listingOwner.profile.name }}	
@@ -58,25 +58,74 @@
 				<div style="text-align:center;" class="col-md-12">
 					<p style="font-size:1.4em;font-weight: 400;">{{ listing.views }} views</p>
 				</div>
-<!-- 				<div style="padding: 30px 0;" class="col-md-12">
-					<p style="font-size:1.4em;">Tags</p><br>
-					<hr class="muted"><br>
-					<span class="badge badge-positive">#leather</span>
-					<span class="badge badge-positive">#newtires</span>
-				</div> -->
 				<div style="padding: 30px 0;" class="col-md-12">
-					<p style="font-size:1.4em;font-weight: 400;">Additional info</p><br>
-					<hr class="muted"><br>
-					<p>Trim level: <span class="muted_emph">{{ listing.trim }}</span></p>
-					<p>Specs: 
 
-					<span class="muted_emph">{{ listing.trim }}</span>
-					<!-- conditional -->
-					<!-- <span class="muted_emph">not provided by lister</span>  -->
+					<p style="font-size:1.4em;font-weight: 400;">Vehicle details</p><br>
 					
+					<hr class="muted"><br>
+
+					<p>Make: <span class="muted_emph">{{ listing.make }}</span>
 					</p>
-					<p>Additional features added to this vehicle</p>
-					<p><span class="muted_emph">none</span></p>
+					<p>Model: <span class="muted_emph">{{ listing.model }}</span>
+					</p>
+					<p>Year: <span class="muted_emph">{{ listing.year }}</span>
+					</p>
+					<p>Trim level: 
+						<span class="muted_emph">{{ listing.trim.trim }}</span>
+					</p><br>
+
+					<!-- if a field exists show it -->
+					<p style="font-size:1.4em;font-weight: 400;">Mechanical specs</p><br>
+					<hr class="muted"><br>
+					{{#if listing.speculations.MPG}}
+						<p>Fuel-economy:
+							<span class="muted_emph">
+								city {{listing.speculations.MPG.city}} mpg, 
+								highway {{listing.speculations.MPG.highway}} mpg
+							</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.engine.fuelType}}
+						<p>Fuel-type:
+							<span class="muted_emph">
+								{{listing.speculations.engine.fuelType}} 
+							</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.drivenWheels}}
+						<p>Drivetrain:
+							<span class="muted_emph">{{ listing.speculations.drivenWheels }}</span>
+						</p>	
+					{{/if}}
+					
+					<p>Engine:
+						<span class="muted_emph">
+							{{#if listing.speculations.engine.size}}
+								{{ listing.speculations.engine.size }}L 
+							{{/if}}
+							{{#if listing.speculations.engine.cylinder}}
+								{{ listing.speculations.engine.cylinder }}-cylinder	
+							{{/if}}
+						</span>
+					</p>
+					{{#if listing.speculations.transmission}}
+						<p>Transmission:
+							<span class="muted_emph">
+								{{ listing.speculations.transmission.numberOfSpeeds }} speed
+								{{ listing.speculations.transmission.transmissionType }}
+							</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.engine.horsepower}}
+						<p>Horsepower:
+							<span class="muted_emph">{{ listing.speculations.engine.horsepower }} hp</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.engine.torque}}
+						<p>Torque:
+							<span class="muted_emph">{{ listing.speculations.engine.torque }} lb</span>
+						</p>
+					{{/if}}
 				</div>
 			</div>
 		</div>
