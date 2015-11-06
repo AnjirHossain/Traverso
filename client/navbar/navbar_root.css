@@ -1,22 +1,97 @@
-.navbar {
-	color: #9B9B9B;
-	height: 12vh;
+.bar {
+	position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    color: #9B9B9B;
+	border: none;
+    padding: 0 35px;
+    background-color: rgba(255,255,255,0);
+    /*-webkit-backface-visibility: hidden;
+    backface-visibility: hidden;*/
 	-webkit-transition: all ease .3s;
 	-moz-transition: all ease .3s;
 	-o-transition: all ease .3s;
 	transition: all ease .3s;
 }
 
-#theeeBrand {
-	padding: 12px 18px;
-	color: #fff;
-	border: 3px solid #fff;
+.bar.active {
+	background-color: #fff;
+	box-shadow: 0 0 10px #8D9799;
 }
 
-.navbar.active .navbar-header #theeeBrand {
-	color: #9B9B9B;
-	border: 3px solid #9B9B9B;
+.bar.active #theeeBrand {
+	color: #32A8F4;
+	text-shadow: none;
 }
+
+.bar,
+.bar-content-wrap {
+	height: 60px;
+}
+
+.bar-content-wrap {
+	position: relative;
+	padding: 0; 
+}
+
+.bar-content-wrap button,
+.bar-content-wrap a {
+	position: absolute;
+	margin: 0;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+#theeeBrand {
+	color: #fff;
+	font-style: italic;
+	letter-spacing: -.03em;
+	font-size: 25px;
+	font-weight: 700;
+	text-shadow: 0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+}
+
+#modalEndPoint1,
+#modalEndPoint2 {
+	right: 0%;
+}
+
+#accessibilitySell {
+	right: 13%;
+}
+
+#modalEndPoint1 i {
+	font-size: 15px;
+	margin: 0;
+	padding: 0 0 0 5px; 
+	color: inherit;
+}
+
+.navbar-accessibility-wrap {
+	height: 8vh;
+	background-color: lightgreen;
+}
+
+.navbar-accessibility-wrap a {
+	margin: 0 1%;
+	font-size: 25px;
+	line-height: 8vh;
+}
+
+/*logo*/
+
+
+.navbar.active .navbar-header #theeeBrand {  }
 
 .navbar .navbar-brand,
 .navbar .nav-ul-wrap ul li a {
@@ -24,8 +99,7 @@
 }
 
 .navbar.active {
-	height: 8vh;
-	background-color: #fff;
+	background-color: rgba(255,255,255,1);
 	box-shadow: 0 2px 5px rgba(0,0,0,0.26);
 }
 
@@ -50,6 +124,7 @@ button.styles-for-auth i {
 	font-size: 15px;
 	margin: 0;
 	padding: 0 0 0 5px; 
+	color: inherit;
 }
 
 .navbar-brand {
@@ -65,23 +140,6 @@ button.styles-for-auth i {
 .nav-ul-wrap {
 	margin: 0 15px;
 	float: right;
-}
-
-button.btn-profile,
-button.btn-profile:hover {
-    background-color: #23E363;
-    border-color: #23E363;
-	color: #fff;
-	-webkit-transition: all .3s ease;
-	-moz-transition: all .3s ease;
-	-o-transition: all .3s ease;
-	transition: all .3s ease;
-}
-
-button.btn-profile:hover,
-button.btn-profile:focus {
-	border-color: #23E363;
-	color: #fff;
 }
 
 .popover_user_prop {

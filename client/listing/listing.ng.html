@@ -1,11 +1,9 @@
 <div class="listing-page">
-	<div class="listing-image-wrap col-md-12">
-		<div ng-hide="!listing" style="background-image:url('/cfs/files/images/{{::listing.listImgId}}/{{::listing.imageName}}');" 
-		class="col-md-6 col-md-offset-3 img-container">
-		</div>
 
-	</div>
-	<div class="listing-content-wrap">
+	<!-- all of angular js listing components factored in blaze fragments -->
+	<blaze-template name="listingView"></blaze-template>
+
+<!-- 	<div class="listing-content-wrap">
 		<div class="col-md-4 listing-content-sect">
 			<div class="col-md-12 lcs-content-wrap">
 				<div style="padding: 30px 0;" class="col-md-4">
@@ -50,12 +48,12 @@
 					<p>Trim level: <span class="muted_emph">{{ listing.trim }}</span></p>
 					<p>Specs: 
 					<span class="muted_emph" ng-show="listing.specs">{{ listing.trim }}</span>
-					<span class="muted_emph" ng-show="!listing.specs">not provided by lister</span> <!-- not specified by the actual person -->
+					<span class="muted_emph" ng-show="!listing.specs">not provided by lister</span> 
 					</p>
 					<p>Additional features added to this vehicle</p>
 					<p><span class="muted_emph">none</span></p>
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </div>

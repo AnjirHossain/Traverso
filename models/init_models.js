@@ -1,10 +1,18 @@
 Listings = new Mongo.Collection('listings');
 
+CarModels = new Mongo.Collection('carmodels');
+
 Images = new FS.Collection("images", {
     stores: [
         new FS.Store.GridFS("images")
     ]
-})
+});
+
+UserImages = new FS.Collection("userimages", {
+    stores: [
+        new FS.Store.GridFS("userimages")
+    ]
+});
 
 Listings.allow({
 	insert: function(userId, listing) {
@@ -20,15 +28,7 @@ Listings.allow({
 	}
 });
 
-Meteor.methods({
-	updateViews: function(listingId){
-		var viewsScf = Listings.findOne({_id: listingId}).views;
-		viewsScf++;
-		Listings.update({_id: listingId}, {$set: {views: viewsScf}});
-		return viewsScf;
-	}
-});
-
+// make strict allow deny rules
 Images.allow({
 	insert: function(userId, image) {
 		return true;
@@ -43,3 +43,35 @@ Images.allow({
 		return true;
 	}
 });
+
+UserImages.allow({
+	insert: function(userId, image) {
+		return true;
+	},
+	update: function(userId, image, fields, modifier) {
+		return true;
+	},
+	remove: function(userId, image){
+		return true;
+	},
+	download:function(){
+		return true;
+	}
+});
+
+CarModels.allow({
+	insert: function(userId, image) {
+		return true;
+	},
+	update: function(userId, image, fields, modifier) {
+		return true;
+	},
+	remove: function(userId, image){
+		return true;
+	}
+});
+
+
+// UserImages.allow({
+	
+// });

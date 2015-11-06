@@ -6,9 +6,12 @@
 
     {{else}}
 
-        {{> createAuth}}
-        <hr>
-        {{> useExistingAuth}}
+        <div class="no-padding col-md-12">
+            {{> createAuth}}
+        </div>
+        <div class="no-padding col-md-12">
+            {{> useExistingAuth}}
+        </div>
     
     {{/if}}
 </template>
@@ -24,30 +27,50 @@
     <button id="signOut" class="btn btn-regular" data-toggle="modal" data-target="#authModal">Sign Out</button>
 </template>
 
+<!-- auth-create-parent-template -->
 <template name="createAuth">
     <form id="createAuthFormTag" name="createAuthFormTagAjsScaff" class="input-group">
-
-        
         <div class="input-row">
             <label>User Name</label>
-            <input type="text" name="createuserusername" placeholder="myusername" ng-model="temp.a_j_scaff1" ng-minlength="4" required>
-        </div>
-
-        <div class="input-group-nestedinline">
-            <label style="margin-right:10%;">Name</label>
-            <input type="text" name="createuserfirstname" placeholder="First" ng-model="temp.a_j_scaff12" ng-minlength="1" required>
-            <input type="text" name="createuselastrname" placeholder="Last" ng-model="temp.a_j_scaff69" ng-minlength="1" required>
-        </div>
-
-        <div class="input-group-nestedinline">
-            <label style="margin-right:10%;">Email & Phone</label>
             <input type="text" 
+            class="input-three-fourths" 
+            name="createuserusername" 
+            placeholder="myusername" 
+            ng-model="temp.a_j_scaff1" 
+            ng-minlength="4" 
+            required>
+        </div>
+
+        <div class="input-group-nestedinline">
+            <label>Name</label>
+            <input type="text" 
+            class="input-three-eighths" 
+            name="createuserfirstname" 
+            placeholder="First" 
+            ng-model="temp.a_j_scaff12" 
+            ng-minlength="1" 
+            required>
+
+            <input type="text" 
+            class="input-three-eighths" 
+            name="createuselastrname" 
+            placeholder="Last" 
+            ng-model="temp.a_j_scaff69" 
+            ng-minlength="1" 
+            required>
+        </div>
+
+        <div class="input-group-nestedinline">
+            <label>Email & Phone</label>
+            <input type="text" 
+                class="input-three-eighths" 
                 name="createuseremail" 
                 placeholder="you@example.com" 
                 ng-model="temp.a_j_scaff2" 
                 ng-minlength="4" 
                 required>
             <input type="number" 
+                class="input-three-eighths" 
                 name="createusercell" 
                 placeholder="+1 (234) 567 8910"
                 ng-model="temp.a_j_scaff4" 
@@ -58,6 +81,7 @@
         <div class="input-row">        
             <label>Password</label>
             <input type="password" 
+                class="input-three-fourths" 
                 name="createuserpassword" 
                 placeholder="Password"
                 ng-model="temp.a_j_scaff5" 
@@ -68,6 +92,7 @@
         <div class="input-row">
             <label>Confirm</label>
             <input type="password" 
+                class="input-three-fourths" 
                 name="createuserpasswordconfirm" 
                 placeholder="Confirm Password"
                 ng-model="temp.a_j_scaff6" 
@@ -76,7 +101,8 @@
         </div>
 
         <!-- praise the ajs gods for $invalid -->
-        <div class="input-group">
+        <div class="input-group"
+             style="margin: 10px 0 !important;">
             <input type="submit" class="btn btn-success" value="Sign Up" ng-disabled="createAuthFormTagAjsScaff.$invalid">
         </div>
         <p id="createAuthError" style="margin:10px 0;"></p>
@@ -84,12 +110,14 @@
 </template>
 
 <template name="useExistingAuth">
-    <!--implemento el doublê loginio-->
-    <form id="useAuthFormTag" name="useAuthFormTagAjsScaff" class="input-group">
+    <form id="useAuthFormTag" 
+    name="useAuthFormTagAjsScaff" 
+    class="input-group">
 
         <div class="input-row">
             <label>User Name</label>
             <input type="text" 
+                class="input-three-fourths" 
                 name="loginusername" 
                 placeholder="User Name"
                 ng-model="temptwo.a_j_scaff7" 
@@ -100,6 +128,7 @@
         <div class="input-row">
             <label>Password</label>
             <input type="password" 
+                class="input-three-fourths" 
                 name="loginpassword" 
                 placeholder="password"
                 ng-model="temptwo.a_j_scaff8" 
@@ -107,9 +136,10 @@
                 ng-required="true">
         </div>
 
-        <div class="input-group">
-            <input type="submit" class="btn btn-warning" value="Log In" 
-            ng-disabled="useAuthFormTagAjsScaff.$invalid">    
+        <div class="input-group"
+             style="margin: 10px 0 !important;">
+            <button type="submit" class="btn btn-warning" value="Log In" 
+            ng-disabled="useAuthFormTagAjsScaff.$invalid">Log In</button>   
         </div>
         
         <p id="useAuthError" style="margin:10px 0;"></p>

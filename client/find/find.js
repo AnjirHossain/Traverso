@@ -1,18 +1,41 @@
-angular.module('Root.find', []);
+// REFACTOR LONG TASKS W/ EXPRESSIVE JS
 
-angular.module('Root.find').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',function($urlRouterProvider, $stateProvider, $locationProvider){
+// angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function ($scope,$meteor,$stateParams){}]);
+
+angular.module('Root.find', []);
+ 
+var geocoder,
+    listingResultsMap,
+    listingMarkers = [],
+    listingClusters;
+
+angular.module('Root.find').config(['$urlRouterProvider','$stateProvider', '$locationProvider',function($urlRouterProvider, $stateProvider, $locationProvider){
 
     $locationProvider.html5Mode(true);
 
+    $urlRouterProvider.when('/find', '/:personallistings');
+
     $stateProvider
 
-    /*sell subdir*/
-    /*find subdir*/
-      .state('find', {
-        url: '/find',
-        templateUrl: 'client/find/find.ng.html',
-        controller: 'findCtrl'
-      });
+        /*sell subdir*/
+        /*find subdir*/
+        .state('find', {
+            url: '/find',
+            templateUrl: 'client/find/find.ng.html',
+            controller: 'findCtrl'
+        })
+
+        .state('find.dealership', {
+            url: '/:dealershiplistings',
+            templateUrl: 'client/find/dealershiplistings/dealershipView.ng.html',
+            controller: 'findCtrl'
+        })
+
+        .state('find.personal', {
+            url: '/:personallistings',
+            templateUrl: 'client/find/privatelistings/privateView.ng.html',
+            controller: 'findCtrl'
+        });
 
       /*root subdir*/
       // $url.when - > where to ?
@@ -20,10 +43,13 @@ angular.module('Root.find').config(['$urlRouterProvider', '$stateProvider', '$lo
 
 angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$stateParams','$filter','listingPageSv', 
     function($scope,$meteor,$stateParams,$filter,listingPageSv) {
+        // initFindTemplates creates blaze methods
+        initFindTemplates();
 
         // console.log($scope.listings);
         
-        var geocoder = new google.maps.Geocoder(); /* ship to service | factory */
+        // GOOGLE
+        geocoder = new google.maps.Geocoder(); /* ship to service | factory */
         var componentForm = {
             street_number: 'short_name',
             route: 'long_name',
@@ -33,6 +59,50 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             postal_code: 'short_name'
         };
 
+        var icon = {
+            url: '/mapmarker.png',
+            size: new google.maps.Size(32, 32),
+            origin: new google.maps.Point(0, 0),
+            scaledSize: new google.maps.Size(32, 32)
+        };
+
+        var mcOptions = {
+            gridSize: 50, 
+            maxZoom: 13,
+            styles: [
+                {
+                    textColor: 'white',
+                    height: 45,
+                    url: "/cluster45x45.png",
+                    width: 45
+                },
+                {
+                    textColor: 'white',
+                    height: 47,
+                    url: "/cluster47x47.png",
+                    width: 47
+                },
+                {
+                    textColor: 'white',
+                    height: 53,
+                    url: "/cluster53x53.png",
+                    width: 53
+                },
+                {
+                    textColor: 'white',
+                    height: 78,
+                    url: "/cluster78x78.png",
+                    width: 78
+                },
+                {
+                    textColor: 'white',
+                    height: 78,
+                    url: "/cluster78x78.png",
+                    width: 78
+                }
+            ]
+        };
+
         $scope.searchBoxRangeFilter = {};
         $scope.listingWindowContent = {};
         $scope.filteredListings = [];
@@ -40,6 +110,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         $scope.noAddress = false;
         $scope.searchFodder = {};
         $scope._searchFodderInHouse = {};
+        $scope.noResults = true;
 
         $scope.passListing = function( id ) {
             listingPageSv.passListing( id );
@@ -58,80 +129,260 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
         $scope.loading = false;
 
-        $scope.beginSearch = function(a) {
-            // console.log( a );
-
+        $scope.beginSearch = function(a) {            
             if (!$scope.showFilterPopOver) {
                 $scope.filterPopOverStateMutator();
             }
+            
+            // reset markers upon address budge
+            if ( listingMarkers.length ) {
+                listingMarkers = [];
+            }
 
-            // return false;
+            console.log('address ', a);
         };
 
-        $scope.applyFilters = function(b) {
+        $scope.applyFilters = function (aSearchFodder) {
 
-            if ( !b.address ) {
+            if ( !aSearchFodder.address ) {
 
                 if ( $scope.searchErrorNoAddress ){
                     $scope.searchErrorNoAddress = false;
                 } else {
                     $scope.searchErrorNoAddress = true;
                 }
-
                 return;
             }
 
-            console.log(b);
+            // green light for computation
             $scope.searchErrorNoAddress = false;
 
+            // loading indicator
             $scope.loading = true;
 
-            /*$meteor.subscribe('listings', b).then(function (handler){ 
-                $scope.filteredListings = $meteor.collection(Listings); 
-                $scope.$apply();
-                handler.stop();
-            });*/
+            // temporary
+            $scope._searchFodderInHouse = aSearchFodder;
 
-            $scope._searchFodderInHouse = b; // hax but fuck it
 
-            $meteor.autorun($scope, function(){
-                $scope.$meteorSubscribe('listings', $scope.getReactively('_searchFodderInHouse', true)).then(function( handler ) {
-          
-                // $scope.filteredListings = $meteor.collection(function(){
-                //     return Listings.find({});
-                // });
+            $meteor.autorun( $scope, function () {
 
-                    // console.log($meteor.collection(Listings));
+                var test = $scope._searchFodderInHouse;
 
-                    $scope.filteredListings = $meteor.collection(Listings);
-                    $scope.loading = false;
-                });            
+                // temporary moving inside the dynamic formula for stripping out lat long
+
+                /*
+                    Normalizing lat lng
+                    -------------------
+                    - server does not detect lat() lng() funcs
+                      sent from client; (would probably be a huge security risk).
+                    - rename and embrace
+
+                */
+                if ( test.address.geometry.location.lat ) {
+                    test.address.geometry.location.latitudeFinal = test.address.geometry.location.lat();
+                }
+                if ( test.address.geometry.location.lng ) {
+                    test.address.geometry.location.longitudeFinal = test.address.geometry.location.lng();
+                }
+
+                var searchProps = test;
+
+                $meteor.call('getDealershipListings', searchProps).then(
+                    function ( answer ) {
+
+                        /*
+                            TODOS
+                            -----
+                            - map clusters
+                            - map panning to location of listing that user hovers over
+                            - function for adding | removing markers 
+                            - attach _id to every listing marker
+                            - refactor tasks into functions
+                        */
+                        
+                        var panToThis,
+                            location_obj,
+                            location_arr = [];
+
+                        if ( answer.length > 0 ) {
+                            // vett
+                            $scope.noResults = false;
+
+                            // if loc is actually population
+                            if ( answer[0].loc.length ) {
+                                
+                                var loc = answer[0].loc.slice();
+                                loc.reverse();  
+
+                                location_arr = loc;
+                            }
+                        } else {
+                            // vett
+                            $scope.noResults = true;
+
+                            if ( searchProps.address ) {
+                                if ( searchProps.address.geometry.location ) {
+                                    location_obj = searchProps.address.geometry.location;
+      
+                                    if ( location_obj.lat() && location_obj.lng()) {
+                                        console.log('lat lng funcs', location_obj);
+
+                                        location_arr.push( location_obj.lat() );
+                                        location_arr.push( location_obj.lng() );
+                                    }                
+                                }
+                            }
+                        } 
+
+                        panToThis = {
+                            lat: location_arr[0],
+                            lng: location_arr[1]
+                        };
+
+                        console.log('panToThis contains ', panToThis);
+
+                        listingResultsMap.setCenter(panToThis);
+                        listingResultsMap.setZoom(13);
+
+                        console.log('getListings answered fine: ', answer);
+                        Session.set('filteredListings', answer); // data for list
+
+                        // removing markers from google maps
+                        listingMarkers.map(function (m) {
+                            m.setMap(null);
+                            console.log('markers should\'ve been cleared');
+                        });       
+                        listingMarkers = [];
+                        
+                        
+                        listingClusters = new MarkerClusterer(listingResultsMap, listingMarkers, mcOptions);
+
+                        answer.map(function (e) {
+                            var listingMarker = new google.maps.Marker({
+                                position: {
+                                    lat: e.loc[1], 
+                                    lng: e.loc[0]
+                                },
+                                map: listingResultsMap,
+                                icon: icon,
+                                title: '$ ' + e.price 
+                            });
+
+                            listingMarkers.push(listingMarker);
+                        });
+
+                        listingClusters.addMarkers(listingMarkers);
+                    }, 
+                    function (error) {
+
+                        console.log(error); 
+                    }
+                );      
+
+                
             });
 
             $scope.filterPopOverStateMutator();
+            $scope.loading = false; 
+        };
+
+        // FACTOR INTO RESPECTIVE CONTROLLER
+        $scope.applyFiltersPrivate = function (aSearchFodder) { 
+            if ( !aSearchFodder.address ) {
+
+                if ( $scope.searchErrorNoAddress ){
+                    $scope.searchErrorNoAddress = false;
+                } else {
+                    $scope.searchErrorNoAddress = true;
+                }
+                return;
+            }
+            // green light for computation
+            $scope.searchErrorNoAddress = false;
+            // loading indicator
+            $scope.loading = true;
+            // temporary
+            $scope._searchFodderInHouse = aSearchFodder;
+
+            $meteor.autorun( $scope, function () {
+
+                var test = $scope._searchFodderInHouse;
+
+                // temporary moving inside the dynamic formula for stripping out lat long
+
+                /*
+                    Normalizing lat lng
+                    -------------------
+                    - server does not detect lat() lng() funcs
+                      sent from client; (would probably be a huge security risk).
+                    - rename and embrace
+
+                */
+                if ( test.address.geometry.location.lat ) {
+                    test.address.geometry.location.latitudeFinal = test.address.geometry.location.lat();
+                }
+                if ( test.address.geometry.location.lng ) {
+                    test.address.geometry.location.longitudeFinal = test.address.geometry.location.lng();
+                }
+
+                var searchProps = test;
+
+                $meteor.call('getPrivateListings', searchProps).then(
+                    function ( answer ) {
+
+                        /*
+                            TODOS
+                            -----
+                            - map clusters
+                            - map panning to location of listing that user hovers over
+                            - function for adding | removing markers 
+                            - attach _id to every listing marker
+                            - refactor tasks into functions
+                        */
+                        if ( answer.length > 0 ) {
+                            // vett
+                            $scope.noResults = false;
+                            console.log('getListings answered fine: ', answer);
+                            Session.set('filteredListings', answer); // data for list
+                        } else {
+                            // vett
+                            $scope.noResults = true;
+                        } 
+                    }, 
+                    function (error) {
+                        console.log(error); 
+                    }
+                );      
+
+                
+            });
+
+            $scope.filterPopOverStateMutator();
+            $scope.loading = false;
         };
 
         $scope.searchErrorNoAddress = false;
 
-        $scope.$watch('searchFodder.address', function(context){
-            // figure out way to watch entire object fcol
-            if (!context) {
-                console.log("this is what context is: " + context);
-                $scope.filteredListings = [];
-                $scope.filterLax = 6;
-            }
-        });
+        // $scope.$watch('searchFodder.address', function(context){
+            //     // figure out way to watch entire object fcol
+            //     if (!context) {
+            //         console.log('reaction to searchFodder.address. Context is: ', context);
+            //         $scope.filteredListings = [];
+            //         $scope.filterLax = 6;
+            //     }
+        // });
 
         // tangent: listing_window 
         var listingWindowProp = document.getElementById('listingWindow');
-        $scope.listingWindowOpen = function(listingId){
+
+        $scope.listingWindowOpen = function (listingId){
             var listingInWindow = Listings.findOne({_id:listingId}),
                 listingImgInWindow = Images.findOne({_id:listingInWindow.listImgId});
 
             $scope.listingWindowContent.listingId = listingId;
             $scope.listingWindowContent.year = listingInWindow.year;
-            $scope.listingWindowContent.make = listingInWindow.make.name;
-            $scope.listingWindowContent.model = listingInWindow.model.name;
+            $scope.listingWindowContent.make = listingInWindow.make;
+            $scope.listingWindowContent.model = listingInWindow.model;
             $scope.listingWindowContent.mileage = listingInWindow.milage;
             $scope.listingWindowContent.listingImgInWindow = "/cfs/files/images/"+listingInWindow.listImgId+"/"+listingInWindow.imageName;
             $scope.listingWindowContent.price = listingInWindow.price;
@@ -139,10 +390,12 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             $scope.listingWindowContent.body = listingInWindow.body;
             $scope.listingWindowContent.description = listingInWindow.description;
             $scope.listingOwner = Meteor.users.findOne({_id:listingInWindow.owner});
+            
             $scope.toggleListingWindow();
         };
         
         $scope.toggleListingWindow = function() {
+
             listingWindowProp.classList.toggle('active');
         };
 
@@ -194,29 +447,6 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
             latitude: 47.6097,
             longitude: -122.3331
         };
-
-        /* look inside notes for geocoding snippet */
-
-        // // tangent: http://goo.gl/vCWGFs migration of inline to controller filtering
-        // $scope.$watchCollection('filteredListings', function(newVal, oldVal){
-        //     var newAddress = '',
-        //         spMapPanSCAFF = {};
-
-        //     if ( newVal ) {
-        //         // newAddress = '' + newVal[0].street + ' ' + newVal[0].city + ' ' + newVal[0].state + ' ' + newVal[0].zip;
-        //         // newAddress = newVal[0].address.formatted_address;
-
-        //         // console.log(newVal);
-
-        //         geocoder.geocode({'address': newVal[0].address.formatted_address}, function( results, status ){
-        //             spMapPanSCAFF.latitude = results[0].geometry.location.G;
-        //             spMapPanSCAFF.longitude = results[0].geometry.location.K;
-        //             $scope.spMapPan = spMapPanSCAFF;
-        //             $scope.$apply();
-        //         });
-                
-        //     } 
-        // });
 
         /* def going inside map controller */
         $scope.map = {
@@ -519,16 +749,28 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         };
 
         $scope.listingInfoWindowOptions = {
+
             visible: false
         };
 
         $scope.toggleWindowInMap = function() {
+            
             $scope.listingInfoWindowOptions.visible = !$scope.listingInfoWindowOptions.visible;
         };
     }
 ]);
 
-angular.module('Root.find').controller('findMapCt', ['$scope','$meteor','$stateParams', function($scope,$meteor,$stateParams){}]);
+angular.module('Root.find').controller('dealershipViewControl', ['$scope','$meteor','$stateParams','$filter','listingPageSv', 
+    function ($scope, $meteor, $stateParams, $filter, listingPageSv) {
+
+    }
+]);
+
+angular.module('Root.find').controller('personalViewControl', ['$scope','$meteor','$stateParams','$filter','listingPageSv', 
+    function ($scope, $meteor, $stateParams, $filter, listingPageSv) {
+        
+    }
+]);
 
 angular.module('Root.find').directive('ngEnter', function () {
     return function (scope, element, attrs) {
@@ -545,85 +787,91 @@ angular.module('Root.find').directive('ngEnter', function () {
     };
 });
 
-angular.module('Root.find').filter('filterOmniBase', ['mutateFilteredListings','$meteor',
-function(mutateFilteredListings,$meteor) {
-  return function( unfilteredItems, unfilteredItemImgs, modelWRT ) {
-    var filteredItems = [],
-        geocoder = new google.maps.Geocoder();
-
-    var test;
-
-    // pivot point
-    var geoCodeThenFilter = function(address, callback) {
-
-        geocoder.geocode({'address': address}, function(results,status) {
-            if ( status == google.maps.GeocoderStatus.OK ) {
-                searchLtLng.position = {
-                    latitude: results[0].geometry.location.lat(),
-                    longitude: results[0].geometry.location.lng()
-                };
-                callback(searchLtLng.position);
-            } else {
-                alert(status);
-            }
-        });
-    }
-    var deGunkify = function(ltLngToCompareWith) {
-        test = "geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude;
-        // console.log("geocoded ltlng exists: " + ltLngToCompareWith.latitude+' '+ltLngToCompareWith.longitude);
-        // console.log("and so does unfilteredItems: " + unfilteredItems[0]);
-    }
-
-    // a new chapter of long over due promises
-
-    var ltlngPromise = new Promise(function(resolve, reject) {
-        // do a thing, possibly async, then…
-        var address = modelWRT.address.formatted_address; // any address
-        var searchLtLng = {};
-
-        geocoder.geocode({'address': address}, function(results,status) {
-            if ( status == google.maps.GeocoderStatus.OK ) {
-                searchLtLng.position = {
-                    latitude: results[0].geometry.location.lat(),
-                    longitude: results[0].geometry.location.lng()
-                };
-                resolve(searchLtLng.position);
-            } else {
-                reject(alert(status));
-            }
-        });
-
-    });
-
-    return ltlngPromise.then(function(result) {
-        for ( var i = 0; i < unfilteredItems.length; i++ ) {
-            if ( unfilteredItems[i].position === result ) {
-                // push this listing
-                filteredItems.push(unfilteredItems[i]);
-            } else {
-                var range = 8046, // 5 miles
-                    listingPin = new google.maps.LatLng(unfilteredItems[i].position.latitude, unfilteredItems[i].position.longitude),
-                    userPin = new google.maps.LatLng(result.latitude, result.longitude); 
-
-                var inProximity = google.maps.geometry.spherical.computeDistanceBetween(userPin, listingPin);
-
-                if ( range >= inProximity ) {
-                    filteredItems.push(unfilteredItems[i]);
-                }
-            }
-        }
-        return filteredItems;
-    });
-
-  };
-}]); /**/
-
-
-// not being used
-angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function( $rootScope, $meteor, $state ) {
+angular.module('Root.find').run(['$rootScope', '$meteor', '$state', function ( $rootScope, $meteor, $state ) {
   $rootScope
     .$on('$viewContentLoaded',
-      function(event, viewConfig){  
+      function (event, viewConfig){  
+        Session.set("filteredListings", []);
         
+        var initMap = function () {
+            // cached at top, try (user's location via ip) before resorting to this area
+            listingResultsMap = new google.maps.Map(document.getElementById('listingResultsMap'), {
+                center: {lat: 47.6097, lng: -122.3331},
+                zoom: 14
+            });
+        } 
+
+        initMap();
+
     });
 }]);
+
+function initFindTemplates() {
+
+    Template.listingResults.helpers({
+        listings: function () {
+            return Session.get('filteredListings');
+        }
+    });
+
+    Template.listingResultsPrivate.helpers({
+        listings: function () {
+            return Session.get('filteredListings');
+        }
+    });
+
+    Template.listingPrivate.helpers({
+        lister: function () {
+            return Meteor.users.findOne({_id: this.owner});
+        }
+    });
+
+    Template.listingResultsPrivate.events({
+        'click #listingItem': function (event) {
+
+            // store listing nad lister and set it as the session variable
+            var listingClicked = Listings.findOne({_id: this._id});
+            
+            Session.set('currentListingBeingViewed', listingClicked);
+            Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
+            Session.set('currentListingOwnerEamil', Session.get('currentListingOwner').emails[0].address);
+        }
+    });
+
+    // need dismiss code for modal
+    Template.listingResults.events({
+        'click #listingItem': function (event) {
+
+            // store listing nad lister and set it as the session variable
+            var listingClicked = Listings.findOne({_id: this._id});
+            
+            Session.set('currentListingBeingViewed', listingClicked);
+            Session.set('currentListingOwner', Meteor.users.findOne({_id: listingClicked.owner}));
+            Session.set('currentListingOwnerEamil', Session.get('currentListingOwner').emails[0].address);
+        }
+    });
+
+    Template.listingModal.helpers({
+        'listingContent': function () {
+            return Session.get('currentListingBeingViewed');
+        },
+        'listingOwner': function (){
+            return Session.get('currentListingOwner');
+        },
+        'listingOwnerEmail': function (){
+            if ( Session.get('currentListingOwnerEamil') ) {
+                return Session.get('currentListingOwnerEamil');
+            }
+        }
+    });
+
+    Template.listingModal.events({
+        'click #viewListing': function (event) {
+
+            // temporary until I read up more on Temporary UI State in meteor
+            $('#listingModal').modal('hide');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+    });
+}

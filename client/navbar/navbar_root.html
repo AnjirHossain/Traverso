@@ -1,47 +1,73 @@
-<template name="navBarInRoot">
-    <nav class="navbar navbar-fixed-top z-index-4" role="navigation" ng-class="{active:!(currRoute('/landing'))}">  
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <!-- <a id="theeeBrand" class="navbar-brand z-index-5" ui-sref="landing">Traverso</a> -->
-            <a id="theeeBrand" class="navbar-brand z-index-5" ui-sref="landing">Traverso</a>
-        </div>
+<template name="authModal">
+    
+    <div class="modal modal-moderate fade"
+        id="authModal">
         
-        <div class="collapse navbar-collapse nav-ul-wrap">
+        <div class="modal-dialog modal-lg">
+            <button type="button" 
+                    id="closeModal"
+                    class="close z-index-8" 
+                    data-dismiss="modal" 
+                    aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            
+            <div class="modal-content col-md-12">
+                
+                <blaze-template name="authTemplateScaffold"></blaze-template>
 
-            <button id="modalEndPoint1"
-                ng-show="$root.currentUser.profile.name"
-                ng-click="doSometingHolyShit()"
-                type="button" 
-                class="styles-for-auth btn btn-profile">
-                    {{currentUser.profile.name}} <i class="fa fa-angle-down"></i>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="navBar">
+
+    <nav class="bar col-md-12 z-index-9"
+         ng-class="{active:!(currRoute('/landing'))}">
+        <div class="bar-content-wrap col-md-12">
+            <a ui-sref="landing"
+               class="navbar-brand"
+               id="theeeBrand">
+                Traverso
+            </a>
+
+            <a class="btn btn-see-through-engage" 
+            id="accessibilitySell" 
+            ui-sref="sell.listinginfo" 
+            ng-show="currRoute('/find/')">Sell</a>  
+
+            <a class="btn btn-see-through-engage" 
+            id="accessibilitySell" 
+            ui-sref="find.dealership" 
+            ng-show="currRoute('/sell/')">Find</a>
+
+            <button class="btn btn-warning"
+                    id="modalEndPoint2"
+                    ng-show="!$root.currentUser"
+                    data-toggle="modal" 
+                    data-target="#authModal"
+                    type="button">
+                Login | Sign Up
             </button>
 
-            <a class="accessibility-links col-md-2" ui-sref="find" ng-show="currRoute('/:listinginfo')">find</a>
-            <a class="accessibility-links col-md-2" ui-sref="sell.listinginfo" ng-show="currRoute('/find')">Sell</a>
-            <button 
-                id="modalEndPoint2"
-                ng-show="!$root.currentUser"
-                class="styles-for-auth btn btn-warning" data-toggle="modal" data-target="#authModal">
-                Log In | Sign Up
+            <button class="btn btn-see-through"
+                    id="modalEndPoint1"
+                    ng-show="$root.currentUser.profile.name"
+                    ng-click="doSometingHolyShit()"
+                    type="button">
+                {{currentUser.profile.name}} <i class="fa fa-angle-down"></i>
             </button>
         </div>
     </nav>
-    <div class="popover_user_prop" ng-show="showPopOverUserProp" ng-class="{nothome:!(currRoute('/landing'))}">
+
+    <div class="popover_user_prop nothome z-index-10" ng-show="showPopOverUserProp">
         <div class="popover_inner_arow">
-            
         </div>
         <div class="popover_inner">
             <ul class="table-view">
                 <li class="table-view-cell">
                     <a ui-sref="profile" class="popover_link" ng-click="doSometingHolyShit()">Profile</a>
-                </li>
-                <li class="table-view-cell">
-                    <a ui-sref="profile.settings" class="popover_link" ng-click="doSometingHolyShit()">Settings</a>
                 </li>
                 <hr>
                 <li class="table-view-cell" style="color:#B5B6B6;">
@@ -50,13 +76,8 @@
             </ul>
         </div>
     </div>
-    <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="auth-modal-wrap">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
-            
-            <div class="wrap-for-loginButtons">
-                <blaze-template name="authTemplateScaffold"></blaze-template>
-            </div>
-        </div>
-    </div>
+
+    <blaze-template name="authModal"></blaze-template>
 </template>
+
+

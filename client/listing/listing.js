@@ -22,12 +22,66 @@ angular.module('Root.listingPage').config(['$urlRouterProvider', '$stateProvider
 angular.module('Root.listingPage').controller('listingCtrl',['$scope','$meteor','$stateParams','$filter','$location','$rootScope',
 	function($scope, $meteor, $stateParams, $filter, $location, $rootScope) {
     
-    $scope.$meteorSubscribe('listings', {}).then(function() {
-      $scope.listing = $meteor.object(Listings, $stateParams.listingId);  
+    // var listing = Listings.findOne({_id: $stateParams.listingId});
 
-      // bug: user data only persists when the owner is logged in
-      var listingOwner = $scope.listing.getRawObject().owner;
-      $scope.listingOwner = Meteor.users.findOne({_id: listingOwner});
+    // console.log('listing ', Listings);
+    Template.listingView.helpers({
+      'listing': function (){
+
+        if ( $stateParams.listingId ) {
+          var listing = Listings.findOne({_id: $stateParams.listingId}),
+              listingOwner = listing.owner;
+
+          Session.set('listingOwnerId', listingOwner);
+          console.log('recently set session variable', Session.get('listingOwnerId'));
+          console.log(listing.speculations);
+          return listing;
+        }
+      }, 
+      'listingOwner': function (){
+        if ( Session.get('listingOwnerId') ) {
+
+          // verified, logs all the time 
+          if ( Meteor.users.findOne({_id: Session.get('listingOwnerId')}) ) {
+
+            Session.set('listeremail', Meteor.users.findOne({_id: Session.get('listingOwnerId')}).emails[0].address );
+            return Meteor.users.findOne({_id: Session.get('listingOwnerId')});
+          }
+
+        }
+      },
+      'listerEmail': function (){
+        if (Session.get('listeremail')) {
+          return Session.get('listeremail');
+        }
+      }
+
     });
+
 	}
 ]);
+
+// run template setup code and ensure a way to make user data persist everywhere 
+/*
+  $viewContentLoaded: make template helpers that ensure all necessary data is present
+*/
+
+angular.module('Root.listingPage').run(['$rootScope', '$meteor', '$state', '$stateParams', function ($rootScope, $meteor, $state, $stateParams){
+  $rootScope
+    .$on('$viewContentLoaded', 
+      function (event, viewConfig){
+
+        if ( $stateParams.listingId ) {
+          $meteor.call('incrementViews', $stateParams.listingId).then(
+            function (data){
+              // console.log('something was returned', data);
+            },
+            function (error){
+              // console.log('o no', error);
+            }
+          );
+        }
+
+
+    });
+}]);

@@ -1,0 +1,128 @@
+<template name="editProfile">
+	<!-- factor out different modes into their own templates -->
+	<!-- display mode -->
+
+	{{#if editProfileMode}}
+		<div class="user_setting-wrap">
+			
+			<form id="userDataUpdateForm"
+				  name="userDataUpdateForm">
+
+	            <div class="user_settings_img-wrap">
+
+	            	{{#if userAvatar}}
+		            	<img src="{{userAvatar}}" 
+							alt="user profile pic" 
+							class="user_profile-pic img-circle">
+	            	{{/if}}
+
+					<input id="userImgFile" 
+					type="file" 
+					style="visibility: hidden;" 
+					name="userImgFileChanged"/>
+
+					<button class="update-user-image btn btn-circle-only z-index-10"
+							onclick="event.preventDefault();document.getElementById('userImgFile').click();">
+						<span><i class="fa fa-camera"></i></span>
+					</button>
+				</div>
+
+				<div class="user_info-wrap">
+					<!-- values !!! -->
+					
+
+						{{#if accountTypeIndividual}}
+							<div class="input-group-nestedinline">
+								<label>Name</label>
+								<input type="text"
+									   class="input-three-eighths" 
+									   name="userFirstNameChanged" 
+									   placeholder="First"
+									   value="{{currentUser.profile.firstName}}">
+								<input type="text"
+									   class="input-three-eighths" 
+									   name="userLastNameChanged" 
+									   placeholder="Last"
+									   value="{{currentUser.profile.lastName}}">
+							</div>
+						{{/if}}
+
+						{{#if accountTypeDealer}}
+							<div class="input-row">
+								<label>Name</label>
+								<input type="text"
+									   class="input-three-fourths" 
+									   name="userNameChanged" 
+									   placeholder="username"
+									   value="{{currentUser.profile.name}}">
+							</div>
+						{{/if}}
+						
+
+					<div class="input-row">
+						<label>User Name</label>
+						<input type="text"
+							   class="input-three-fourths" 
+							   name="userNameChanged" 
+							   placeholder="username"
+							   value="{{currentUser.username}}">
+					</div>
+
+					<div class="input-row">
+						<label>Email</label>
+						<input type="text"
+							   class="input-three-fourths" 
+							   name="userEmailChanged" 
+							   placeholder="email@example.com"
+							   value="{{currentUser_Email}}">
+					</div>
+
+					<div class="input-row">
+						<label>Phone</label>
+						<input type="number"
+							   class="input-three-fourths" 
+							   name="userPhoneNumberChanged" 
+							   placeholder="+1 (234) 456 7890"
+							   value="{{currentUser.profile.phone}}">
+					</div><br>
+
+					<input class="btn btn-cta-user_edit"
+						   type="submit" 
+						   id="saveChangesToProfile"
+						   value="Save Changes"><br>
+				</div>
+			</form>
+			
+		</div>
+
+	{{else}}
+
+		<div class="user_setting-wrap">
+
+			<div class="user_settings_img-wrap">
+				{{#if userAvatar}}
+					<img src="{{userAvatar}}" 
+						alt="user profile pic" 
+						class="user_profile-pic img-circle">
+				{{/if}}
+			</div>
+
+			<div class="user_info-wrap">
+
+				<h3 class="name_present">{{ currentUser.profile.name }}</h3>
+				<hr>
+
+				<p>User Name: <span class="muted_emph">{{ currentUser.username }}</span></p>
+				<hr>
+
+				<p>Email: <span class="muted_emph">{{currentUser_Email}}</span></p>
+				<hr>
+
+				<p>Phone: <span class="muted_emph">{{ currentUser.profile.phone }}</span></p> <br>
+				<button class="btn btn-cta-user_edit"
+						id="startProfileEdit">Edit</button><br>
+			</div>
+		</div>
+	{{/if}}
+
+</template>

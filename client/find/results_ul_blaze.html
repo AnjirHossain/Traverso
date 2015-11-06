@@ -1,0 +1,212 @@
+<!-- Dealership listings template -->
+<template name="listingResults">
+	{{#if Template.subscriptionsReady}}
+		{{#each listings}}
+			
+			{{> listing}}
+			
+		{{/each}}
+	{{/if}}
+
+	{{> listingModal}}
+</template>
+
+<template name="listing">
+	
+		<div class="listings-items-wrap"> 
+			<div class="listings-item-scaffold col-md-6">
+				
+				<div class="listings-item"
+					 style="background-image:url('/cfs/files/images/{{listImgId}}/{{imageName}}');">
+
+					<article id="listingItem" 
+					class="listings-item-preview"
+					data-toggle="modal"
+					data-target="#listingModal">
+						<span class="col-md-12 lip-text-wrap">
+							<p style="text-align:center;" class="col-md-4 info-pipe">
+								<span style="font-weight:500;">&#36;</span> {{ price }}
+							</p>
+
+							<p style="text-align:center;" class="col-md-4 info-pipe">
+								{{ milage }} <span style="font-weight:500;">mi</span>
+							</p>
+
+							<p style="text-align:center;" class="col-md-4 info-pipe">
+								<span style="font-weight:500;">yr</span> {{ year }}
+							</p>
+
+							<p style="text-align:center;" class="col-md-12 peak">
+								{{ make }}, {{ model }}<br>
+								{{ address.formatted_address }}
+							</p>
+						</span>
+					</article>	
+
+				</div>
+
+			</div>
+		</div>	
+</template>
+
+<!-- Individual listings template -->
+<template name="listingResultsPrivate">
+	{{#if Template.subscriptionsReady}}
+		{{#each listings}}
+			
+			{{> listingPrivate}}
+			
+		{{/each}}
+	{{/if}}
+
+	{{> listingModal}}
+</template>
+
+<template name="listingPrivate">	
+		
+		<div class="col-md-12 listing-items-wrap-private">
+			<div class="col-md-4 listing-img-sect no-padding no-padding">
+				<img src="/cfs/files/images/{{listImgId}}/{{imageName}}" 
+				alt="a picture of the listing"
+				class="img-responsive img-rounded">
+			</div>
+			<div class="col-md-8 listing-text-sect no-padding">
+				<span class="col-md-12 user-info-enlarged"
+				style="margin-bottom:10px;">
+					<span class="col-md-2">
+						<img src="{{lister.profile.profilePicUrl}}" 
+							class="img-responsive img-circle" 
+							style="width:50px;height:50px;object-fit:cover;">
+					</span>	
+					<span class="col-md-10 user-name-private">
+						<h3 style="font-weight: 600;">
+							{{ lister.profile.name }}
+						</h3>
+					</span>		
+				</span><br>
+
+				<span class="col-md-12 listing-info-enlarge"
+				style="margin-bottom:10px;">
+					<span class="col-md-4">
+						<h4>
+							<span style="font-weight:600;">&#36;</span> {{price}}
+						</h4>
+					</span>
+					<span class="col-md-4">
+						<h4>
+							{{milage}} <span style="font-weight:600;">mi</span> 
+						</h4>
+					</span>
+					<span class="col-md-4">
+						<h4>
+							<span style="font-weight:600;">yr</span> {{year}} 
+						</h4>
+					</span>
+				</span><br>
+
+				<span class="col-md-12 listing-description"
+				style="margin-bottom:10px;">
+					<span class="col-md-12">
+						<p>{{description}}</p>
+					</span>
+				</span><br>
+
+				<span class="col-md-12"
+				style="margin-bottom:10px;">
+					<span class="col-md-12">
+						<a class="btn btn-success" 
+							href="/listing/{{_id}}">	
+								learn more...
+						</a>
+					</span>
+				</span>
+			</div>
+		</div>
+
+		
+
+</template>
+
+<template name="listingModal">
+
+	<div class="modal modal-wide fade" id="listingModal">
+
+		<div class="modal-dialog modal-lg">
+
+			<!-- pause -->
+			<button type="button" 
+					id="closeModal"
+					class="close z-index-11" 
+					data-dismiss="modal" 
+					aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+
+			
+			<div class="modal-content no-padding col-md-12 z-index-11">		
+				<div class="modal-body no-padding">
+				<!-- left -->
+
+					<div class="col-md-6 image-container no-padding">
+						<img src="/cfs/files/images/{{listingContent.listImgId}}/{{listingContent.imageName}}" 
+							 class="img-responsive col-md-12 listing-images" 
+							 alt="an image of the listing vehicle">
+					</div>
+								<!-- right -->
+					<div class="col-md-6 listing-text-container">
+
+						<span class="listing-window-comps">
+							<div class="user-info-prop">
+
+								<img src="{{listingOwner.profile.profilePicUrl}}" 
+								class="img-responsive img-circle" 
+								style="width:50px;height:50px;object-fit:cover;">
+
+								<h3 style="font-weight: 500;">
+									{{ listingOwner.profile.name }}
+								</h3>
+								
+							</div>
+							<div class="sudo-sep"></div>
+							<div class="listing-further-info-prop">
+								<p style="font-weight: 500;">Details:</p>
+								<p>
+									{{ listingContent.year }} 
+									{{ listingContent.make }}, 
+									{{ listingContent.model }}
+								</p>
+								<p>listed at {{ listingContent.price }}</p>
+								<p>{{ listingContent.milage }} miles</p>
+							</div>
+							<div class="sudo-sep"></div>
+							<div class="user-description-prop">
+								<p style="font-weight: 500;">The lister's description:</p>
+								<p>{{ listingContent.description }}</p>
+							</div>
+							<div class="sudo-sep"></div>
+							<div class="user-contact-prop">
+								<p style="font-weight: 500;">lister contact:</p>
+								<!-- pending -->
+								<p>{{ listingOwnerEmail }}</p>
+								<p>{{ listingOwner.profile.phone }}</p>
+							</div>
+							<div class="sudo-sep"></div>
+
+							<div class="listing-explore-cta-prop">
+								<a id="viewListing" 
+								class="btn btn-success" 
+								href="/listing/{{listingContent._id}}">
+									learn more
+								</a>
+							</div>				
+
+						</span>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+		
+	</div>
+</template>

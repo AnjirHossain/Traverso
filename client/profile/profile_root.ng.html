@@ -1,53 +1,29 @@
 <!--style="color:#1DB954;"-->
 <div ng-show="$root.currentUser" class="container-profile">
+
+	<!-- transfer to blaze -->
 	<div class="profile_areas_wrap">
-		<div class="col-md-4">
-			<div class="user_setting-wrap">
-				<!--
-					| dont worry about content just ensure amazing icons |
-					- user photo stored in public (currentUser.pic?currentUser.pic:currentUser.null_pic)
-					- change user photo icon
-					- Messages 
-					- all current user info presented (no clutter)
-					- make changes button, opens info fields;
-					  turns into save changes button onclick  
-				-->
-				<div class="user_settings_img-wrap">
-					<img src="/imgs/img_route_profile/current_user_null.png" 
-						alt="user profile pic" 
-						class="user_profile-pic img-responsive img-circle">
-					<!-- <button class="floater_user_profile_change btn btn-circle-only"><span><i class="fa fa-pencil"></i></span></button> -->
-				</div>
-				<div class="user_info-wrap">
-					<h3 class="name_present">{{ currentUser.profile.name }}</h3>
-					<hr>
-					<p>Username: <span class="muted_emph">{{ currentUser.username }}</span></p>
-					<hr>
-					<p>Email: <span class="muted_emph">{{ currentUser.emails[0].address }}</span></p>
-					<hr>
-					<p>Phone: <span class="muted_emph">{{ currentUser.profile.phone | cell }}</span></p> <br>
-					<!-- <button class="btn btn-cta-user_edit" >Edit</button><br> -->
-				</div>
-			</div>
+
+		<!-- concerns profile -->
+		<div class="col-md-4" 
+		     ng-controller="profileSettingsCtrl">
+
+			<!-- concerns profile -->
+			<blaze-template name="editProfile"></blaze-template>
 		</div>
+
+		<!-- concerns user listings -->
 		<div class="col-md-8">
 			<div class="user_listings-wrap" ng-controller="profileRootListingsCtrl">
-				<!--
-					| stress good content |
-					- order listings by the number of views 
-					- badge with number of views (explain what views mean i.e. the number of times another 
-					  user landed on the indiv listing page)
-					- badge with number of interestests the particular listing generated for dealers only
-					- remove listing button; possibly thrown in make changes
-					- make changes button that opens all priorly enterd fields in a modal; no clutter & 
-					  isolated attention \ turns into save changes button onclick
-				-->
-				<div class="user_listing_item-wrap" ng-repeat="userListing in profileListings" ng-show="userListing.owner === userIdScaffold()">
-					
-					<!-- we'll decide the 'your' part later with better content editing -->
-					<!-- user color indication cool to warm dependant on fair | unfair listing price -->
+
+				<!-- suspect if profile listing rendering slows down -->
+				<div class="user_listing_item-wrap" 
+				ng-repeat="userListing in profileListings" 
+				ng-show="userListing.owner === userIdScaffold()">
+				
 					<div class="user_listing_item">
-						<div style="background-image: url( '/cfs/files/images/{{userListing.listImgId}}/{{userListing.imageName}}' );" 
+						
+				<div style="background-image: url( '/cfs/files/images/{{userListing.listImgId}}/{{userListing.imageName}}' );" 
 							 alt="listing thumbnail"
 							 class="user_listing_sects user_listing_img_thumbnail col-md-2">
 
@@ -72,6 +48,8 @@
 			</div>
 		</div>
 	</div>
+
+
 </div>
 
 <!-- use $root.currentUser to verify current user or usher someone to login -->

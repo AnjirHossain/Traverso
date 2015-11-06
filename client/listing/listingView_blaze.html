@@ -1,0 +1,134 @@
+<!-- entire template for listing -->
+
+<template name="listingView">
+	
+	<div class="listing-image-wrap col-md-12">
+		<div class="col-md-6 col-md-offset-3 img-container">
+
+			 <img src="/cfs/files/images/{{listing.listImgId}}/{{listing.imageName}}" 
+			 	  class="img-responsive img-rounded" 
+			      alt="one of the images of the listers car">
+		</div>
+	</div>
+
+	<div class="listing-content-wrap">
+
+		<div class="col-md-4 listing-content-sect">
+			<div class="col-md-12 lcs-content-wrap">
+				<div style="padding: 30px 0;" class="col-md-4">
+					<img src="{{listingOwner.profile.profilePicUrl}}" 
+					alt="" 
+					class="img-circle lister-avi"
+					style="width:75px;height:75px;object-fit:cover">
+				</div>
+				<div style="padding: 30px 0;" class="col-md-8">
+					<p class="lister-username"
+					   style="font-size:2em;font-weight: 500;">
+						
+						<!-- not rendering -->
+						{{ listingOwner.profile.name }}	
+						
+					</p>
+				</div>
+				<div style="padding: 15px 0;" class="col-md-12">
+					<p style="font-size:1.4em;font-weight: 400;">Lister's contact</p><br>
+					<hr class="muted"><br>
+					<p style="margin:15px 0;">
+						{{ listerEmail }}
+					</p>
+					<p style="margin:15px 0;">
+						{{ listingOwner.profile.phone }}
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4 listing-content-sect">
+			<div class="col-md-12 lcs-content-wrap">
+				<div style="text-align:left;" class="col-md-12">
+					<p style="font-size:1.4em;font-weight: 400;">What the lister has to say about this vehicle</p><br>
+					<hr class="muted"><br>
+					<p>{{ listing.description }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4 listing-content-sect">
+			<div class="col-md-12 lcs-content-wrap">
+				<div style="text-align:center;" class="col-md-12">
+					<p style="font-size:1.4em;font-weight: 400;">{{ listing.views }} views</p>
+				</div>
+				<div style="padding: 30px 0;" class="col-md-12">
+
+					<p style="font-size:1.4em;font-weight: 400;">Vehicle details</p><br>
+					
+					<hr class="muted"><br>
+
+					<p>Make: <span class="muted_emph">{{ listing.make }}</span>
+					</p>
+					<p>Model: <span class="muted_emph">{{ listing.model }}</span>
+					</p>
+					<p>Year: <span class="muted_emph">{{ listing.year }}</span>
+					</p>
+					<p>Trim level: 
+						<span class="muted_emph">{{ listing.trim.trim }}</span>
+					</p><br>
+
+					<!-- if a field exists show it -->
+					<p style="font-size:1.4em;font-weight: 400;">Mechanical specs</p><br>
+					<hr class="muted"><br>
+					{{#if listing.speculations.MPG}}
+						<p>Fuel-economy:
+							<span class="muted_emph">
+								city {{listing.speculations.MPG.city}} mpg, 
+								highway {{listing.speculations.MPG.highway}} mpg
+							</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.engine.fuelType}}
+						<p>Fuel-type:
+							<span class="muted_emph">
+								{{listing.speculations.engine.fuelType}} 
+							</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.drivenWheels}}
+						<p>Drivetrain:
+							<span class="muted_emph">{{ listing.speculations.drivenWheels }}</span>
+						</p>	
+					{{/if}}
+					
+					<p>Engine:
+						<span class="muted_emph">
+							{{#if listing.speculations.engine.size}}
+								{{ listing.speculations.engine.size }}L 
+							{{/if}}
+							{{#if listing.speculations.engine.cylinder}}
+								{{ listing.speculations.engine.cylinder }}-cylinder	
+							{{/if}}
+						</span>
+					</p>
+					{{#if listing.speculations.transmission}}
+						<p>Transmission:
+							<span class="muted_emph">
+								{{ listing.speculations.transmission.numberOfSpeeds }} speed
+								{{ listing.speculations.transmission.transmissionType }}
+							</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.engine.horsepower}}
+						<p>Horsepower:
+							<span class="muted_emph">{{ listing.speculations.engine.horsepower }} hp</span>
+						</p>
+					{{/if}}
+					{{#if listing.speculations.engine.torque}}
+						<p>Torque:
+							<span class="muted_emph">{{ listing.speculations.engine.torque }} lb</span>
+						</p>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+
+	</div>
+</template>

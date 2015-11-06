@@ -99,13 +99,15 @@
 	-o-transform: translate(-50%,-50%);
 	transform: translate(-50%,-50%);
 	width: 150px;
+	height: 150px;
+	object-fit: cover;
 }
 
 .btn-circle-only {
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
-	background-color: #248BD7;
+	background-color: #4688D7;
 }
 
 .floater_user_profile_change {
@@ -118,18 +120,18 @@
 	transition: all .3s ease;
 }
 
-.floater_user_profile_change span {
+.update-user-image span {
 	position: relative;
 }
 
-.floater_user_profile_change span .fa {
+.update-user-image span .fa {
 	font-size: 17.5px;
 	padding: 0;
 	margin: 0;
 	border: 0; 
 }
 
-.floater_user_profile_change span .fa-pencil {
+.update-user-image span .fa-pencil {
 	color: #fff;
 	font-weight: 100;
 }
@@ -149,12 +151,12 @@
 
 .btn-cta-user_edit,
 .btn-cta-user_edit:hover {
-	background-color: #2488D7;
+	background-color: #4688D7;
 	color: #fff;
 }
 
 .btn-cta-user_edit:hover,
-.floater_user_profile_change:hover {
+.update-user-image:hover {
 	box-shadow: 0 0 10px #8D9799;
 }
 
@@ -204,26 +206,44 @@
 	-o-transform: translateX(-50%);
 	transform: translateX(-50%);
 }
-/*.popover_user_listings_mutate:before {
-	content: '';
-	width: 100%;
-	height: 100%;
-	background-color: #ddd;
+
+/*profile edit*/
+.update-user-image {
+	position: absolute;
+	top: 45%; 
+	left: 50%;
+	-webkit-transform: translate(-50%,-45%);
+	-moz-transform: translate(-50%,-45%);
+	-o-transform: translate(-50%,-45%);
+	transform: translate(-50%,-45%);
+	-webkit-transition: all .3s ease;
+	-moz-transition: all .3s ease;
+	-o-transition: all .3s ease;
+	transition: all .3s ease;
 }
 
-.popover_user_listings_mutate {
-	position: fixed;
-	width: 230px;
-	min-height: 50px;
-	top: 50vh;
-	left: 50vw;
-	-webkit-transform: translate(-115px,-25px);
-	-moz-transform: translate(-115px,-25px);
-	-o-transform: translate(-115px,-25px);
-	transform: translate(-115px,-25px);
-	padding: 30px;
-	z-index: 999;
-	background-color: #fff;
-	box-shadow: 0 0 10px #8D9799;
-	border-radius: 5px;
-}*/
+.update-user-image span {
+	position: relative;
+}
+
+.update-user-image span .fa {
+	font-size: 17.5px;
+	padding: 0;
+	margin: 0;
+	border: 0; 
+	
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%,-50%);
+	-moz-transform: translate(-50%,-50%);
+	-o-transform: translate(-50%,-50%);
+	transform: translate(-50%,-50%);
+}
+
+.update-user-image span .fa-camera {
+	color: #fff;
+	font-weight: 100;
+}
+
+
