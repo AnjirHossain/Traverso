@@ -6,7 +6,7 @@ angular.module('Root.profile').config(['$urlRouterProvider', '$stateProvider', '
     $locationProvider.html5Mode(true);
 
     $stateProvider
-
+ 
     /*sell subdir*/
     /*find subdir*/
       .state('profile', {
