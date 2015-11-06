@@ -12,7 +12,7 @@ angular.module('Root').service('vehicleApiService', ['$http','$q',function ($htt
 
 	this.getVehicleApi = function () {
 		return deffered.promise;
-	}
+	} 
 
 
 }]);
