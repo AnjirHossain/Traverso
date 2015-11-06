@@ -129,13 +129,14 @@ function initProfileTemplates() {
     'click #startProfileEdit': function ( event ) {
       Session.set('editMode', true);  
     },
-    'click #saveChangesToProfile': function ( event ){
-      event.preventDefault();
-      Session.set('editMode', false);  
-    },
+    // 'click #saveChangesToProfile': function ( event ){
+    //   // event.preventDefault();
+       
+    //   return false;
+    // },
     'submit #userDataUpdateForm': function (event) {
       event.preventDefault();
-
+      Session.set('editMode', false); 
       // gather all data from form; (password & avatar pending).
       var userAccountChanges;
 
@@ -162,18 +163,6 @@ function initProfileTemplates() {
           }
         }; 
       }
-
-      var userAccountChanges = {
-        username: event.target.userNameChanged.value,
-        email: event.target.userEmailChanged.value,
-        profile: {
-          profilePicUrl: '' + Meteor.user().profile.profilePicUrl,
-          firstName: event.target.userFirstNameChanged.value,
-          lastName: event.target.userLastNameChanged.value,
-          name: event.target.userFirstNameChanged.value + ' ' + event.target.userLastNameChanged.value, 
-          phone: event.target.userPhoneNumberChanged.value
-        }
-      }; 
 
       if ( event.target.userImgFileChanged.files[0] ) {
         // storing all files
@@ -208,12 +197,13 @@ function initProfileTemplates() {
 
     'change #userImgFile': function (event) {
       // console.log(event);
-      event.preventDefault();
+      // event.preventDefault();
 
       var selectedFiles = event.target.files,
           readerProfile = new FileReader();
 
       readerProfile.onload = function (e){
+        e.preventDefault();
         console.log('some crazy pointer', e.target.result);
         Session.set('avi', e.target.result);
       };

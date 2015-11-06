@@ -61,6 +61,7 @@
 
 /*profile_settings.css*/
 .user_setting-wrap {
+	overflow-y: scroll !important;
 	position: relative;
 	height: auto;
 	box-shadow: 0 0 10px #8D9799;
