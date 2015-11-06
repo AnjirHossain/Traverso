@@ -1,0 +1,230 @@
+<template name="privateComponents">
+
+	<div class="col-md-12 find-private-listings-wrap no-padding">
+		<!-- drill down search bar -->
+		<div class="col-md-12 search-box-wrap search-box-wrap-full no-padding z-index-5">
+			<div class="popover_filter_arrow" ng-show="showFilterPopOver"></div>
+			<div class="popover_filter_prop col-md-12" ng-show="showFilterPopOver">
+				<div class="popover_filter_body">
+
+					<!-- <p>Test</p> -->
+					<div class="table-view-cell">
+						<div class="filter-label col-md-2">
+							<label>Price</label>
+						</div>
+						<div class="filter-range col-md-10">
+
+							<div style="text-align:center;" class="filter-range-pipe col-md-3">
+								
+								<p>min</p>
+							</div>
+
+							<div class="filter-range-pipe col-md-3">
+								<input class="filter-inp" type="number" 
+									placeholder="$ 0" 
+					                ng-model="searchFodder.priceMin" 
+					                ng-minlength="1" 
+					                required>
+							</div>
+
+							<div style="text-align:center;" class="filter-range-pipe col-md-3">
+								<p>max</p>
+							</div>
+
+							<div class="filter-range-pipe col-md-3">
+								<input class="filter-inp" type="number"  
+									placeholder="$ 120,000"
+					                ng-model="searchFodder.priceMax" 
+					                ng-minlength="1" 
+					                required>
+							</div>
+						</div>
+					</div>
+
+					<div class="table-view-cell">
+						<div class="filter-label col-md-2">
+							<label>Milage</label>
+						</div>
+						<div class="filter-range col-md-10">
+							<div style="text-align:center;" class="filter-range-pipe col-md-3">
+								
+								<p>min</p>
+							</div>
+							<div class="filter-range-pipe col-md-3">
+								<input class="filter-inp" type="number" 
+									placeholder="0 mi" 
+					                ng-model="searchFodder.mileageMin" 
+					                ng-minlength="1" 
+					                required>
+							</div>
+							<div style="text-align:center;" class="filter-range-pipe col-md-3">
+								<p>max</p>
+							</div>
+							<div class="filter-range-pipe col-md-3">
+								<input class="filter-inp" type="number"  
+									placeholder="300,000 mi"
+					                ng-model="searchFodder.mileageMax" 
+					                ng-minlength="1" 
+					                required>
+							</div>		
+						</div>
+					</div>
+
+					<div class="table-view-cell">
+						<div class="filter-label col-md-2">
+							<label>Make </label>
+						</div>
+						<div class="filter-range col-md-10">
+
+							<select style="margin-left:12.5%;width:75%;"  
+							ng-model="searchFodder.make" 
+							ng-options="make as make.name for make in makes track by make.name">
+								<option value="" ng-show="false" default selected>Make</option>
+							</select>
+
+						</div>
+					</div>
+
+					<div class="table-view-cell">
+						<div class="filter-label col-md-2">
+							<label>Model </label>
+						</div>
+						<div class="filter-range col-md-10">
+							<select style="margin-left:12.5%;width:75%;" 
+							ng-model="searchFodder.model" 
+							ng-options="model as model.name for model in searchFodder.make.models track by model.name">
+								<option value="" ng-show="false" default selected>Model</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-view-cell">
+						<div class="filter-label col-md-2">
+							<label>Year </label>
+						</div>
+						<div class="filter-range col-md-10">
+							<div style="text-align:center;" class="filter-range-pipe col-md-3">
+								
+								<p>min</p>
+							</div>
+							<div class="filter-range-pipe col-md-3">
+								<select style="width:100%;" 
+								ng-model="searchFodder.yearMin">
+									<option value="" ng-show="false" default selected="true">1970</option>
+									<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+								</select>
+							</div>
+							<div style="text-align:center;" class="filter-range-pipe col-md-3">
+								<p>max</p>
+							</div>
+							<div class="filter-range-pipe col-md-3">
+								<select style="width:100%;" 
+								ng-model="searchFodder.yearMax">
+									<option value="" ng-show="false" default selected="true">2015</option>
+									<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					
+					<div class="table-view-cell">
+						<div class="filter-label col-md-4">
+							<label>Pre-owned</label>
+						</div>
+						<div class="filter-toggle col-md-8">
+							<div class="toggle toggle_PreOwned" ng-click="mutateFilter($event)">
+								<div class="toggle-handle"></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="table-view-cell">
+						<div class="col-md-4"></div>
+						<div class="filter-label col-md-4">
+
+							<button style="display:block; margin:0 auto;" 
+							class="btn btn-success"
+							ng-click="applyFiltersPrivate( searchFodder )">Apply Filters</button>
+							<!-- ng-click="applyFilters( searchFodder );" -->
+
+							<br>
+							<button style="display:block; margin:0 auto;"
+							class="btn btn-regular">No Filters</button>
+						</div>
+					</div>
+
+					<div style="text-align:center;" 
+						class="table-view-cell">
+						<p ng-show="searchErrorNoAddress" style="color:#FF3B30;">Please specify a location !</p>
+					</div>
+
+				</div>
+			</div>
+
+			<span class="col-md-2"></span>
+			<span class="search-input-group-full col-md-6">
+				<!-- <input type="text"
+					g-places-autocomplete
+					options="autocompleteOptions"
+					force-selection="true"
+					ng-model="searchFodder.address" 
+					ng-enter="beginSearch(searchFodder)"
+					placeholder="Search by location" 
+					class="search-geo"> -->
+
+				<input type="text"
+					g-places-autocomplete
+					options="autocompleteOptions"
+					force-selection="true"
+					ng-model="searchFodder.address" 
+					ng-enter="beginSearch(searchFodder)"
+					placeholder="Search by location" 
+					class="search-geo">
+			</span> 
+
+			<span class="search-filter-group-full col-md-2">
+				<button class="btn btn-dropdown-filter"
+						ng-click="filterPopOverStateMutator()"
+						ng-class="{active: searchFodder.address}">
+					Filter <i class="fa fa-angle-down"></i>
+				</button>
+			</span>
+		</div>
+
+		<!-- listings -->
+		<div class="col-md-12 listings-wrap">
+			<div class="no-results-indicator col-md-12 z-index-3"
+			ng-show="noResults">
+				<article style="text-align:center;" class="pitch">
+					<h3 style="color:#9B9B9B;">No listings to display</h3>
+					<p style="color:#23E363;">start typing to find your new set of wheel !</p>
+				</article>
+			</div>
+
+			<!-- load indicators -->
+			<div class="loading-results-indicator col-md-12 z-index-4"
+			     ng-show="loading">
+				<article class="pitch">
+					<div class="sk-three-bounce">
+						<div class="sk-child sk-bounce1"></div>
+						<div class="sk-child sk-bounce2"></div>
+						<div class="sk-child sk-bounce3"></div>
+					</div>
+				</article>
+			</div>
+
+			<div class="no-padding col-md-12">
+				
+				<div class="no-padding col-md-2"></div>
+				<div class="no-padding col-md-8">
+					<blaze-template name="listingResultsPrivate"></blaze-template>
+				</div>
+
+			</div>
+
+		</div>
+
+
+	</div>
+	
+</template>
