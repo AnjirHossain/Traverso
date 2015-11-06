@@ -1,4 +1,4 @@
-angular.module('Root').service('vehicleApiService', function ($http, $q) {
+angular.module('Root').service('vehicleApiService', ['$http','$q',function ($http, $q) {
 	
 	var deffered = $q.defer();
 	$http.get('/VehicleDataApiTraverso.json').then( function (data) {
@@ -15,4 +15,4 @@ angular.module('Root').service('vehicleApiService', function ($http, $q) {
 	}
 
 
-});
+}]);
