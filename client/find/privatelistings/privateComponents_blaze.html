@@ -3,7 +3,9 @@
 	<div class="col-md-12 find-private-listings-wrap no-padding">
 		<!-- drill down search bar -->
 		<div class="col-md-12 search-box-wrap search-box-wrap-full no-padding z-index-5">
-			<div class="popover_filter_arrow" ng-show="showFilterPopOver"></div>
+			<div class="popover_filter_arrow" 
+			ng-show="showFilterPopOver"
+			style="margin-left: 75%;"></div>
 			<div class="popover_filter_prop col-md-12" ng-show="showFilterPopOver">
 				<div class="popover_filter_body">
 
@@ -21,6 +23,7 @@
 
 							<div class="filter-range-pipe col-md-3">
 								<input class="filter-inp" type="number" 
+									style="width:100%;"  
 									placeholder="$ 0" 
 					                ng-model="searchFodder.priceMin" 
 					                ng-minlength="1" 
@@ -32,7 +35,8 @@
 							</div>
 
 							<div class="filter-range-pipe col-md-3">
-								<input class="filter-inp" type="number"  
+								<input class="filter-inp" type="number" 
+									style="width:100%;"   
 									placeholder="$ 120,000"
 					                ng-model="searchFodder.priceMax" 
 					                ng-minlength="1" 
@@ -52,6 +56,7 @@
 							</div>
 							<div class="filter-range-pipe col-md-3">
 								<input class="filter-inp" type="number" 
+									style="width:100%;"  
 									placeholder="0 mi" 
 					                ng-model="searchFodder.mileageMin" 
 					                ng-minlength="1" 
@@ -61,7 +66,8 @@
 								<p>max</p>
 							</div>
 							<div class="filter-range-pipe col-md-3">
-								<input class="filter-inp" type="number"  
+								<input class="filter-inp" type="number"
+									style="width:100%;"  
 									placeholder="300,000 mi"
 					                ng-model="searchFodder.mileageMax" 
 					                ng-minlength="1" 
@@ -76,7 +82,7 @@
 						</div>
 						<div class="filter-range col-md-10">
 
-							<select style="margin-left:12.5%;width:75%;"  
+							<select style="margin-left:10%;width:90%;"  
 							ng-model="searchFodder.make" 
 							ng-options="make as make.name for make in makes track by make.name">
 								<option value="" ng-show="false" default selected>Make</option>
@@ -90,10 +96,14 @@
 							<label>Model </label>
 						</div>
 						<div class="filter-range col-md-10">
-							<select style="margin-left:12.5%;width:75%;" 
+							<select style="margin-left:10%;width:90%;" 
+							class="select-drilldown" 
+							ng-class="{unpopulated: !searchFodder.make}"
 							ng-model="searchFodder.model" 
 							ng-options="model as model.name for model in searchFodder.make.models track by model.name">
-								<option value="" ng-show="false" default selected>Model</option>
+								<option value="" ng-show="false" default selected>
+									Model
+								</option>
 							</select>
 						</div>
 					</div>
@@ -108,32 +118,25 @@
 								<p>min</p>
 							</div>
 							<div class="filter-range-pipe col-md-3">
-								<select style="width:100%;" 
-								ng-model="searchFodder.yearMin">
-									<option value="" ng-show="false" default selected="true">1970</option>
-									<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+								<select style="width:100%;"
+								class="select-drilldown" 
+								ng-class="{unpopulated: !searchFodder.model}"
+								ng-model="searchFodder.yearMin"
+								ng-options="year as year.year for year in searchFodder.model.years track by year.year">
+									<option value=''>Min Year</option>
 								</select>
 							</div>
 							<div style="text-align:center;" class="filter-range-pipe col-md-3">
 								<p>max</p>
 							</div>
 							<div class="filter-range-pipe col-md-3">
-								<select style="width:100%;" 
-								ng-model="searchFodder.yearMax">
-									<option value="" ng-show="false" default selected="true">2015</option>
-									<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+								<select style="width:100%;"
+								class="select-drilldown" 
+								ng-class="{unpopulated: !searchFodder.model}"
+								ng-model="searchFodder.yearMax"
+								ng-options="year as year.year for year in searchFodder.model.years track by year.year">
+									<option value=''>Min Year</option>
 								</select>
-							</div>
-						</div>
-					</div>
-					
-					<div class="table-view-cell">
-						<div class="filter-label col-md-4">
-							<label>Pre-owned</label>
-						</div>
-						<div class="filter-toggle col-md-8">
-							<div class="toggle toggle_PreOwned" ng-click="mutateFilter($event)">
-								<div class="toggle-handle"></div>
 							</div>
 						</div>
 					</div>
@@ -146,10 +149,6 @@
 							class="btn btn-success"
 							ng-click="applyFiltersPrivate( searchFodder )">Apply Filters</button>
 							<!-- ng-click="applyFilters( searchFodder );" -->
-
-							<br>
-							<button style="display:block; margin:0 auto;"
-							class="btn btn-regular">No Filters</button>
 						</div>
 					</div>
 

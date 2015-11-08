@@ -107,7 +107,7 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
         $scope.listingWindowContent = {};
         $scope.filteredListings = [];
         $scope.searchBoxBase = '';
-        $scope.noAddress = false;
+        $scope.notEnoughInfo = false;
         $scope.searchFodder = {};
         $scope._searchFodderInHouse = {};
         $scope.noResults = true;
@@ -134,58 +134,56 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                 $scope.filterPopOverStateMutator();
             }
             
-            // reset markers upon address budge
+            // reset markers upon address change
             if ( listingMarkers.length ) {
                 listingMarkers = [];
             }
-
-            console.log('address ', a);
         };
 
         $scope.applyFilters = function (aSearchFodder) {
 
-            if ( !aSearchFodder.address ) {
-
-                if ( $scope.searchErrorNoAddress ){
-                    $scope.searchErrorNoAddress = false;
-                } else {
-                    $scope.searchErrorNoAddress = true;
-                }
+            // validating user entered info START
+            if ( _.isEmpty(aSearchFodder) ) {
+                console.log('aSearchFodder is empty');
+                $scope.notEnoughInfo = true;
                 return;
+            } else {
+                $scope.notEnoughInfo = false;
+                console.log('have detected that aSearchFodder is an obj: ', aSearchFodder);
             }
-
-            // green light for computation
-            $scope.searchErrorNoAddress = false;
 
             // loading indicator
             $scope.loading = true;
+            $scope.filterPopOverStateMutator();
 
-            // temporary
+            // transferring to var so as to not alter $scope
             $scope._searchFodderInHouse = aSearchFodder;
+            var _searchFodderInHouse = $scope._searchFodderInHouse;
 
+            if ( _searchFodderInHouse.address ) {
+                if ( _searchFodderInHouse.address.geometry.location.lat ) {
+                    _searchFodderInHouse.address.geometry.location.latitudeFinal = _searchFodderInHouse.address.geometry.location.lat();
+                }
+                if ( _searchFodderInHouse.address.geometry.location.lng ) {
+                    _searchFodderInHouse.address.geometry.location.longitudeFinal = _searchFodderInHouse.address.geometry.location.lng();
+                } 
+            }
+            // validating user entered info END
 
+            // Producing results START
             $meteor.autorun( $scope, function () {
 
-                var test = $scope._searchFodderInHouse;
-
-                // temporary moving inside the dynamic formula for stripping out lat long
-
+                
                 /*
                     Normalizing lat lng
                     -------------------
                     - server does not detect lat() lng() funcs
                       sent from client; (would probably be a huge security risk).
                     - rename and embrace
-
                 */
-                if ( test.address.geometry.location.lat ) {
-                    test.address.geometry.location.latitudeFinal = test.address.geometry.location.lat();
-                }
-                if ( test.address.geometry.location.lng ) {
-                    test.address.geometry.location.longitudeFinal = test.address.geometry.location.lng();
-                }
+                
 
-                var searchProps = test;
+                var searchProps = _searchFodderInHouse;
 
                 $meteor.call('getDealershipListings', searchProps).then(
                     function ( answer ) {
@@ -215,10 +213,53 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                                 loc.reverse();  
 
                                 location_arr = loc;
+
+
+                                panToThis = {
+                                    lat: location_arr[0],
+                                    lng: location_arr[1]
+                                };
+
+                                console.log('panToThis contains ', panToThis);
+
+                                listingResultsMap.setCenter(panToThis);
+                                listingResultsMap.setZoom(13);
+
+                                console.log('getListings answered fine: ', answer);
+                                Session.set('filteredListings', answer); // data for list
+
+                                // removing markers from google maps
+                                listingMarkers.map(function (m) {
+                                    m.setMap(null);
+                                    console.log('markers should\'ve been cleared');
+                                });       
+                                listingMarkers = [];
+                                
+                                
+                                listingClusters = new MarkerClusterer(listingResultsMap, listingMarkers, mcOptions);
+
+                                answer.map(function (e) {
+                                    var listingMarker = new google.maps.Marker({
+                                        position: {
+                                            lat: e.loc[1], 
+                                            lng: e.loc[0]
+                                        },
+                                        map: listingResultsMap,
+                                        icon: icon,
+                                        title: '$ ' + e.price 
+                                    });
+
+                                    listingMarkers.push(listingMarker);
+                                });
+
+                                listingClusters.addMarkers(listingMarkers);
+                                $scope.loading = false;
                             }
                         } else {
                             // vett
+                            $scope.loading = false;
                             $scope.noResults = true;
+
 
                             if ( searchProps.address ) {
                                 if ( searchProps.address.geometry.location ) {
@@ -229,103 +270,71 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
 
                                         location_arr.push( location_obj.lat() );
                                         location_arr.push( location_obj.lng() );
+
+                                        // location_arr.reverse();
+
+                                        panToThis = {
+                                            lat: location_arr[0],
+                                            lng: location_arr[1]
+                                        };
+
+                                        listingResultsMap.setCenter(panToThis);
+                                        listingResultsMap.setZoom(13);
                                     }                
                                 }
                             }
                         } 
 
-                        panToThis = {
-                            lat: location_arr[0],
-                            lng: location_arr[1]
-                        };
-
-                        console.log('panToThis contains ', panToThis);
-
-                        listingResultsMap.setCenter(panToThis);
-                        listingResultsMap.setZoom(13);
-
-                        console.log('getListings answered fine: ', answer);
-                        Session.set('filteredListings', answer); // data for list
-
-                        // removing markers from google maps
-                        listingMarkers.map(function (m) {
-                            m.setMap(null);
-                            console.log('markers should\'ve been cleared');
-                        });       
-                        listingMarkers = [];
                         
-                        
-                        listingClusters = new MarkerClusterer(listingResultsMap, listingMarkers, mcOptions);
-
-                        answer.map(function (e) {
-                            var listingMarker = new google.maps.Marker({
-                                position: {
-                                    lat: e.loc[1], 
-                                    lng: e.loc[0]
-                                },
-                                map: listingResultsMap,
-                                icon: icon,
-                                title: '$ ' + e.price 
-                            });
-
-                            listingMarkers.push(listingMarker);
-                        });
-
-                        listingClusters.addMarkers(listingMarkers);
                     }, 
                     function (error) {
 
                         console.log(error); 
                     }
-                );      
-
-                
+                );             
             });
-
-            $scope.filterPopOverStateMutator();
-            $scope.loading = false; 
+            // Producing results END
         };
 
         // FACTOR INTO RESPECTIVE CONTROLLER
         $scope.applyFiltersPrivate = function (aSearchFodder) { 
-            if ( !aSearchFodder.address ) {
 
-                if ( $scope.searchErrorNoAddress ){
-                    $scope.searchErrorNoAddress = false;
-                } else {
-                    $scope.searchErrorNoAddress = true;
-                }
+            // validating user info START
+            if ( _.isEmpty(aSearchFodder) ) {
+                console.log('aSearchFodder is empty');
+                $scope.notEnoughInfo = true;
                 return;
+            } else {
+                $scope.notEnoughInfo = false;
+                console.log('have detected that aSearchFodder is an obj: ', aSearchFodder);
             }
-            // green light for computation
-            $scope.searchErrorNoAddress = false;
-            // loading indicator
+            // validating user info END
+
             $scope.loading = true;
-            // temporary
+            $scope.filterPopOverStateMutator();
+            
+            // transferring to var so as to not alter $scope
             $scope._searchFodderInHouse = aSearchFodder;
 
+            // Producing results START
             $meteor.autorun( $scope, function () {
 
-                var test = $scope._searchFodderInHouse;
-
-                // temporary moving inside the dynamic formula for stripping out lat long
-
+                var _searchFodderInHouse = $scope._searchFodderInHouse;
                 /*
                     Normalizing lat lng
                     -------------------
                     - server does not detect lat() lng() funcs
                       sent from client; (would probably be a huge security risk).
                     - rename and embrace
-
                 */
-                if ( test.address.geometry.location.lat ) {
-                    test.address.geometry.location.latitudeFinal = test.address.geometry.location.lat();
+                if ( _searchFodderInHouse.address.geometry.location.lat ) {
+                    _searchFodderInHouse.address.geometry.location.latitudeFinal = _searchFodderInHouse.address.geometry.location.lat();
                 }
-                if ( test.address.geometry.location.lng ) {
-                    test.address.geometry.location.longitudeFinal = test.address.geometry.location.lng();
+                if ( _searchFodderInHouse.address.geometry.location.lng ) {
+                    _searchFodderInHouse.address.geometry.location.longitudeFinal = _searchFodderInHouse.address.geometry.location.lng();
                 }
 
-                var searchProps = test;
+                var searchProps = _searchFodderInHouse;
 
                 $meteor.call('getPrivateListings', searchProps).then(
                     function ( answer ) {
@@ -344,33 +353,22 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                             $scope.noResults = false;
                             console.log('getListings answered fine: ', answer);
                             Session.set('filteredListings', answer); // data for list
+                            $scope.loading = false;
                         } else {
                             // vett
                             $scope.noResults = true;
+                            $scope.loading = false;
                         } 
                     }, 
                     function (error) {
                         console.log(error); 
                     }
-                );      
-
-                
+                );             
             });
-
-            $scope.filterPopOverStateMutator();
-            $scope.loading = false;
+            // Producing results END
         };
 
         $scope.searchErrorNoAddress = false;
-
-        // $scope.$watch('searchFodder.address', function(context){
-            //     // figure out way to watch entire object fcol
-            //     if (!context) {
-            //         console.log('reaction to searchFodder.address. Context is: ', context);
-            //         $scope.filteredListings = [];
-            //         $scope.filterLax = 6;
-            //     }
-        // });
 
         // tangent: listing_window 
         var listingWindowProp = document.getElementById('listingWindow');
@@ -822,6 +820,7 @@ function initFindTemplates() {
 
     Template.listingPrivate.helpers({
         lister: function () {
+            console.log(this.owner);
             return Meteor.users.findOne({_id: this.owner});
         }
     });

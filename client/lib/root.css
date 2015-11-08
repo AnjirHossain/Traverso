@@ -568,12 +568,23 @@ select {
   margin-right: 10px;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 3px;
+  border-radius: 5px;
   outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
-select option[default] {
+select option[type="default"] {
     color: #ddd;
+}
+
+select.select-drilldown {
+  color: inherit;
+}
+
+select.select-drilldown.unpopulated {
+  color: #ddd;
 }
 
 .input-group input[type="file"] {
