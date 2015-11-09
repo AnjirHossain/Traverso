@@ -21,7 +21,8 @@
 	margin: 8vh 0 0 0;
 }
 
-.user_listings-wrap {
+.user_listings-wrap,
+.user_setting-wrap {
 	position: relative;
 	height: 83.3333vh;
 	overflow-y: scroll !important;
@@ -73,22 +74,25 @@
 }
 
 /*profile_settings.css*/
-.user_setting-wrap {
+/*.user_setting-wrap {
 	overflow-y: scroll !important;
 	position: relative;
-	height: auto;
+	height: 83.3333vh;
 	box-shadow: 0 0 10px #8D9799;
 	border-radius: 5px;
-}
+}*/
 
 .user_settings_img-wrap {
 	position: relative;
-	height: 200px;
+	height: 175px;
 }
 
 .user_info-wrap {
-	margin-top: 60px;
 	padding: 0 15px;
+}
+
+.user_info-wrap:nth-child(1) {
+	margin-top: 60px;
 }
 
 .user_info-wrap > p {

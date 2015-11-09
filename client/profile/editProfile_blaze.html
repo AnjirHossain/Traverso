@@ -2,12 +2,12 @@
 	<!-- factor out different modes into their own templates -->
 	<!-- display mode -->
 
-	{{#if editProfileMode}}
-		<div class="user_setting-wrap">
+	<div class="user_setting-wrap">
+		{{#if editProfileMode}}
+		
 			
 			<form id="userDataUpdateForm"
 				  name="userDataUpdateForm">
-
 	            <div class="user_settings_img-wrap">
 
 	            	{{#if userAvatar}}
@@ -26,7 +26,6 @@
 						<span><i class="fa fa-camera"></i></span>
 					</button>
 				</div>
-
 				<div class="user_info-wrap">
 					<!-- values !!! -->
 					
@@ -77,14 +76,14 @@
 							   value="{{currentUser_Email}}">
 					</div>
 
-					<div class="input-row">
+					<div class="input-row" style="margin-bottom:10px;">
 						<label>Phone</label>
 						<input type="number"
 							   class="input-three-fourths" 
 							   name="userPhoneNumberChanged" 
 							   placeholder="+1 (234) 456 7890"
 							   value="{{currentUser.profile.phone}}">
-					</div><br>
+					</div>
 
 					<input class="btn btn-cta-user_edit"
 						   type="submit" 
@@ -92,11 +91,7 @@
 						   value="Save Changes"><br>
 				</div>
 			</form><br>
-		</div>
-
-	{{else}}
-
-		<div class="user_setting-wrap">
+		{{else}}
 
 			<div class="user_settings_img-wrap">
 				{{#if userAvatar}}
@@ -117,11 +112,66 @@
 				<p>Email: <span class="muted_emph">{{currentUser_Email}}</span></p>
 				<hr>
 
-				<p>Phone: <span class="muted_emph">{{ currentUser.profile.phone }}</span></p> <br>
+				<p>
+					Phone: <span class="muted_emph">{{ currentUser.profile.phone }}</span>
+				</p>
 				<button class="btn btn-cta-user_edit"
-						id="startProfileEdit">Edit</button><br>
+				style="margin-bottom:10px;"
+				id="startProfileEdit">Edit</button>
 			</div>
-		</div>
-	{{/if}}
+		{{/if}}
+		<blaze-template name="editPassword"></blaze-template>
+	</div>
 
+</template>
+
+<template name="editPassword">
+
+	<div class="user_info-wrap">
+		{{#if editPasswordMode}}
+			<form id="editPassword">
+				<p id="changePassError"></p>
+				<div class="input-row"
+				style="margin-top:-20px;margin-bottom:10px;">        
+		            <label>Old Password</label>
+		            <input type="password" 
+		                class="input-three-fourths" 
+		                name="currentpassword"
+		                required>
+		        </div>
+				<div class="input-row">        
+		            <label>New Password</label>
+		            <input type="password" 
+		                class="input-three-fourths" 
+		                name="newpassword" 
+		                placeholder="New Password"
+		                required>
+		        </div>  
+		        <div class="input-row">
+		            <label>Confirm</label>
+		            <input type="password" 
+		                class="input-three-fourths" 
+		                name="passwordchangeconfirm" 
+		                placeholder="Confirm Password"
+		                required>    
+		        </div>
+
+				<button class="btn btn-cta-user_edit"
+				type="submit" 
+				style="margin-bottom:10px;display:inline !important;"
+				id="savePasswordChanges">Confirm</button>
+				<button class="btn btn-see-through btn-see-through-engage"
+				type="submit" 
+				style="margin-bottom:10px;display:inline !important;"
+				id="cancelPasswordChanges">Cancel</button>
+				
+			</form>
+		{{else}}
+			<h3>Security</h3>
+			<button class="btn btn-see-through btn-see-through-engage"
+			style="margin-bottom:10px;padding:0!important;"
+			id="startPasswordEdit">Change Password</button>
+		{{/if}}
+	</div>
+		
 </template>

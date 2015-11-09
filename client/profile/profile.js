@@ -84,6 +84,7 @@ function initProfileTemplates() {
   // setting editMode false using Session var
   // must change to reactive vars
   Session.set('editMode', false);
+  Session.set('editModePassword', false);
   // Session.setDefault('avi', currentUser.profile.profilePicUrl);
 
   Template.editProfile.helpers({
@@ -94,10 +95,7 @@ function initProfileTemplates() {
       return Session.get('avi');
     },
     'editProfileMode': function () {
-      if ( Session.get('editMode') ) {
-        
-        return Session.get('editMode');
-      }
+      return Session.get('editMode');
     },
     'accountTypeDealer': function () {
       if (Meteor.user()) {
@@ -129,11 +127,6 @@ function initProfileTemplates() {
     'click #startProfileEdit': function ( event ) {
       Session.set('editMode', true);  
     },
-    // 'click #saveChangesToProfile': function ( event ){
-    //   // event.preventDefault();
-       
-    //   return false;
-    // },
     'submit #userDataUpdateForm': function (event) {
       event.preventDefault();
       Session.set('editMode', false); 
@@ -194,7 +187,6 @@ function initProfileTemplates() {
       }
       event.target.userImgFileChanged.value = '';
     },
-
     'change #userImgFile': function (event) {
       // console.log(event);
       // event.preventDefault();
@@ -212,6 +204,53 @@ function initProfileTemplates() {
     }
 
   });
+
+  Template.editPassword.events({
+    'click #startPasswordEdit': function ( event ) {
+      console.log(event);
+      Session.set('editModePassword', true);  
+      console.log(Session.get('editModePassword'));
+    },
+    'click #cancelPasswordChanges': function (event) {
+      Session.set('editModePassword', false);  
+    },
+    'submit #editPassword': function (event) {
+      event.preventDefault(); 
+
+      var currentPassword = event.target.currentpassword.value,
+          newPassword = event.target.newpassword.value,
+          confirmPassword = event.target.passwordchangeconfirm.value;
+
+
+      Accounts.changePassword(currentPassword, newPassword, function (error) {
+        document.getElementById('changePassError').innerHTML = '';
+
+        passwordsDontMatch = !(newPassword === confirmPassword);
+
+        if (error || passwordsDontMatch) {
+          var errMessage = 'Oops! passwords don\'t match, <span style=\'color:#00E364;\'> lets try that again !</span>';
+          document.getElementById('changePassError').innerHTML = errMessage;
+          return;
+        }
+
+        Session.set('editModePassword', false);
+      });
+
+      return false;
+    }
+  });
+
+  Template.editPassword.helpers({
+    'editPasswordMode': function () {
+      return Session.get('editModePassword');
+    }
+  });
+
+  /*
+'click #startPasswordEdit': function ( event ) {
+      Session.set('editModePassword', true);  
+    },
+  */
 }
 
 
