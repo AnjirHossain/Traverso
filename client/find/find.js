@@ -147,10 +147,9 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                 console.log('aSearchFodder is empty');
                 $scope.notEnoughInfo = true;
                 return;
-            } else {
-                $scope.notEnoughInfo = false;
-                console.log('have detected that aSearchFodder is an obj: ', aSearchFodder);
-            }
+            } 
+            $scope.notEnoughInfo = false;
+            console.log('have detected that aSearchFodder is an obj: ', aSearchFodder);
 
             // loading indicator
             $scope.loading = true;
@@ -304,10 +303,10 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                 console.log('aSearchFodder is empty');
                 $scope.notEnoughInfo = true;
                 return;
-            } else {
-                $scope.notEnoughInfo = false;
-                console.log('have detected that aSearchFodder is an obj: ', aSearchFodder);
-            }
+            } 
+            $scope.notEnoughInfo = false;
+            console.log('have detected that aSearchFodder is an obj: ', aSearchFodder);
+
             // validating user info END
 
             $scope.loading = true;
@@ -327,11 +326,13 @@ angular.module('Root.find').controller('findCtrl', ['$scope','$meteor','$statePa
                       sent from client; (would probably be a huge security risk).
                     - rename and embrace
                 */
-                if ( _searchFodderInHouse.address.geometry.location.lat ) {
-                    _searchFodderInHouse.address.geometry.location.latitudeFinal = _searchFodderInHouse.address.geometry.location.lat();
-                }
-                if ( _searchFodderInHouse.address.geometry.location.lng ) {
-                    _searchFodderInHouse.address.geometry.location.longitudeFinal = _searchFodderInHouse.address.geometry.location.lng();
+                if ( _searchFodderInHouse.address ) {
+                    if ( _searchFodderInHouse.address.geometry.location.lat ) {
+                        _searchFodderInHouse.address.geometry.location.latitudeFinal = _searchFodderInHouse.address.geometry.location.lat();
+                    }
+                    if ( _searchFodderInHouse.address.geometry.location.lng ) {
+                        _searchFodderInHouse.address.geometry.location.longitudeFinal = _searchFodderInHouse.address.geometry.location.lng();
+                    } 
                 }
 
                 var searchProps = _searchFodderInHouse;
