@@ -198,7 +198,7 @@ input[type="text"].search-geo:focus {
 	left: 0px;
 	margin-top: 4vh;
 	position: relative;
-	height: 88vh;
+	height: 84vh;
 	overflow-y: auto !important;
 }
 
@@ -377,7 +377,7 @@ article.listings-item-preview {
 .angular-google-map-container,
 .no-results-indicator,
 .loading-results-indicator {
-	height: 88vh;
+	height: 84vh;
 }
 
 .listing_window {
@@ -612,9 +612,23 @@ div.sudo-sep {
 	transform: translateX(75px);
 }
 
+.catagories-tab,
+.catagories-tab > div {
+	height: 8vh;
+	position: relative;
+}
+
+.catagories-tab > div > a {
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
 .catagories-tab {
-	height: 4vh;
-	margin-bottom: 0vh;
+	margin-bottom: 0;
 	background-color: #fff;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.26);	
 	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.26);
@@ -637,7 +651,7 @@ div.sudo-sep {
 
 .find-private-listings-wrap {
 	margin-top: 3.5vh;
-	height: 88.5vh;
+	height: 84.6vh;
 	position: relative;
 }
 
