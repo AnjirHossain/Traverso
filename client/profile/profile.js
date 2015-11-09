@@ -225,10 +225,20 @@ function initProfileTemplates() {
       Accounts.changePassword(currentPassword, newPassword, function (error) {
         document.getElementById('changePassError').innerHTML = '';
 
-        passwordsDontMatch = !(newPassword === confirmPassword);
+        var passwordsDontMatch = !(newPassword === confirmPassword),
+            errMessage = '';
 
-        if (error || passwordsDontMatch) {
-          var errMessage = 'Oops! passwords don\'t match, <span style=\'color:#00E364;\'> lets try that again !</span>';
+
+
+
+        if (error) {
+          errMessage = 'Oops! <span style=\'color:#00E364;\'>' + error.reason + '</span>';
+          document.getElementById('changePassError').innerHTML = errMessage;
+          return;
+        }
+
+        if (passwordsDontMatch) {
+          errMessage = '<span style=\'color:#FD413F;\'>incorrect password</span>';
           document.getElementById('changePassError').innerHTML = errMessage;
           return;
         }
