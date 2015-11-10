@@ -2,8 +2,11 @@ Meteor.startup(function () {
   ensureIndexing();
   // console.log('line 7 startup in server', Meteor.users.find({'profile.profileType':'dealership'}).fetch() );
 
-  if (Meteor.users.find({'profile.profileType':'dealership'}).fetch().length === 0) {
+  var dealerCounts = Meteor.users.find({'profile.profileType':'dealership'}).fetch().length
+
+  if (dealerCounts !== 0 && dealerCounts < 5) {
   	console.log('dealer accounts count:', Meteor.users.find({'profile.profileType':'dealership'}).fetch().length);
+  	console.log('creating accounts');
   	seedDbWithDealershipAccounts();
   }
 
@@ -15,17 +18,54 @@ function ensureIndexing() {
   Listings._ensureIndex({'loc':'2d','make':1,'price':1,'year':1,'milage':1});
 }
 
+// build an on start algorithm whenever a dealer account needs to be created
 function seedDbWithDealershipAccounts() {
 	var dealers = [
 		{
-			username: 'Porsche of Seattle',
-			email: 'sales@porscheofseattle.com',
-			password: 'seattle_porsche',
-			passwordConfirmed: 'seattle_porsche',
+			username: 'vwofseattle',
+			email: 'sales@vwofseattle.com',
+			password: 'seattle_vw',
+			passwordConfirmed: 'seattle_vw',
 			profile: {
 				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
 				profileType: 'dealership',
-				name: 'Porsche of Seattle', 
+				name: 'Volkswagen of Seattle', 
+				phone: '2062600000'
+			}
+	    },
+	    {
+			username: 'autoseaside',
+			email: 'sales@sa.com',
+			password: 'seaside_auto',
+			passwordConfirmed: 'seaside_auto',
+			profile: {
+				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
+				profileType: 'dealership',
+				name: 'Seaside Auto', 
+				phone: '2062600001'
+			}
+	    },
+	    {
+			username: 'futuresqueauto',
+			email: 'sales@futuresque.com',
+			password: 'auto_futuresque',
+			passwordConfirmed: 'auto_futuresque',
+			profile: {
+				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
+				profileType: 'dealership',
+				name: 'Futuresque Auto', 
+				phone: '2060010002'
+			}
+	    },
+	    {
+			username: 'washingtonauto',
+			email: 'sales@washingtonauto.com',
+			password: 'washington_auto',
+			passwordConfirmed: 'washington_auto',
+			profile: {
+				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
+				profileType: 'dealership',
+				name: 'Washington\'s Auto', 
 				phone: '2062303490'
 			}
 	    }
