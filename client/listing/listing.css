@@ -25,6 +25,10 @@
 	background-position: center;
 }
 
+.img-container > img {
+	width: 100%;
+}
+
 .listing-images-full {
 	position: absolute;
 	top: 50%;

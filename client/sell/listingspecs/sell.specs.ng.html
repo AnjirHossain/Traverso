@@ -5,23 +5,30 @@
 		<!-- nail best practices -->
 		<select ng-change="getModels(listingFormBaseData.make)"
 		ng-model="listingFormBaseData.make" 
-		ng-options="make as make.name for make in makes track by make.name">
+		ng-options="make as make.name for make in makes track by make.name"
+		class="select-drilldown">
 			<option value=''>Make</option>
 		</select>
 
 		<select ng-change="getYears(listingFormBaseData.model)"
+		class="select-drilldown"
+		ng-class="{unpopulated: !listingFormBaseData.make}"
 		ng-model="listingFormBaseData.model"
 		ng-options="model as model.name for model in listingFormBaseData.make.models track by model.name">
 			<option value=''>Model</option>
 		</select>
 
 		<select ng-change="getTrims(listingFormBaseData.year)"
+		class="select-drilldown"
+		ng-class="{unpopulated: !listingFormBaseData.model}"
 		ng-model="listingFormBaseData.year"
 		ng-options="year as year.year for year in listingFormBaseData.model.years track by year.year">
 			<option value=''>Year</option>
 		</select>
 
 		<select ng-change="logTrim(listingFormBaseData.trim)"
+		class="select-drilldown"
+		ng-class="{unpopulated: !listingFormBaseData.year}"
 		ng-model="listingFormBaseData.trim"
 		ng-options="style as style.trim for style in listingFormBaseData.year.styles track by style.trim">
 			<option value=''>Trim</option>

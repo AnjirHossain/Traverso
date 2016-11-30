@@ -6,7 +6,7 @@ angular.module('Root.profile').config(['$urlRouterProvider', '$stateProvider', '
     $locationProvider.html5Mode(true);
 
     $stateProvider
-
+ 
     /*sell subdir*/
     /*find subdir*/
       .state('profile', {
@@ -84,6 +84,7 @@ function initProfileTemplates() {
   // setting editMode false using Session var
   // must change to reactive vars
   Session.set('editMode', false);
+  Session.set('editModePassword', false);
   // Session.setDefault('avi', currentUser.profile.profilePicUrl);
 
   Template.editProfile.helpers({
@@ -94,10 +95,7 @@ function initProfileTemplates() {
       return Session.get('avi');
     },
     'editProfileMode': function () {
-      if ( Session.get('editMode') ) {
-        
-        return Session.get('editMode');
-      }
+      return Session.get('editMode');
     },
     'accountTypeDealer': function () {
       if (Meteor.user()) {
@@ -129,13 +127,9 @@ function initProfileTemplates() {
     'click #startProfileEdit': function ( event ) {
       Session.set('editMode', true);  
     },
-    'click #saveChangesToProfile': function ( event ){
-      event.preventDefault();
-      Session.set('editMode', false);  
-    },
     'submit #userDataUpdateForm': function (event) {
       event.preventDefault();
-
+      Session.set('editMode', false); 
       // gather all data from form; (password & avatar pending).
       var userAccountChanges;
 
@@ -162,18 +156,6 @@ function initProfileTemplates() {
           }
         }; 
       }
-
-      var userAccountChanges = {
-        username: event.target.userNameChanged.value,
-        email: event.target.userEmailChanged.value,
-        profile: {
-          profilePicUrl: '' + Meteor.user().profile.profilePicUrl,
-          firstName: event.target.userFirstNameChanged.value,
-          lastName: event.target.userLastNameChanged.value,
-          name: event.target.userFirstNameChanged.value + ' ' + event.target.userLastNameChanged.value, 
-          phone: event.target.userPhoneNumberChanged.value
-        }
-      }; 
 
       if ( event.target.userImgFileChanged.files[0] ) {
         // storing all files
@@ -205,15 +187,15 @@ function initProfileTemplates() {
       }
       event.target.userImgFileChanged.value = '';
     },
-
     'change #userImgFile': function (event) {
       // console.log(event);
-      event.preventDefault();
+      // event.preventDefault();
 
       var selectedFiles = event.target.files,
           readerProfile = new FileReader();
 
       readerProfile.onload = function (e){
+        e.preventDefault();
         console.log('some crazy pointer', e.target.result);
         Session.set('avi', e.target.result);
       };
@@ -222,6 +204,63 @@ function initProfileTemplates() {
     }
 
   });
+
+  Template.editPassword.events({
+    'click #startPasswordEdit': function ( event ) {
+      console.log(event);
+      Session.set('editModePassword', true);  
+      console.log(Session.get('editModePassword'));
+    },
+    'click #cancelPasswordChanges': function (event) {
+      Session.set('editModePassword', false);  
+    },
+    'submit #editPassword': function (event) {
+      event.preventDefault(); 
+
+      var currentPassword = event.target.currentpassword.value,
+          newPassword = event.target.newpassword.value,
+          confirmPassword = event.target.passwordchangeconfirm.value;
+
+
+      Accounts.changePassword(currentPassword, newPassword, function (error) {
+        document.getElementById('changePassError').innerHTML = '';
+
+        var passwordsDontMatch = !(newPassword === confirmPassword),
+            errMessage = '';
+
+
+
+
+        if (error) {
+          errMessage = 'Oops! <span style=\'color:#00E364;\'>' + error.reason + '</span>';
+          document.getElementById('changePassError').innerHTML = errMessage;
+          return;
+        }
+
+        if (passwordsDontMatch) {
+          errMessage = '<span style=\'color:#FD413F;\'>incorrect password</span>';
+          document.getElementById('changePassError').innerHTML = errMessage;
+          return;
+        }
+
+        Session.set('editModePassword', false);
+      });
+
+      return false;
+    }
+  });
+
+  Template.editPassword.helpers({
+    'editPasswordMode': function () {
+      return Session.get('editModePassword');
+    }
+  });
+
+  /*
+'click #startPasswordEdit': function ( event ) {
+      Session.set('editModePassword', true);  
+    },
+  */
 }
 
 

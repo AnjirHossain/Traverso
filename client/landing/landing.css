@@ -221,6 +221,17 @@ footer div.footer-sep:nth-child(3) {
     text-align: right;
 }
 
+footer > div > h4 {
+    /**/
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+footer > div > h4,
+footer > div > p {
+    text-align: center;
+}
+
 /*mq*/
 @media(max-width:1200px) {
     .headline h1 {

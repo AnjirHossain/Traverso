@@ -1,12 +1,6 @@
 input[type="text"].search-geo {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%,-50%);
-	   -moz-transform: translate(-50%,-50%);
-	     -o-transform: translate(-50%,-50%);
-	        transform: translate(-50%,-50%);
-	width: 90%;
+	/* -> root.css */
+	width: 100%;
 	height: 35px;
 	padding: 0 15px;
 	border-radius: 20px;
@@ -17,12 +11,10 @@ input[type="text"].search-geo {
 	     -o-appearance: textfield;
 			appearance: textfield;
 	-webkit-appearance: textfield;
-	-webkit-transition: all ease .3s;
-	   -moz-transition: all ease .3s;
-	     -o-transition: all ease .3s;
 }
 
 input[type="text"].search-geo:focus {
+  /* -> root.css */
   border-color: #23E363;
   text-align: left;
   border-radius: 3px;
@@ -40,27 +32,12 @@ input[type="text"].search-geo:focus {
 .btn-dropdown-filter {
 	background-color: #fff;
 	border: 1px solid #9B9B9B;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%,-50%);
-	-moz-transform: translate(-50%,-50%);
-	-o-transform: translate(-50%,-50%);
-	transform: translate(-50%,-50%); 
-	-webkit-transition: all .3s ease;
-	-moz-transition: all .3s ease;
-	-o-transition: all .3s ease;
-	transition: all .3s ease;
 }
 
 .btn-dropdown-filter,
 .btn-dropdown-filter i {
 	color: #9B9B9B;
 	font-size: 15px;
-	-webkit-transition: all .3s ease;
-	-moz-transition: all .3s ease;
-	-o-transition: all .3s ease;
-	transition: all .3s ease;
 }
 
 .btn-dropdown-filter i {
@@ -78,36 +55,16 @@ input[type="text"].search-geo:focus {
 .btn-dropdown-filter.active i {
 	color: #23E363;	
 	box-shadow: none;
-	box-shadow: none;
-	box-shadow: none;
-	box-shadow: none;
 }
 
 .btn-dropdown-filter.active {
 	border-color: #23E363;
 	box-shadow: none;
-	box-shadow: none;
-	box-shadow: none;
-	box-shadow: none;
-}
-
-.find-wrap,
-.map-wrap,
-.listings-wrap,
-.map {
-	padding: 0;
-	border: 0;
-	margin: 0;
-}
-
-.listings-wrap {
-	position: relative;
 }
 
 .find-wrap,
 .map-wrap {
 	margin-top: 3.8vh;
-	position: relative;
 }
 
 .find-wrap {
@@ -122,7 +79,6 @@ input[type="text"].search-geo:focus {
 }
 
 .search-category-wrap button {
-	position: absolute;
 	top: 50%;
 	-webkit-transform: translateY(-50%);
 	-moz-transform: translateY(-50%);
@@ -140,9 +96,7 @@ input[type="text"].search-geo:focus {
 
 .search-box-wrap {
 	position: fixed;
-	z-index: 100;
 	height: 8vh;
-	/*margin-top: 4vh;*/
 	background-color: #fff;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.26);	
 }
@@ -159,18 +113,14 @@ input[type="text"].search-geo:focus {
 .no-results-indicator,
 .loading-results-indicator {
 	position: fixed;
-	/*margin-top: 4vh;*/
-	/*height: 88vh;*/
 	overflow: hidden;
 	background-color: #fff;
-	z-index: 100;
 }
 
 .search-input-group,
 .search-filter-group,
 .search-filter-group-full,
 .search-input-group-full {
-	position: relative;
 	padding: 0;
 	height: 100%;
 }
@@ -185,21 +135,10 @@ input[type="text"].search-geo:focus {
 	width:  35%;
 }
 
-/*.search-input-group-full {
-	float: left;
-	width: 65%;
-}
-
-.search-filter-group-full {
-	float: right;
-	width:  35%;
-}*/
-
 .listings-wrap {
 	left: 0px;
 	margin-top: 4vh;
-	position: relative;
-	height: 88vh;
+	height: 84vh;
 	overflow-y: auto !important;
 }
 
@@ -215,7 +154,6 @@ input[type="text"].search-geo:focus {
 
 .listing-items-wrap-private,
 .listings-items-wrap {
-	display: block;
 	width: 100%;
 }
 
@@ -228,15 +166,10 @@ input[type="text"].search-geo:focus {
 	padding: 13px;
 }
 
-/*.listings-item-scaffold:hover {
-	
-}*/
-
 .listings-item {
 	height: 225px;
 	border-radius: 5px;
 	box-shadow: 0 0 10px #8D9799;
-	position: relative;
 	background-size: cover;
 	background-position: center;
 }
@@ -248,42 +181,24 @@ input[type="text"].search-geo:focus {
 article.listings-item-preview {
 	color: #fff;
 	background-color: rgba(0,0,0,0.4);
-	position: absolute;
 	width: 100%;
 	height: 100%;
 	border-radius: 5px;
 	background-size: cover;
 	background-position: center;
-	-webkit-transition: all .3s ease;
-	-moz-transition: all .3s ease;
-	-o-transition: all .3s ease;
-	transition: all .3s ease;
 }
-
-/*.listings-item-scaffold:hover .listings-item > article.listings-item-preview {
-	background-color: rgba(0,0,0,0.6);
-}*/
 
 .listings-item:hover > article.listings-item-preview {
 	background-color: rgba(0,0,0,0.6);
 }
 
 .lip-text-wrap {
-	position: absolute; /* watch */
 	bottom: 0%;
 	-webkit-transform: translateY(50%);
 	   -moz-transform: translateY(50%);
 	     -o-transform: translateY(50%);
 	        transform: translateY(50%);
-	-webkit-transition: all .2s ease;
-	   -moz-transition: all .2s ease;
-	     -o-transition: all .2s ease;
-	        transition: all .2s ease;
 }
-
-/*.listings-item-scaffold:hover .listings-item > article.listings-item-preview .lip-text-wrap {
-	bottom: 50%;
-}*/
 
 .listings-item:hover > article.listings-item-preview .lip-text-wrap {
 	bottom: 50%;
@@ -309,11 +224,6 @@ article.listings-item-preview {
 	border-right: 1px solid #fff;
 }
 
-/*.listings-item-scaffold:hover .listings-item > article.listings-item-preview .lip-text-wrap .peak {
-	visibility: visible;
-	opacity: 1;
-}*/
-
 .listings-item:hover > article.listings-item-preview .lip-text-wrap .peak {
 	visibility: visible;
 	opacity: 1;
@@ -325,7 +235,6 @@ article.listings-item-preview {
 }
 
 .map {
-	position: absolute;
 	width: 100%;
 	height: 100%;
 }
@@ -338,10 +247,6 @@ article.listings-item-preview {
 	background-size: cover;
 	background-position-x: 50%;
 	background-position-y: 50%;
-	-webkit-transition: all .3s ease;
-	-moz-transition: all .3s ease;
-	-o-transition: all .3s ease;
-	transition: all .3s ease;
 }
 
 .pitch-textual:hover {
@@ -359,26 +264,13 @@ article.listings-item-preview {
 
 .listing-mouse-over {
 	z-index: 999;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%,-50%);
-	-moz-transform: translate(-50%,-50%);
-	-o-transform: translate(-50%,-50%);
-	transform: translate(-50%,-50%);
-
-}
-
-.angular-google-map-container {
-  	/*margin-top: 4vh;*/
-	position: relative;
 }
 
 /*height: 88vh;*/
 .angular-google-map-container,
 .no-results-indicator,
 .loading-results-indicator {
-	height: 88vh;
+	height: 84vh;
 }
 
 .listing_window {
@@ -456,9 +348,7 @@ div.sudo-sep {
 .popover_filter_prop {
 	position: fixed;
 }
-.popover_filter_arrow {
-	position: absolute;	
-}
+
 
 /* resp */
 .popover_filter_arrow {
@@ -496,7 +386,6 @@ div.sudo-sep {
 
 .popover_filter_body .table-view-cell {
 	display: block !important;
-	position: relative;
 	padding: 10px 0;
 }
 
@@ -507,7 +396,6 @@ div.sudo-sep {
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	position: relative;
 }
 
 .filter-range-pipe:first-child,
@@ -521,21 +409,10 @@ div.sudo-sep {
 
 .filter-toggle > .toggle_PreOwned,
 .filter-range > select {
-	display: block;
 	margin: 0 auto;
 }
 
-/* when in doubt, hack, when rich come back and do it right */
-.listings_paginate-footer {
-
-	z-index: 100;
-	margin: 0;
-	padding: 15px 15px; 
-	/*height: 8vh;*/
-}
-
 .cta-load-more {
-	display: block;
 	margin: 0 auto;
 }
 
@@ -547,7 +424,6 @@ div.sudo-sep {
 
 .listings_Paginate {
 	cursor: pointer;
-	display: block;
 	margin: 0 auto;
 }
 
@@ -573,13 +449,11 @@ div.sudo-sep {
 	background-size: cover;
 	background-position-x: 50%;
 	background-position-y: 50%;
-	position: relative;
 	/*border-right: 1px solid #ddd;*/
 	background-color: #212124;
 }
 
 .listing-images {
-	position: absolute;
 	padding: 0;
 	/*margin: 0;*/
 	top: 50%;
@@ -613,9 +487,21 @@ div.sudo-sep {
 	transform: translateX(75px);
 }
 
+.catagories-tab,
+.catagories-tab > div {
+	height: 8vh;
+}
+
+.catagories-tab > div > a {
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
 .catagories-tab {
-	height: 4vh;
-	margin-bottom: 0vh;
+	margin-bottom: 0;
 	background-color: #fff;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.26);	
 	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.26);
@@ -638,8 +524,7 @@ div.sudo-sep {
 
 .find-private-listings-wrap {
 	margin-top: 3.5vh;
-	height: 88.5vh;
-	position: relative;
+	height: 84.6vh;
 }
 
 .listing-img-sect {
@@ -657,10 +542,6 @@ div.sudo-sep {
 
 .listing-items-wrap-private:nth-child(1) {
 	margin-top: 6vh;
-}
-
-.user-name-private {
-	position: relative;
 }
 
 .user-name-private > h3 {

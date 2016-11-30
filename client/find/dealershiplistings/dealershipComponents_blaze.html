@@ -74,7 +74,8 @@
 					</div>
 					<div class="filter-range col-md-10">
 
-						<select style="margin-left:12.5%;width:75%;"  
+						<select style="margin-left:10%;width:90%;" 
+						class="select-drilldown" 
 						ng-model="searchFodder.make" 
 						ng-options="make as make.name for make in makes track by make.name">
 							<option value="" ng-show="false" default selected>Make</option>
@@ -88,10 +89,14 @@
 						<label>Model </label>
 					</div>
 					<div class="filter-range col-md-10">
-						<select style="margin-left:12.5%;width:75%;" 
+						<select style="margin-left:10%;width:90%;" 
+						class="select-drilldown" 
+						ng-class="{unpopulated: !searchFodder.make}"
 						ng-model="searchFodder.model" 
 						ng-options="model as model.name for model in searchFodder.make.models track by model.name">
-							<option value="" ng-show="false" default selected>Model</option>
+							<option value="" ng-show="false" default selected>
+								Model
+							</option>
 						</select>
 					</div>
 				</div>
@@ -106,26 +111,30 @@
 							<p>min</p>
 						</div>
 						<div class="filter-range-pipe col-md-3">
-							<select style="width:100%;" 
-							ng-model="searchFodder.yearMin">
-								<option value="" ng-show="false" default selected="true">1970</option>
-								<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+							<select style="width:100%;"
+							class="select-drilldown" 
+							ng-class="{unpopulated: !searchFodder.model}"
+							ng-model="searchFodder.yearMin"
+							ng-options="year as year.year for year in searchFodder.model.years track by year.year">
+								<option value=''>Min Year</option>
 							</select>
 						</div>
 						<div style="text-align:center;" class="filter-range-pipe col-md-3">
 							<p>max</p>
 						</div>
 						<div class="filter-range-pipe col-md-3">
-							<select style="width:100%;" 
-							ng-model="searchFodder.yearMax">
-								<option value="" ng-show="false" default selected="true">2015</option>
-								<option ng-repeat="year in filterPopOverPreset.years" value="{{ year }}">{{ year }}</option>
+							<select style="width:100%;"
+							class="select-drilldown" 
+							ng-class="{unpopulated: !searchFodder.model}"
+							ng-model="searchFodder.yearMax"
+							ng-options="year as year.year for year in searchFodder.model.years track by year.year">
+								<option value=''>Max Year</option>
 							</select>
 						</div>
 					</div>
 				</div>
 				
-				<div class="table-view-cell">
+				<!-- <div class="table-view-cell">
 					<div class="filter-label col-md-4">
 						<label>Pre-owned</label>
 					</div>
@@ -134,7 +143,7 @@
 							<div class="toggle-handle"></div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 
 				<div class="table-view-cell">
 					<div class="col-md-4"></div>
@@ -143,17 +152,17 @@
 						<button style="display:block; margin:0 auto;" 
 						class="btn btn-success"
 						ng-click="applyFilters( searchFodder )">Apply Filters</button>
-						<!-- ng-click="applyFilters( searchFodder );" -->
 
-						<br>
-						<button style="display:block; margin:0 auto;"
-						class="btn btn-regular">No Filters</button>
+						<!-- <br> -->
 					</div>
 				</div>
 
 				<div style="text-align:center;" 
 					class="table-view-cell">
-					<p ng-show="searchErrorNoAddress" style="color:#FF3B30;">Please specify a location !</p>
+					<p style="color:#23E363;"
+					ng-show="notEnoughInfo">
+						tell us a little more about what you're looking for :) !
+					</p>
 				</div>
 
 			</div>
@@ -162,8 +171,7 @@
 
 
 		<!-- no results indicators -->
-
-	    <div class="no-results-indicator col-md-6"
+	    <div class="no-results-indicator col-md-6 z-index-2"
 		ng-show="noResults">
 			<article style="text-align:center;" class="pitch">
 				<h3 style="color:#9B9B9B;">No listings to display</h3>
@@ -172,7 +180,7 @@
 		</div>
 
 		<!-- load indicators -->
-		<div class="loading-results-indicator col-md-6"
+		<div class="loading-results-indicator col-md-6 z-index-2"
 		     ng-show="loading">
 			<article class="pitch">
 				<div class="sk-three-bounce">
@@ -183,7 +191,7 @@
 			</article>
 		</div>
 		
-		<div class="search-box-wrap col-md-6">
+		<div class="search-box-wrap col-md-6 z-index-3">
 			
 			<span class="search-input-group">
 				<input type="text"
@@ -206,14 +214,6 @@
 		</div>
 
 		<blaze-template name="listingResults"></blaze-template>
-
-		<div style="height: 8vh;" class="col-md-12">
-			<button class="btn btn-regular cta-load-more"
-			ng-show="filteredListings.length > filterLax"
-			ng-click="incrementFilterLax()"> 
-				load more
-			</button>
-		</div>
 	</div>
 
 	<!-- Dealership map -->

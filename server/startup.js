@@ -1,14 +1,12 @@
 Meteor.startup(function () {
-
   ensureIndexing();
-
-  
-
   // console.log('line 7 startup in server', Meteor.users.find({'profile.profileType':'dealership'}).fetch() );
 
-  if (Meteor.users.find({'profile.profileType':'dealership'}).fetch().length === 0) {
-  	console.log('dealer accounts count:', Meteor.users.find({'profile.profileType':'dealership'}).fetch().length);
+  var dealerCounts = Meteor.users.find({'profile.profileType':'dealership'}).fetch().length
 
+  if (dealerCounts !== 0 && dealerCounts < 5) {
+  	console.log('dealer accounts count:', Meteor.users.find({'profile.profileType':'dealership'}).fetch().length);
+  	console.log('creating accounts');
   	seedDbWithDealershipAccounts();
   }
 
@@ -20,96 +18,54 @@ function ensureIndexing() {
   Listings._ensureIndex({'loc':'2d','make':1,'price':1,'year':1,'milage':1});
 }
 
-/*
-	ensures data from the VehicleAPI
-	- first fetching all makes 
-	- aggregating styles for each model/year
-	- inserting aggregated data into CarModels for later usage
-*/
-
-function ensureVehicleAPI() {
-
-	var url = 'http://api.edmunds.com/api/vehicle/v2/makes?fmt=json&api_key=jjawk3r63ms55jx5n8phfss7';
-
-	HTTP.call( 'GET', url, function (error, answer) {
-    // Get all makes from the API.
-		// Iterate over them and one collect styles for each year & model
-    if(error) {
-      return console.log('Problem fetching makes from edmunds: ', error);
-    }
-
-		// parameters being passed before styles w/ aMake/aModel/aYear
-		answer.data.makes.forEach(function (aMake) {
-
-			aMake.models.forEach(function (aModel, i) {
-
-				aModel.years.forEach(function (aYear, j) {
-					
-          // 1. We might have aMake locally, lets check that
-          var makeToUpsert = CarModels.findOne(aModel.id);
-
-          // 2. Do we have this make locally AND it has styles already?
-          if(!!makeToUpsert && !!makeToUpsert.models[i].years[j].styles) {
-            return;  // by pass with no action because we already have it.
-          }
-
-          // 3. Lets insert it after fetching the styles that corresponds to it
-					var styleUrl = 'http://api.edmunds.com/api/vehicle/v2/'+aMake.niceName+'/'+aModel.niceName+'/'+aYear.year.toString()+'/styles?fmt=json&api_key=jjawk3r63ms55jx5n8phfss7'; 
-
-					// This delay is to satisfy the requests per second allowed by the API.
-					Meteor._sleepForMs(500);
-
-					HTTP.call('GET', styleUrl, function (err, ans){
-						
-						if (err) {
-							return console.log('Could not fetch style: ', err);
-						}
-
-						var theStyles = JSON.parse(ans.content).styles;
-
-						
-						aMake.models[i].years[j].styles = theStyles;
-						console.log('years:   ', JSON.stringify(aMake.models[i].years[j]));
-
-						CarModels.upsert(
-              { // selector
-                id: aMake.id
-              }
-              , { // what to update
-                $set: aMake
-              });
-						// console.log(aMake.niceName+' '+ aModel.niceName +' '+aYear.year+' styles: ', theStyles);
-					});
-
-					// }
-
-
-
-
-
-
-				});
-
-			});
-
-		});
-	});
-}
-
-// NO CALLBACK FOR CREATEUSER
-// MUST ENSURE BY HAND THAT dealers[i] IS NOT ERRONOUS
-// MUST ENSURE ACCOUNT CONTENT REACTIVE ON CLIENT
+// build an on start algorithm whenever a dealer account needs to be created
 function seedDbWithDealershipAccounts() {
 	var dealers = [
 		{
-			username: 'Porsche of Seattle',
-			email: 'sales@porscheofseattle.com',
-			password: 'seattle_porsche',
-			passwordConfirmed: 'seattle_porsche',
+			username: 'vwofseattle',
+			email: 'sales@vwofseattle.com',
+			password: 'seattle_vw',
+			passwordConfirmed: 'seattle_vw',
 			profile: {
 				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
 				profileType: 'dealership',
-				name: 'Porsche of Seattle', 
+				name: 'Volkswagen of Seattle', 
+				phone: '2062600000'
+			}
+	    },
+	    {
+			username: 'autoseaside',
+			email: 'sales@sa.com',
+			password: 'seaside_auto',
+			passwordConfirmed: 'seaside_auto',
+			profile: {
+				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
+				profileType: 'dealership',
+				name: 'Seaside Auto', 
+				phone: '2062600001'
+			}
+	    },
+	    {
+			username: 'futuresqueauto',
+			email: 'sales@futuresque.com',
+			password: 'auto_futuresque',
+			passwordConfirmed: 'auto_futuresque',
+			profile: {
+				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
+				profileType: 'dealership',
+				name: 'Futuresque Auto', 
+				phone: '2060010002'
+			}
+	    },
+	    {
+			username: 'washingtonauto',
+			email: 'sales@washingtonauto.com',
+			password: 'washington_auto',
+			passwordConfirmed: 'washington_auto',
+			profile: {
+				profilePicUrl: '/imgs/img_route_profile/current_user_null.png',
+				profileType: 'dealership',
+				name: 'Washington\'s Auto', 
 				phone: '2062303490'
 			}
 	    }
